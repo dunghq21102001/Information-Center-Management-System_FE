@@ -3,7 +3,7 @@
   <Transition name="sidebar">
     <Sidebar />
   </Transition>
-  <div class="w-[80%] float-right">
+  <div class="w-full lg:w-[80%] float-right">
     <RouterView />
   </div>
   <Loading v-show="systemStore.getLoading" />

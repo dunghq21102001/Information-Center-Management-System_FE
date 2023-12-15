@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="`hidden bg-white lg:block ${systemStore.getExpandSideBar ? 'w-[20%]' : 'w-[50px]'} px-3 duration-500 h-screen fixed top-0 left-0 border-cus overflow-y-scroll hide-scrollbar`">
+        :class="`hidden bg-white lg:block ${systemStore.getExpandSideBar ? 'w-[20%]' : 'w-[50px]'} px-3 duration-500 h-screen fixed top-0 left-0 border-cus overflow-y-scroll hide-scrollbar z-40`">
         <div class="w-[70%] mx-auto" v-show="systemStore.getExpandSideBar">
             <img src="../assets/images/logo.png" alt="logo" />
         </div>
@@ -13,33 +13,35 @@
                 </span>
             </div>
         </div>
-        <div v-show="systemStore.getExpandSideBar" class="text-[#9e9e9e] text-[14px] mt-10">Apps</div>
-        <ul class="w-full">
-            <li :class="`tab-item my-2 ${systemStore.getExpandSideBar ? 'px-2 py-1 rounded-lg w-full' : 'rounded-none w-[120%]'}`"
-                v-for="item in listMenu">
-                <div @click="item.isShow = !item.isShow"
-                    :class="`${item.isActive ? 'is-active' : ''} ${systemStore.getExpandSideBar ? 'hover:pl-3 px-2 py-1 w-full rounded-lg' : ''} relative duration-300 w-full cursor-pointer flex`">
-                    <v-icon :name="item.icon" scale="1.5" class="mr-5" />
-                    <span>
-                        {{ item.name }}
-                    </span>
-                    <v-icon v-show="systemStore.getExpandSideBar" name="md-keyboardarrowright"
-                        :class="`absolute top-[50%] translate-y-[-50%] right-5 duration-150 ${item.isShow ? 'rotate-90' : ''}`" />
-                </div>
-                <Transition name="child">
-                    <ul v-show="item.isShow" class="w-full">
-                        <li v-for="child in item.subTab"
-                            :class="`pl-12 my-1 ${isSubRouteActive(item) == child.url ? 'is-active' : ''} cursor-pointer hover:pl-14 duration-200`"
-                            @click="goToRoute(child.url)">
-                            {{ child.name }}
-                        </li>
-                    </ul>
-                </Transition>
-            </li>
-        </ul>
+        <div class="scroll-box mt-5">
+            <ul class="w-full ">
+                <li :class="`tab-item my-2 ${systemStore.getExpandSideBar ? 'px-2 py-1 rounded-lg w-full' : 'rounded-none w-[120%]'}`"
+                    v-for="item in listMenu">
+                    <div @click="item.isShow = !item.isShow"
+                        :class="`${item.isActive ? 'is-active' : ''} ${systemStore.getExpandSideBar ? 'hover:pl-3 px-2 py-1 w-full rounded-lg' : ''} relative duration-300 w-full cursor-pointer flex`">
+                        <v-icon :name="item.icon" scale="1.5" class="mr-5" />
+                        <span>
+                            {{ item.name }}
+                        </span>
+                        <v-icon v-show="systemStore.getExpandSideBar" name="md-keyboardarrowright"
+                            :class="`absolute top-[50%] translate-y-[-50%] right-5 duration-150 ${item.isShow ? 'rotate-90' : ''}`" />
+                    </div>
+                    <Transition name="child">
+                        <ul v-show="item.isShow" class="w-full">
+                            <li v-for="child in item.subTab"
+                                :class="`pl-12 my-1 ${isSubRouteActive(item) == child.url ? 'is-active' : ''} cursor-pointer hover:pl-14 duration-200`"
+                                @click="goToRoute(child.url)">
+                                {{ child.name }}
+                            </li>
+                        </ul>
+                    </Transition>
+                </li>
+            </ul>
+        </div>
     </div>
 </template>
 <script>
+import menu from '../common/menu';
 import { useSystemStore } from '../stores/system';
 import { useRoute } from 'vue-router';
 
@@ -52,20 +54,7 @@ export default {
     data() {
         return {
             currentRouteName: null,
-            listMenu: [
-                {
-                    id: 1, name: 'Users', icon: 'hi-user-group', subTab: [
-                        { name: 'Managers', url: 'managers' },
-                        { name: 'Staffs', url: 'staffs' },
-                        { name: 'Teachers', url: 'teachers' },
-                        { name: 'Children', url: 'children' },
-                    ], isShow: false, isActive: false
-                },
-                { id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [], isShow: false, isActive: false },
-                { id: 3, name: 'Calendar', icon: 'bi-calendar-week', subTab: [], isShow: false, isActive: false },
-                { id: 4, name: 'Classrooms', icon: 'co-room', subTab: [], isShow: false, isActive: false },
-                { id: 5, name: 'Salary', icon: 'la-money-check-alt-solid', subTab: [], isShow: false, isActive: false },
-            ]
+            listMenu: menu.sidebarMenu()
         }
     },
     watch: {
@@ -73,7 +62,7 @@ export default {
             if (newData == false) this.resetMenuData()
         },
         '$route'(to, from) {
-           this.checkToActiveParentTab(this.route.name)
+            this.checkToActiveParentTab(this.route.name)
         },
     },
     methods: {
@@ -93,15 +82,21 @@ export default {
         },
         checkToActiveParentTab(url) {
             let foundMatch = false
+            let selectedItem = ''
             this.listMenu.forEach(item => {
                 item.subTab.forEach(child => {
                     if (foundMatch) return
                     if (child.url === url) {
                         item.isActive = true
+                        selectedItem = item.name
                         foundMatch = true
                     } else item.isActive = false
                 })
                 if (foundMatch) return
+            })
+
+            this.listMenu.map(item => {
+                if (item.name != selectedItem) item.isActive = false
             })
         }
     },
@@ -110,7 +105,7 @@ export default {
     }
 }
 </script>
-<style scoped>
+<style scoped lang="css">
 .border-cus {
     border-right: 1px solid #d8d8d8;
 }
@@ -139,5 +134,44 @@ export default {
 .child-leave-to {
     transform: translateY(-20%);
     opacity: 0;
+}
+
+.sd-b {
+    box-shadow: 1px 1px 1px 1px black;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #cbcbcb;
+}
+
+::-webkit-scrollbar-button:start {
+    display: none;
+}
+
+::-webkit-scrollbar-button:end {
+    display: none;
+}
+
+.scroll-box {
+    overflow: auto;
+    width: 100%;
+    max-height: 400px;
+    background:
+        linear-gradient(white 30%, rgba(255, 255, 255, 0)),
+        linear-gradient(rgba(255, 255, 255, 0), white 70%) 0 100%,
+        radial-gradient(50% 0 at 50% 0, farthest-side, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)),
+        radial-gradient(50% 100% at 50% 100%, farthest-side, rgba(0, 0, 0, .2), rgba(0, 0, 0, 0)) 0 100%;
+    background-repeat: no-repeat;
+    background-color: white;
+    background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+    background-attachment: local, local, scroll, scroll;
 }
 </style>
