@@ -82,7 +82,7 @@ export default {
         start: "",
         end: "",
         class: "type-1",
-        background: true,
+        background: false,
       },
       showEventCreationDialog: false,
       eventsCssClasses: ["type-1", "type-2", "type-3"],
@@ -102,7 +102,14 @@ export default {
     },
     closeCreationDialog() {
       this.showEventCreationDialog = false;
-      this.selectedEvent = {};
+      this.selectedEvent = {
+        title: "",
+        content: "",
+        start: "",
+        end: "",
+        class: "type-1",
+        background: false,
+      };
     },
     changeBgColor(event) {
       this.selectedEvent.class = event.target.value;
@@ -126,16 +133,16 @@ export default {
 }
 
 .type-1 {
-  background-color: #fdab5e;
-  color: white;
+  background-color: #fdab5e !important;
+  color: white !important;
 }
 .type-2 {
-  background-color: #ff7d7d;
-  color: #fff;
+  background-color: #ff7d7d !important;
+  color: #fff !important;
 }
 .type-3 {
-  background-color: #5ec395;
-  color: #fff;
+  background-color: #5ec395 !important;
+  color: #fff !important;
 }
 
 .vuecal--month-view .vuecal__cell {

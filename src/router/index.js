@@ -4,7 +4,7 @@ import AboutView from '../views/AboutView.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Profile from '../views/Profile.vue'
 import PageNotFound from '../views/Page404.vue'
-
+import Login from '../views/Login.vue'
 
 // users
 import Managers from '../views/Users/Managers.vue'
@@ -35,6 +35,11 @@ const router = createRouter({
       meta: {
         // middleware: checkAuth,
       }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: Login
     },
     {
       path: '/home',

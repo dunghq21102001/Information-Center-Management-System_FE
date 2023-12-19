@@ -1,34 +1,50 @@
 <template>
-  <Header />
-  <Transition name="sidebar">
-    <Sidebar />
-  </Transition>
-  <div class="w-full lg:w-[80%] float-right">
-    <RouterView />
+  <div class="w-full">
+    <Header v-show="curRoute != 'login'"/>
+    <Transition name="sidebar">
+      <Sidebar v-show="curRoute != 'login'"/>
+    </Transition>
+    <div class="w-full lg:w-[80%] float-right" >
+      <RouterView />
+    </div>
+    <Loading v-show="systemStore.getLoading" />
   </div>
-  <Loading v-show="systemStore.getLoading" />
 </template>
 
 <script>
-import { useSystemStore } from './stores/system'
-import Loading from './components/Loading.vue'
-import Header from './components/Header.vue'
-import Sidebar from './components/Sidebar.vue'
+import { useSystemStore } from "./stores/system";
+import Loading from "./components/Loading.vue";
+import Header from "./components/Header.vue";
+import Sidebar from "./components/Sidebar.vue";
+import { useRoute } from "vue-router";
 export default {
   components: {
-    Loading, Header,
-    Sidebar
+    Loading,
+    Header,
+    Sidebar,
   },
   setup() {
-    const systemStore = useSystemStore()
-    return { systemStore }
+    const systemStore = useSystemStore();
+    const route = useRoute();
+    return { systemStore, route };
+  },
+  data() {
+    return {
+      curRoute: "",
+    };
+  },
+  watch: {
+    $route(to, from) {
+      this.curRoute = this.route.name;
+    },
   },
   methods: {
     test() {
-      this.systemStore.setChangeLoading(true)
-    }
-  }
-}
+      this.systemStore.setChangeLoading(true);
+    },
+  },
+  created() {},
+};
 </script>
 <style scoped>
 .sidebar-enter-active,
