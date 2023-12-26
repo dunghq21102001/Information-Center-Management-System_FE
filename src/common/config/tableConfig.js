@@ -24,4 +24,14 @@ export default class tableConfig {
             { text: "Action", value: "operation" }
         ]
     }
+
+    static courseTable() {
+        return [
+            { text: "Name", value: "name", sortable: true },
+            { text: "Description", value: "description", sortable: true },
+            { text: "Total Slot", value: "totalSlot", sortable: true },
+            { text: "Image", value: "image", sortable: true },
+            { text: "Action", value: "operation" }
+        ]
+    }
 }

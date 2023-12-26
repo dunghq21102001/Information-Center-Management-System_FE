@@ -25,6 +25,10 @@ import UserAttendance from '../views/Attendance/UserAttendance.vue'
 import MyCalendar from '../views/Calendar/MyCalendar.vue'
 import UserCalendar from '../views/Calendar/UserCalendar.vue'
 
+// courses
+import CreateCourse from '../views/Courses/Add.vue'
+import Courses from '../views/Courses/Course.vue'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -143,6 +147,22 @@ const router = createRouter({
       path: '/user-calendar',
       name: 'user-calendar',
       component: UserCalendar,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/courses',
+      name: 'courses',
+      component: Courses,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/course-create',
+      name: 'course-create',
+      component: CreateCourse,
       meta: {
         // middleware: checkAuth,
       }

@@ -55,7 +55,12 @@
               </td>
               <td v-for="sta of item.attendanceSheet">
                 <v-icon v-if="sta == 1" fill="#2f8754" name="bi-check-circle" />
-                <v-icon v-else-if="sta == 2" color fill="#dc3545" name="md-highlightoff-round" />
+                <v-icon
+                  v-else-if="sta == 2"
+                  color
+                  fill="#dc3545"
+                  name="md-highlightoff-round"
+                />
                 <v-icon v-else fill="#ffc107" name="bi-circle-half" />
               </td>
             </tr>
@@ -91,6 +96,69 @@ export default {
           attendanceSheet: [
             1, 2, 1, 2, 1, 2, 1, 2, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
             1, 1, 1, 3, 1, 1, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
+          ],
+        },
+        {
+          name: "Nguyen Van C",
+          image:
+            "https://cdn.vectorstock.com/i/preview-1x/17/61/male-avatar-profile-picture-vector-10211761.jpg",
+          attendanceSheet: [
+            1, 2, 1, 2, 1, 2, 1, 1, 1, 1, 2, 1, 1, 2, 1, 1, 1, 1, 1, 1, 3, 1, 1,
+            1, 1, 1, 3, 1, 2, 1, 1,
           ],
         },
         {

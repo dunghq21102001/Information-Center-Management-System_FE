@@ -30,6 +30,8 @@ export default class menu {
             },
             {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
+                    { name: 'Create Course', url: 'course-create' },
+                    { name: 'Courses', url: 'courses' },
                 ], isShow: false, isActive: false
             },
         ]

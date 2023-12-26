@@ -44,7 +44,14 @@
               <v-icon name="fa-key" class="mr-3" />
               Password
             </span>
-            <input type="text" class="i-c" />
+            <div class="w-full relative">
+              <input :type="isShowPass ? 'text' : 'password'" class="i-c w-full" />
+              <v-icon
+                class="absolute top-[50%] translate-y-[-50%] cursor-pointer right-2"
+                @click="isShowPass = !isShowPass"
+                :name="isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
+              />
+            </div>
           </div>
 
           <!-- pass again -->
@@ -53,13 +60,23 @@
               <v-icon name="fa-key" class="mr-3" />
               Password Again
             </span>
-            <input type="text" class="i-c" />
+            <div class="w-full relative">
+              <input :type="isShowPass ? 'text' : 'password'" class="i-c w-full" />
+              <v-icon
+                class="absolute top-[50%] translate-y-[-50%] cursor-pointer right-2"
+                @click="isShowPass = !isShowPass"
+                :name="isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
+              />
+            </div>
           </div>
 
           <button class="btn-primary w-full px-1 py-2 mt-4">
             {{ isLogin ? "Login" : "Register" }}
           </button>
-          <span class="block mx-auto text-[16px] text-[#007d88] cursor-pointer hover:underline mt-2">Forgot your password?</span>
+          <span
+            class="block mx-auto text-[16px] text-[#007d88] cursor-pointer hover:underline mt-2"
+            >Forgot your password?</span
+          >
         </div>
       </div>
     </div>
@@ -70,6 +87,7 @@ export default {
   data() {
     return {
       isLogin: true,
+      isShowPass: false,
     };
   },
   methods: {},
@@ -82,6 +100,5 @@ export default {
   border-radius: 10px;
   outline-color: #007d88;
   padding: 10px 8px;
-  margin-top: 5px;
 }
 </style>

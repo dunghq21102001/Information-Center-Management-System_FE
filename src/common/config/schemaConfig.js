@@ -11,4 +11,15 @@ export default class schemaConfig {
             { title: 'Background', field: 'background', value: '', type: 'image', focus: false, error: false, w: 2 },
         ]
     }
+
+    static courseSchema() {
+        return [
+            { title: 'Title', field: 'title', value: '', type: 'text', focus: false, error: false, w: 1 },
+            { title: 'Total Lesson', field: 'totalLesson', value: '0', type: 'number', focus: false, error: false, w: 1 },
+            { title: 'Total Slot', field: 'totalSlot', value: '0', type: 'number', focus: false, error: false, w: 1 },
+            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, w: 2 },
+            { title: 'Certificate', field: 'certificate', value: '', type: 'file', focus: false, error: false, w: 2 },
+            { title: 'Image', field: 'image', value: '', type: 'image', focus: false, error: false, w: 2 },
+        ]
+    }
 }

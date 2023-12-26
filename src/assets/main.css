@@ -98,10 +98,12 @@
   background-color: #fdab5e;
   color: white;
 }
+
 .type-2 {
   background-color: #ff7d7d;
   color: #fff;
 }
+
 .type-3 {
   background-color: #5ec395;
   color: #fff;
@@ -125,5 +127,10 @@
 }
 
 ::-webkit-scrollbar-button:end {
+  display: none;
+}
+
+input::-ms-reveal,
+input::-ms-clear {
   display: none;
 }
