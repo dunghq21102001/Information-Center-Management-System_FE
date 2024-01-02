@@ -29,6 +29,14 @@ import UserCalendar from '../views/Calendar/UserCalendar.vue'
 import CreateCourse from '../views/Courses/Add.vue'
 import Courses from '../views/Courses/Course.vue'
 
+// locations
+import Locations from '../views/Locations/Locations.vue'
+import CreateLocation from '../views/Locations/Add.vue'
+
+// reports
+import Reports from '../views/Reports/Reports.vue'
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -163,6 +171,30 @@ const router = createRouter({
       path: '/course-create',
       name: 'course-create',
       component: CreateCourse,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/locations',
+      name: 'locations',
+      component: Locations,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/location-create',
+      name: 'location-create',
+      component: CreateLocation,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/reports',
+      name: 'reports',
+      component: Reports,
       meta: {
         // middleware: checkAuth,
       }

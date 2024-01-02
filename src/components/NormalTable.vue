@@ -155,4 +155,5 @@ export default {
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
 }
+
 </style>

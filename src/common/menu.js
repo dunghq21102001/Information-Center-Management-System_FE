@@ -34,6 +34,17 @@ export default class menu {
                     { name: 'Courses', url: 'courses' },
                 ], isShow: false, isActive: false
             },
+            {
+                id: 8, name: 'Locations', icon: 'io-location-sharp', subTab: [
+                    { name: 'Create Location', url: 'location-create' },
+                    { name: 'Locations', url: 'locations' },
+                ], isShow: false, isActive: false
+            },
+            {
+                id: 9, name: 'Reports', icon: 'hi-solid-document-report', subTab: [
+                    { name: 'Reports', url: 'reports' },
+                ], isShow: false, isActive: false
+            },
         ]
     }
 

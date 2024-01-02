@@ -1,6 +1,6 @@
 <template>
     <div
-        :class="`hidden bg-white lg:block ${systemStore.getExpandSideBar ? 'w-[20%]' : 'w-[50px]'} px-3 duration-500 h-screen fixed top-0 left-0 border-cus overflow-y-scroll hide-scrollbar z-40`">
+        :class="`hidden z-[60] bg-white lg:block ${systemStore.getExpandSideBar ? 'w-[20%]' : 'w-[50px]'} px-3 duration-500 h-screen fixed top-0 left-0 border-cus overflow-y-scroll hide-scrollbar`">
         <div class="w-[70%] mx-auto" v-show="systemStore.getExpandSideBar">
             <img src="../assets/images/logo.png" alt="logo" />
         </div>
