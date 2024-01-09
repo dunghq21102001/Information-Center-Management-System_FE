@@ -5,6 +5,7 @@ import Dashboard from '../views/Dashboard.vue'
 import Profile from '../views/Profile.vue'
 import PageNotFound from '../views/Page404.vue'
 import Login from '../views/Login.vue'
+import Settings from '../views/Settings.vue'
 
 // users
 import Managers from '../views/Users/Managers.vue'
@@ -16,6 +17,9 @@ import Children from '../views/Users/Children.vue'
 
 // contract
 import Contract from '../views/Contracts/Contract.vue'
+
+// salary
+import Salary from '../views/Salary/Salary.vue'
 
 // attendance
 import TodayAttendance from '../views/Attendance/TodayAttendance.vue'
@@ -195,6 +199,22 @@ const router = createRouter({
       path: '/reports',
       name: 'reports',
       component: Reports,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/salary',
+      name: 'salary',
+      component: Salary,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings,
       meta: {
         // middleware: checkAuth,
       }

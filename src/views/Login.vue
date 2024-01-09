@@ -45,11 +45,16 @@
               Password
             </span>
             <div class="w-full relative">
-              <input :type="isShowPass ? 'text' : 'password'" class="i-c w-full" />
+              <input
+                :type="isShowPass ? 'text' : 'password'"
+                class="i-c w-full"
+              />
               <v-icon
                 class="absolute top-[50%] translate-y-[-50%] cursor-pointer right-2"
                 @click="isShowPass = !isShowPass"
-                :name="isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
+                :name="
+                  isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'
+                "
               />
             </div>
           </div>
@@ -61,16 +66,21 @@
               Password Again
             </span>
             <div class="w-full relative">
-              <input :type="isShowPass ? 'text' : 'password'" class="i-c w-full" />
+              <input
+                :type="isShowPass ? 'text' : 'password'"
+                class="i-c w-full"
+              />
               <v-icon
                 class="absolute top-[50%] translate-y-[-50%] cursor-pointer right-2"
                 @click="isShowPass = !isShowPass"
-                :name="isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'"
+                :name="
+                  isShowPass == false ? 'bi-eye-fill' : 'bi-eye-slash-fill'
+                "
               />
             </div>
           </div>
 
-          <button class="btn-primary w-full px-1 py-2 mt-4">
+          <button @click="login" class="btn-primary w-full px-1 py-2 mt-4">
             {{ isLogin ? "Login" : "Register" }}
           </button>
           <span
@@ -83,6 +93,7 @@
   </div>
 </template>
 <script>
+import swal from "../common/swal";
 export default {
   data() {
     return {
@@ -90,7 +101,12 @@ export default {
       isShowPass: false,
     };
   },
-  methods: {},
+  methods: {
+    login() {
+      this.$router.push({ name: "dashboard" });
+      swal.success("Login successfully");
+    },
+  },
   created() {},
 };
 </script>

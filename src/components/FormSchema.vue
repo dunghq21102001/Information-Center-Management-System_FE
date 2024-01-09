@@ -151,10 +151,6 @@ export default {
   width: 100%;
 }
 
-.on-focus {
-  border-bottom: 2px solid #007d88;
-}
-
 .err-ms {
   color: red;
   opacity: 1;

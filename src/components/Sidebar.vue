@@ -5,7 +5,7 @@
             <img src="../assets/images/logo.png" alt="logo" />
         </div>
         <div
-            :class="`tab-item ${route.name == 'dashboard' ? 'is-active' : ''} ${systemStore.getExpandSideBar ? 'px-2 py-1 hover:pl-4 rounded-lg w-full' : 'rounded-none w-[120%]'}`">
+            :class="`tab-item ${route.name == 'dashboard' ? 'tab-active' : ''} ${systemStore.getExpandSideBar ? 'px-2 py-1 hover:pl-4 rounded-lg w-full' : 'rounded-none w-[120%]'}`">
             <div class="flex items-center cursor-pointer" @click="goToRoute('dashboard')">
                 <v-icon name="md-spacedashboard-outlined" :scale="systemStore.getExpandSideBar ? 1.5 : 1.5" class="mr-5" />
                 <span>
@@ -18,7 +18,7 @@
                 <li :class="`tab-item my-2 ${systemStore.getExpandSideBar ? 'px-2 py-1 rounded-lg w-full' : 'rounded-none w-[120%]'}`"
                     v-for="item in listMenu">
                     <div @click="item.isShow = !item.isShow"
-                        :class="`${item.isActive ? 'is-active' : ''} ${systemStore.getExpandSideBar ? 'hover:pl-3 px-2 py-1 w-full rounded-lg' : ''} relative duration-300 w-full cursor-pointer flex`">
+                        :class="`${item.isActive ? 'tab-active' : ''} ${systemStore.getExpandSideBar ? 'hover:pl-3 px-2 py-1 w-full rounded-lg' : ''} relative duration-300 w-full cursor-pointer flex`">
                         <v-icon :name="item.icon" scale="1.5" class="mr-5" />
                         <span>
                             {{ item.name }}
@@ -29,7 +29,7 @@
                     <Transition name="child">
                         <ul v-show="item.isShow" class="w-full">
                             <li v-for="child in item.subTab"
-                                :class="`pl-12 my-1 ${isSubRouteActive(item) == child.url ? 'is-active' : ''} cursor-pointer hover:pl-14 duration-200`"
+                                :class="`pl-12 my-1 ${isSubRouteActive(item) == child.url ? 'tab-active' : ''} cursor-pointer hover:pl-14 duration-200`"
                                 @click="goToRoute(child.url)">
                                 {{ child.name }}
                             </li>
@@ -114,12 +114,6 @@ export default {
     transition: .2s ease-in;
     font-size: 18px;
 }
-
-.is-active {
-    color: #007d88;
-    background-color: #d9eced;
-}
-
 
 .child-enter-active,
 .child-leave-active {

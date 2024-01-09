@@ -39,11 +39,14 @@ export default {
     },
   },
   methods: {
-    test() {
-      this.systemStore.setChangeLoading(true);
+    changeTheme(themeColor) {
+      document.body.style.setProperty("--primary-color", `#${this.systemStore.themeColor.color}`);
+      document.body.style.setProperty("--blur-color", `#${this.systemStore.themeColor.blur}`);
     },
   },
-  created() {},
+  created() {
+    this.changeTheme()
+  },
 };
 </script>
 <style scoped>

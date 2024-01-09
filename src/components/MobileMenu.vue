@@ -8,7 +8,7 @@
         <div
           @click="item.isShow = !item.isShow"
           :class="`${
-            item.isActive ? 'is-active' : ''
+            item.isActive ? 'tab-active' : ''
           } relative duration-300 w-full cursor-pointer flex`"
         >
           <v-icon :name="item.icon" scale="1.5" class="mr-5" />
@@ -27,7 +27,7 @@
             <li
               v-for="child in item.subTab"
               :class="`pl-12 my-1 ${
-                isSubRouteActive(item) == child.url ? 'is-active' : ''
+                isSubRouteActive(item) == child.url ? 'tab-active' : ''
               } cursor-pointer hover:pl-14 duration-200`"
               @click="goToRoute(child.url)"
             >
@@ -109,11 +109,6 @@ export default {
 .tab-item {
   transition: 0.2s ease-in;
   font-size: 18px;
-}
-
-.is-active {
-  color: #007d88;
-  background-color: #d9eced;
 }
 
 .child-enter-active,

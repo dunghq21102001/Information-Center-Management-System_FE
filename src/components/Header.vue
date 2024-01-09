@@ -21,7 +21,7 @@
             name="io-notifications"
             class="absolute top-0 left-0 cursor-pointer"
             scale="2"
-            fill="#007d88"
+            :fill="`#${systemStore.getTheme.color}`"
           />
           <span
             class="absolute w-[20px] h-[20px] -top-2 -right-2 rounded-full bg-gray-300 text-center leading-[20px]"
@@ -43,12 +43,13 @@
             <ul class="w-full text-right">
               <li
                 @click="goToRoute('profile')"
-                class="hover:bg-[#d9eced] hover:text-[#007d88] cursor-pointer py-2 px-1"
+                class="hover:bg-blur hover:text-primary cursor-pointer py-2 px-1"
               >
                 Profile
               </li>
               <li
-                class="hover:bg-[#d9eced] hover:text-[#007d88] cursor-pointer py-2 px-1"
+                @click="logout"
+                class="hover:bg-blur hover:text-primary cursor-pointer py-2 px-1"
               >
                 Logout
               </li>
@@ -102,6 +103,9 @@ export default {
     },
     hiddenMobileMenu() {
       this.isShowMobileMenu = false;
+    },
+    logout() {
+      this.$router.push({ name: "login" });
     },
   },
 };

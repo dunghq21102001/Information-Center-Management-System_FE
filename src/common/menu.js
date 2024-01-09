@@ -14,7 +14,11 @@ export default class menu {
                     { name: 'Contract', url: 'contract' },
                 ], isShow: false, isActive: false
             },
-            { id: 3, name: 'Salary', icon: 'la-money-check-alt-solid', subTab: [], isShow: false, isActive: false },
+            // {
+            //     id: 3, name: 'Payroll', icon: 'la-money-check-alt-solid', subTab: [
+            //         { name: 'Salary', url: 'salary' },
+            //     ], isShow: false, isActive: false
+            // },
             {
                 id: 4, name: 'Calendar', icon: 'bi-calendar-week', subTab: [
                     { name: 'My Calendar', url: 'my-calendar' },
@@ -45,6 +49,11 @@ export default class menu {
                     { name: 'Reports', url: 'reports' },
                 ], isShow: false, isActive: false
             },
+            {
+                id: 10, name: 'Settings', icon: 'io-settings-sharp', subTab: [
+                    { name: 'System', url: 'settings' },
+                ], isShow: false, isActive: false
+            },
         ]
     }
 
@@ -54,8 +63,9 @@ export default class menu {
             { name: 'General information', index: 1 },
             { name: 'Security', index: 2 },
             { name: 'Courses', index: 3 },
-            { name: 'Academic transcript', index: 4 },
-            { name: 'Evaluation board', index: 5 },
+            { name: 'Requests', index: 4 },
+            { name: 'Contracts', index: 5 },
+            { name: 'Schedules', index: 6 },
         ]
     }
 }

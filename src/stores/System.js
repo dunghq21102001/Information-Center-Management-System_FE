@@ -2,7 +2,11 @@ import { defineStore } from 'pinia'
 export const useSystemStore = defineStore('system', {
     state: () => ({
         expandSideBar: true,
-        loading: false
+        loading: false,
+        themeColor: JSON.parse(localStorage.getItem('theme')) || {
+            color: '007d88',
+            blur: 'd9eced'
+        }
     }),
     getters: {
         getExpandSideBar: state => {
@@ -10,6 +14,9 @@ export const useSystemStore = defineStore('system', {
         },
         getLoading: state => {
             return state.loading
+        },
+        getTheme: state => {
+            return state.themeColor
         }
     },
     actions: {
@@ -18,6 +25,9 @@ export const useSystemStore = defineStore('system', {
         },
         setChangeLoading(data) {
             this.loading = data
+        },
+        setChangeTheme(item) {
+            this.themeColor = item
         }
 
     },

@@ -39,32 +39,32 @@
         <div class="w-full flex items-start justify-between flex-wrap">
           <div class="w-[30%] flex items-start justify-between">
             <ul class="w-[30%]">
-              <li class="li-h border-r-[#e5e5e5] border-r-solid border-r-[1px]">
+              <li class="li-h bg-primary border-r-[#e5e5e5] border-r-solid border-r-[1px]">
                 Classes
               </li>
               <li
-                class="w-full is-active px-2 my-1 py-1 cursor-pointer hover:text-[#007d88] bb-c"
+                class="w-full text-primary px-2 my-1 py-1 cursor-pointer hover:text-primary bb-c"
               >
                 SE1502
               </li>
               <li
-                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-[#007d88] bb-c"
+                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-primary bb-c"
               >
                 SE1505
               </li>
               <li
-                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-[#007d88] bb-c"
+                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-primary bb-c"
               >
                 SE1506
               </li>
               <li
-                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-[#007d88] bb-c"
+                class="w-full px-2 my-1 py-1 cursor-pointer hover:text-primary bb-c"
               >
                 SE1509
               </li>
             </ul>
             <ul class="w-[70%]">
-              <li class="li-h">Course</li>
+              <li class="li-h bg-primary">Course</li>
               <li class="w-full px-2 my-1 py-1 bb-c">Lập trình cơ bản</li>
             </ul>
           </div>
@@ -72,12 +72,12 @@
             <table class="w-full">
               <thead>
                 <tr>
-                  <th>No.</th>
-                  <th>Date</th>
-                  <th>Slot</th>
-                  <th>Room</th>
-                  <th>Teacher</th>
-                  <th>Attendance Status</th>
+                  <th class="bg-primary">No.</th>
+                  <th class="bg-primary">Date</th>
+                  <th class="bg-primary">Slot</th>
+                  <th class="bg-primary">Room</th>
+                  <th class="bg-primary">Teacher</th>
+                  <th class="bg-primary">Attendance Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -237,14 +237,12 @@ export default {
 }
 
 .li-h {
-  background-color: #007d88;
   color: #fff;
   padding: 4px 8px;
   font-weight: bold;
 }
 
 th {
-  background-color: #007d88;
   color: #fff;
   padding: 4px 8px;
   border-left: 1px solid #e5e5e5;
