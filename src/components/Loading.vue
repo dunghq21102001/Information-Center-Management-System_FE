@@ -19,7 +19,7 @@ export default {
 </script>
 <style scoped>
 .bg-cus {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 

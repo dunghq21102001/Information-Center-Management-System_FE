@@ -13,6 +13,7 @@ import VueCal from 'vue-cal'
 import 'vue-cal/dist/vuecal.css'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import CanvasJSChart from '@canvasjs/vue-charts';
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp } from "oh-vue-icons/icons"
 
@@ -34,5 +35,6 @@ app.use(VueSweetalert2)
 app.use(vueClickOutsideElement)
 app.use(createPinia())
 app.use(router)
+app.use(CanvasJSChart)
 
 app.mount('#app')

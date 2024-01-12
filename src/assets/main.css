@@ -52,6 +52,10 @@
   background-color: var(--blur-color);
 }
 
+.border-primary {
+  border-color: var(--primary-color);
+}
+
 .btn-primary {
   font-size: 18px;
   border: 1px solid var(--primary-color);

@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-        page 404
+        <img src="../assets/images/404.jpg" class="w-full" alt="">
     </div>
 </template>
 <script>

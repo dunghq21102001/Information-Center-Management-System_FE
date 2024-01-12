@@ -4,9 +4,7 @@ export default class menu {
             {
                 id: 1, name: 'Users', icon: 'hi-user-group', subTab: [
                     { name: 'Create User', url: 'user-create' },
-                    { name: 'Managers', url: 'managers' },
-                    { name: 'Staffs', url: 'staffs' },
-                    { name: 'Teachers', url: 'teachers' },
+                    { name: 'Users', url: 'users' },
                 ], isShow: false, isActive: false
             },
             {
@@ -66,6 +64,15 @@ export default class menu {
             { name: 'Requests', index: 4 },
             { name: 'Contracts', index: 5 },
             { name: 'Schedules', index: 6 },
+        ]
+    }
+
+    static welcomeMenu() {
+        return [
+            { name: 'Training Program', index: 1 },
+            { name: 'Blogs', index: 2 },
+            { name: 'Outstanding Students', index: 3 },
+             
         ]
     }
 }

@@ -1,6 +1,7 @@
 <template>
   <Transition>
     <div
+      v-if="curRoute != 'welcome'"
       :class="`${
         systemStore.getExpandSideBar ? 'w-full ld:w-[80%]' : 'w-full'
       } sticky top-0 left-0 right-0 duration-500 float-right h-[65px] z-40 border-cus flex justify-between items-center px-5`"
@@ -77,19 +78,27 @@
 <script>
 import { useSystemStore } from "../stores/system";
 import MobileMenu from "./MobileMenu.vue";
+import { useRoute } from "vue-router";
 export default {
   components: {
-    MobileMenu,
+    MobileMenu
   },
   setup() {
     const systemStore = useSystemStore();
-    return { systemStore };
+    const route = useRoute();
+    return { systemStore, route };
   },
   data() {
     return {
       isShowProfile: false,
       isShowMobileMenu: false,
+      curRoute: "",
     };
+  },
+  watch: {
+    $route(to, from) {
+      this.curRoute = this.route.name;
+    },
   },
   methods: {
     changExpand() {
