@@ -29,13 +29,19 @@
             >0</span
           >
         </div>
-        <div class="w-[50px] h-[50px] relative rounded-full">
+        <div
+          class="w-[50px] h-[50px] relative rounded-full flex items-center justify-center"
+        >
           <img
-            src="https://static.vecteezy.com/system/resources/previews/004/819/327/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg"
+            :src="
+              authStore.getAuth?.avatar != null
+                ? authStore.getAuth.avatar
+                : 'https://static.vecteezy.com/system/resources/previews/004/819/327/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg'
+            "
             @click="isShowProfile = !isShowProfile"
             v-click-outside-element="closeProfile"
-            class="absolute top-0 left-0 object-fill cursor-pointer rounded-full"
-            alt=""
+            class="w-[50px] h-[50px] object-fill cursor-pointer rounded-full"
+            alt="user avatar"
           />
           <div
             v-show="isShowProfile"
@@ -76,17 +82,20 @@
   </Transition>
 </template>
 <script>
-import { useSystemStore } from "../stores/system";
+import { useSystemStore } from "../stores/System";
 import MobileMenu from "./MobileMenu.vue";
 import { useRoute } from "vue-router";
+import { useAuthStore } from "../stores/Auth";
+import func from "../common/func";
 export default {
   components: {
-    MobileMenu
+    MobileMenu,
   },
   setup() {
     const systemStore = useSystemStore();
+    const authStore = useAuthStore();
     const route = useRoute();
-    return { systemStore, route };
+    return { systemStore, route, authStore };
   },
   data() {
     return {
@@ -114,7 +123,17 @@ export default {
       this.isShowMobileMenu = false;
     },
     logout() {
-      this.$router.push({ name: "login" });
+      if (this.authStore.getAuth?.roleName == "Parent") {
+        localStorage.removeItem("userData");
+        localStorage.removeItem("token");
+        this.authStore.setAuth(null);
+        this.$router.push({ name: "welcome" });
+      } else {
+        localStorage.removeItem("userData");
+        localStorage.removeItem("token");
+        this.authStore.setAuth(null);
+        this.$router.push({ name: "login" });
+      }
     },
   },
 };

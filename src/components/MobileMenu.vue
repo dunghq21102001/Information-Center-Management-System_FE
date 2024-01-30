@@ -6,6 +6,7 @@
         v-for="item in listMenu"
       >
         <div
+        v-if="item.isHidden == false"
           @click="item.isShow = !item.isShow"
           :class="`${
             item.isActive ? 'tab-active' : ''
@@ -42,15 +43,17 @@
 <script>
 import menu from "../common/menu";
 import { useRoute } from "vue-router";
+import {useAuthStore} from '../stores/Auth'
 export default {
   setup() {
     const route = useRoute();
-    return { route };
+    const authStore = useAuthStore()
+    return { route, authStore };
   },
   components: {},
   data() {
     return {
-      listMenu: menu.sidebarMenu(),
+      listMenu: null,
       currentRouteName: null,
     };
   },
@@ -98,7 +101,9 @@ export default {
       });
     },
   },
-  created() {},
+  created() {
+    this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName)
+  },
 };
 </script>
 <style scoped>

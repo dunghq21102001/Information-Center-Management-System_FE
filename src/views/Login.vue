@@ -26,7 +26,12 @@
               <v-icon name="fa-user-alt" class="mr-3" />
               {{ isLogin ? "Username or Email" : "Username" }}
             </span>
-            <input type="text" class="i-c" />
+            <input
+              type="text"
+              v-model="userName"
+              class="i-c"
+              @keydown.enter="login"
+            />
           </div>
 
           <!-- email -->
@@ -48,6 +53,8 @@
               <input
                 :type="isShowPass ? 'text' : 'password'"
                 class="i-c w-full"
+                @keydown.enter="login"
+                v-model="password"
               />
               <v-icon
                 class="absolute top-[50%] translate-y-[-50%] cursor-pointer right-2"
@@ -93,21 +100,54 @@
   </div>
 </template>
 <script>
+import API_USER from "../API/API_USER";
 import swal from "../common/swal";
+import { useSystemStore } from "../stores/System";
+import { useAuthStore } from "../stores/Auth";
 export default {
+  setup() {
+    const systemStore = useSystemStore();
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
+  },
   data() {
     return {
       isLogin: true,
       isShowPass: false,
+      userName: "",
+      password: "",
     };
   },
   methods: {
     login() {
-      this.$router.push({ name: "dashboard" });
-      swal.success("Login successfully");
+      this.systemStore.setChangeLoading(true);
+      API_USER.login({
+        userName: this.userName.trim(),
+        password: this.password.trim(),
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.$router.push({ name: "dashboard" });
+          swal.success("Login successfully");
+          this.authStore.setAuth(res.data);
+          localStorage.setItem("token", res.data?.token);
+          const userData = JSON.stringify(res.data);
+          localStorage.setItem("userData", userData);
+        })
+        .catch((err) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
     },
   },
-  created() {},
+  created() {
+    console.log(this.authStore.getAuth);
+    if (this.authStore.getAuth != null) {
+      if (this.authStore.getAuth?.roleName == "Admin")
+        this.$router.push({ name: "dashboard" });
+      else this.$router.push({ name: "profile" });
+    }
+  },
 };
 </script>
 <style scoped>

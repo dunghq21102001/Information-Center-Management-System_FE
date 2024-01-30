@@ -26,6 +26,9 @@
   .bg-blur {
     background-color: var(--blur-color);
   }
+  .border-primary {
+    border-color: var(--primary-color);
+  }
 }
 
 * {

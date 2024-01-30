@@ -56,7 +56,7 @@
     <div class="w-full flex items-center justify-center mb-5">
       <div class="flex items-center flex-col">
         <span class="text-[28px] text-primary">More than 300+ courses</span>
-        <button class="btn-primary px-3 py-1 rounded-lg">
+        <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
           <span class="">See more</span>
         </button>
       </div>
@@ -70,7 +70,11 @@
           <div
             class="w-[200px] h-[100px] md:w-[300px] md:h-[200px] overflow-hidden flex items-center justify-center mr-5"
           >
-            <img :src="blog.img" class="w-full object-fill cursor-pointer" alt="" />
+            <img
+              :src="blog.img"
+              class="w-full object-fill cursor-pointer"
+              alt=""
+            />
           </div>
           <div class="w-[150px] md:w-[800px] xl:w-[1000px]">
             <div
@@ -80,14 +84,22 @@
               <span class="text-[12px] md:text-[18px]">Outstanding Blog</span>
             </div>
             <p
+              @click="selectBlog(blog)"
               class="truncate-text hover:underline cursor-pointer w-full text-[18px] md:text-[24px] text-[#2c2b2b] font-bold"
             >
               {{ blog.name }}
             </p>
           </div>
         </div>
+        <div class="w-full flex items-center justify-center">
+          <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
+            <span class="">See more</span>
+          </button>
+        </div>
       </div>
     </div>
+
+    <!-- 5 -->
   </div>
 </template>
 <script>
@@ -155,7 +167,11 @@ export default {
     };
   },
   created() {},
-  methods: {},
+  methods: {
+    selectBlog(item) {
+      this.$emit("selectBlog", item);
+    },
+  },
 };
 </script>
 <style scoped>

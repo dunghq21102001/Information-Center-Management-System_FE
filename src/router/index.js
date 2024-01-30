@@ -7,6 +7,7 @@ import PageNotFound from '../views/Page404.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import Welcome from '../views/Welcome.vue'
+import checkAuth from '../middleware/auth'
 
 // users
 import Users from '../views/Users/Users.vue'
@@ -35,6 +36,13 @@ import Courses from '../views/Courses/Course.vue'
 import Locations from '../views/Locations/Locations.vue'
 import CreateLocation from '../views/Locations/Add.vue'
 
+// blogs
+import Blogs from '../views/Blogs/Blogs.vue'
+
+// chat
+import Chat from '../views/Chat/Chat.vue'
+import AnonymousChat from '../views/Chat/AnonymousChat.vue'
+
 // reports
 import Reports from '../views/Reports/Reports.vue'
 
@@ -46,7 +54,7 @@ const router = createRouter({
       name: 'dashboard',
       component: Dashboard,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -64,7 +72,7 @@ const router = createRouter({
       name: 'profile',
       component: Profile,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -77,7 +85,7 @@ const router = createRouter({
       name: 'users',
       component: Users,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -85,7 +93,7 @@ const router = createRouter({
       name: 'user-create',
       component: CreateUser,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -93,7 +101,7 @@ const router = createRouter({
       name: 'user-update',
       component: UpdateUser,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -101,7 +109,7 @@ const router = createRouter({
       name: 'contract',
       component: Contract,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -109,7 +117,7 @@ const router = createRouter({
       name: 'today-attendance',
       component: TodayAttendance,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -117,7 +125,7 @@ const router = createRouter({
       name: 'user-attendance',
       component: UserAttendance,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -125,7 +133,7 @@ const router = createRouter({
       name: 'my-calendar',
       component: MyCalendar,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -133,7 +141,7 @@ const router = createRouter({
       name: 'user-calendar',
       component: UserCalendar,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -141,7 +149,7 @@ const router = createRouter({
       name: 'courses',
       component: Courses,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -149,7 +157,7 @@ const router = createRouter({
       name: 'course-create',
       component: CreateCourse,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -157,7 +165,7 @@ const router = createRouter({
       name: 'locations',
       component: Locations,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -165,7 +173,31 @@ const router = createRouter({
       name: 'location-create',
       component: CreateLocation,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
+      }
+    },
+    {
+      path: '/blogs',
+      name: 'blogs',
+      component: Blogs,
+      meta: {
+        middleware: checkAuth,
+      }
+    },
+    {
+      path: '/chat',
+      name: 'chat',
+      component: Chat,
+      meta: {
+        middleware: checkAuth,
+      }
+    },
+    {
+      path: '/anonymous-chat',
+      name: 'anonymous-chat',
+      component: AnonymousChat,
+      meta: {
+        middleware: checkAuth,
       }
     },
     {
@@ -173,7 +205,7 @@ const router = createRouter({
       name: 'reports',
       component: Reports,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -181,7 +213,7 @@ const router = createRouter({
       name: 'salary',
       component: Salary,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -189,7 +221,7 @@ const router = createRouter({
       name: 'settings',
       component: Settings,
       meta: {
-        // middleware: checkAuth,
+        middleware: checkAuth,
       }
     },
     {
@@ -210,5 +242,45 @@ const router = createRouter({
     },
   ]
 })
+
+
+function nextFactory(context, middleware, index) {
+  const subsequentMiddleware = middleware[index]
+  // If no subsequent Middleware exists,
+  // the default `next()` callback is returned.
+  if (!subsequentMiddleware) return context.next
+
+  return (...parameters) => {
+    // Run the default Vue Router `next()` callback first.
+    context.next(...parameters)
+    // Then run the subsequent Middleware with a new
+    // `nextMiddleware()` callback.
+    const nextMiddleware = nextFactory(context, middleware, index + 1)
+    subsequentMiddleware({ ...context, next: nextMiddleware })
+  }
+}
+
+// const defaultTitle = 'LOG OT'
+router.beforeEach((to, from, next) => {
+  // document.title = to.name.toUpperCase() || defaultTitle
+  if (to.meta.middleware) {
+    const middleware = Array.isArray(to.meta.middleware)
+      ? to.meta.middleware
+      : [to.meta.middleware]
+
+    const context = {
+      from,
+      next,
+      router,
+      to,
+    }
+    const nextMiddleware = nextFactory(context, middleware, 1)
+
+    return middleware[0]({ ...context, next: nextMiddleware })
+  }
+
+  return next()
+})
+
 
 export default router

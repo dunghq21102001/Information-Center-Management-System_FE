@@ -5,7 +5,6 @@
       <Sidebar v-show="curRoute != 'login' && curRoute != 'welcome'" />
     </Transition>
     <div
-      class=""
       :class="
         curRoute == 'welcome' ? 'w-full' : 'w-full lg:w-[80%] float-right'
       "
@@ -17,7 +16,7 @@
       ref="settingBarOpen"
       v-show="curRoute != 'login' && curRoute != 'welcome'"
       @click="isShowSettingBar = !isShowSettingBar"
-      class="hidden lg:flex fixed bottom-[50%] translate-y-[-50%] bg-blur p-4 cursor-pointer rotate items-center justify-center"
+      class="hidden lg:flex fixed bottom-[50%] translate-y-[-50%] bg-blur p-3 cursor-pointer rotate items-center justify-center"
       :class="isShowSettingBar ? 'right-[300px]' : 'right-0'"
     >
       <v-icon
@@ -33,7 +32,7 @@
 </template>
 
 <script>
-import { useSystemStore } from "./stores/system";
+import { useSystemStore } from "./stores/System";
 import Loading from "./components/Loading.vue";
 import Header from "./components/Header.vue";
 import Sidebar from "./components/Sidebar.vue";
