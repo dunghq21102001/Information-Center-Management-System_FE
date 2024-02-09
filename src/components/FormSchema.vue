@@ -28,6 +28,24 @@
           v-model="item.value"
           class="input-cus"
         ></textarea>
+        <div class="w-full" v-else-if="item.type === 'select'">
+          <select v-model="item.value" class="w-full px-3 py-2 mt-2">
+            <option v-for="i in item.listData" :value="i?.id">
+              {{ i?.name }}
+            </option>
+          </select>
+        </div>
+        <div
+          class="w-full flex items-center flex-wrap pt-6"
+          v-else-if="item.type === 'radio'"
+        >
+          <div class="flex items-center mr-5" v-for="i in item.listData">
+            <input type="radio" :id="i" :value="i" v-model="item.value" />
+            <label :for="i" class="ml-2">
+              {{ i }}
+            </label>
+          </div>
+        </div>
         <div
           @dragover.prevent="handleDragOver($event, item?.field)"
           @drop="handleDrop($event, item?.field)"
@@ -77,11 +95,13 @@
             class="w-full h-[100px] cursor-pointer opacity-0"
           />
         </div>
-        <small :class="item.error ? 'err-ms' : 'opacity-0'">err here</small>
+        <small :class="item.error ? 'err-ms' : 'opacity-0'">{{
+          item?.errMes
+        }}</small>
       </div>
     </div>
     <div class="w-[95%] mx-auto flex items-center justify-end">
-      <button class="btn-cancel px-4 py-1 mr-3">Cancel</button>
+      <!-- <button class="btn-cancel px-4 py-1 mr-3">Cancel</button> -->
       <button class="btn-primary px-4 py-1" @click="submitForm">
         {{ btnProp }}
       </button>
@@ -99,12 +119,27 @@ export default {
     return {
       schemaProp: this.schema,
       btnProp: this.btnName,
+      isValid: true,
     };
   },
   methods: {
     submitForm() {
-      const formDataObject = this.convertArrayToObject(this.schemaProp);
-      this.$emit("form-submitted", formDataObject);
+      this.validateForm()
+      if (this.isValid) {
+        const formDataObject = this.convertArrayToObject(this.schemaProp);
+        this.$emit("form-submitted", formDataObject);
+      }
+    },
+    validateForm() {
+      this.isValid = true;
+      this.schemaProp.forEach((item) => {
+        if (!item.value) {
+          item.error = true;
+          this.isValid = false;
+        } else {
+          item.error = false;
+        }
+      });
     },
     convertArrayToObject(formData) {
       return formData.reduce((acc, item) => {
@@ -159,5 +194,11 @@ export default {
 .br-dash {
   border: 1px dashed rgb(163, 163, 163);
   border-radius: 10px;
+}
+
+input[type="radio"] {
+  -ms-transform: scale(1.5); /* IE 9 */
+  -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
+  transform: scale(1.5);
 }
 </style>

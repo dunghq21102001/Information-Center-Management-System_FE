@@ -2,11 +2,12 @@
   <div class="w-[250px] md:w-[420px] h-screen bg-white overflow-y-scroll">
     <ul class="w-full mt-5">
       <li
-        :class="`tab-item my-2 px-2 py-1 rounded-lg w-full`"
+        class="tab-item my-2 px-2 py-1 rounded-lg w-full"
         v-for="item in listMenu"
+        :class="item.isHidden ? 'hidden' : 'block'"
       >
         <div
-        v-if="item.isHidden == false"
+          v-if="item.isHidden == false"
           @click="item.isShow = !item.isShow"
           :class="`${
             item.isActive ? 'tab-active' : ''
@@ -43,11 +44,11 @@
 <script>
 import menu from "../common/menu";
 import { useRoute } from "vue-router";
-import {useAuthStore} from '../stores/Auth'
+import { useAuthStore } from "../stores/Auth";
 export default {
   setup() {
     const route = useRoute();
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     return { route, authStore };
   },
   components: {},
@@ -63,6 +64,9 @@ export default {
     },
     $route(to, from) {
       this.checkToActiveParentTab(this.route.name);
+    },
+    "authStore.getAuth": function (newData, oldData) {
+      this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName);
     },
   },
   methods: {
@@ -102,7 +106,7 @@ export default {
     },
   },
   created() {
-    this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName)
+    this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName);
   },
 };
 </script>

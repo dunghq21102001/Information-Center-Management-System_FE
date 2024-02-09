@@ -7,6 +7,7 @@
         is-show-search="false"
         :is-update="true"
         :is-delete="true"
+        :is-expand="true"
       />
     </div>
   </div>
@@ -22,34 +23,56 @@ export default {
       header: tableConfig.courseTable(),
       data: [
         {
-          name: "ok ok",
-          description: "des ok",
-          image: "https://marketplace.canva.com/EAFNlUJs5g4/2/0/1600w/canva-white-simple-certificate-of-appreciation-Fcz7KkZ5YaU.jpg",
-          totalSlot: "8",
+          courseCode: "JS1049",
+          price: 29520100,
+          name: "Khoá học lập trình javascript cơ bản",
+          image:
+            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
+          description: "Khoá học cơ bản",
+          durationTotal: "10",
+          syllabus: "",
+          discount: "15%",
+          level: "Hard",
+          entryPoint: "40",
         },
         {
-          name: "ok ok",
-          description: "des ok",
-          image: "https://marketplace.canva.com/EAFNlUJs5g4/2/0/1600w/canva-white-simple-certificate-of-appreciation-Fcz7KkZ5YaU.jpg",
-          totalSlot: "8",
+          courseCode: "JS1049",
+          price: 29520100,
+          name: "Khoá học lập trình javascript cơ bản",
+          image:
+            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
+          description: "Khoá học cơ bản",
+          durationTotal: "23",
+          syllabus: "",
+          discount: "10%",
+          level: "Hard",
+          entryPoint: "20",
         },
         {
-          name: "ok ok",
-          description: "des ok",
-          image: "https://marketplace.canva.com/EAFNlUJs5g4/2/0/1600w/canva-white-simple-certificate-of-appreciation-Fcz7KkZ5YaU.jpg",
-          totalSlot: "8",
+          courseCode: "JS1049",
+          price: 29520100,
+          name: "Khoá học lập trình javascript cơ bản",
+          image:
+            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
+          description: "Khoá học cơ bản",
+          durationTotal: "20",
+          syllabus: "",
+          discount: "35%",
+          level: "Hard",
+          entryPoint: "30",
         },
         {
-          name: "ok ok",
-          description: "des ok",
-          image: "https://marketplace.canva.com/EAFNlUJs5g4/2/0/1600w/canva-white-simple-certificate-of-appreciation-Fcz7KkZ5YaU.jpg",
-          totalSlot: "8",
-        },
-        {
-          name: "ok ok",
-          description: "des ok",
-          image: "https://marketplace.canva.com/EAFNlUJs5g4/2/0/1600w/canva-white-simple-certificate-of-appreciation-Fcz7KkZ5YaU.jpg",
-          totalSlot: "8",
+          courseCode: "JS1049",
+          price: 29520100,
+          name: "Khoá học lập trình javascript cơ bản",
+          image:
+            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
+          description: "Khoá học cơ bản",
+          durationTotal: "18",
+          syllabus: "",
+          discount: "25%",
+          level: "Hard",
+          entryPoint: "60",
         },
       ],
     };

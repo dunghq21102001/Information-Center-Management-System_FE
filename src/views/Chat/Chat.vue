@@ -16,6 +16,7 @@
           <button
             title="Add new chat"
             class="btn-primary w-[39px] h-[39px] rounded-full"
+            @click="showFormNewChat"
           >
             +
           </button>
@@ -183,10 +184,79 @@
     </div>
     <div
       v-show="isShowNewChat"
+      @click.self="isShowNewChat = false"
       class="fixed top-0 left-0 right-0 bottom-0 bg-cus flex items-center justify-center z-[90]"
     >
       <div class="w-[90%] md:w-[50%] lg:w-[40%] bg-white rounded-lg p-3">
-        ok
+        <div class="w-full">
+          <span class="block text-[20px]"
+            >Select the user to initiate a new chat</span
+          >
+          <!-- <select v-model="currentClientId" class="px-3 py-1 min-w-[200px] mt-2">
+            <option v-for="u in users" :value="u?.id">
+              {{ u?.email }}
+            </option>
+          </select> -->
+          <div
+            class="px-3 py-1 w-[300px] cursor-pointer border-black border-[1px] border-solid rounded-lg relative"
+            v-click-outside-element="closeList"
+            @click="isShowList = !isShowList"
+          >
+            <div
+              v-show="isShowList"
+              class="absolute w-full p-2 bg-white top-[103%] left-0 max-h-[300px] overflow-y-scroll shadow-lg rounded-sm"
+            >
+              <div
+                @click="changeSelectedNewUser(u)"
+                class="flex items-center w-full my-2 hover:bg-blur"
+                v-for="u in users"
+              >
+                <div class="w-[50px] h-[50px] overflow-hidden rounded-full">
+                  <img
+                    :src="u?.avatar"
+                    class="object-fill w-full h-full"
+                    alt="user avatar"
+                  />
+                </div>
+                <div class="flex flex-col items-start ml-3">
+                  <span>{{ u?.userName }}</span>
+                  <span>{{ u?.email }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center">
+              <div class="w-[50px] h-[50px] overflow-hidden rounded-full">
+                <img
+                  :src="newUserSelected.avatar"
+                  class="object-fill w-full h-full"
+                  alt="user avatar"
+                />
+              </div>
+              <div class="flex flex-col items-start ml-3">
+                <span>{{ newUserSelected.userName }}</span>
+                <span>{{ newUserSelected.email }}</span>
+              </div>
+            </div>
+          </div>
+          <span class="block text-[20px] mt-5">Message</span>
+          <input
+            type="text"
+            v-model="newText"
+            class="border-black border-b-[1px] w-full border-solid focus:outline-none"
+          />
+
+          <div class="w-full flex items-center justify-between">
+            <button
+              class="btn-cancel px-3 py-1 mt-5"
+              @click="isShowNewChat = false"
+            >
+              Cancel
+            </button>
+            <button class="btn-primary px-3 py-1 mt-5" @click="sendNewMessage">
+              Send
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -208,6 +278,7 @@ import { useAuthStore } from "../../stores/Auth";
 import { useSystemStore } from "../../stores/System";
 import { onUnmounted } from "vue";
 import swal from "../../common/swal";
+import API_USER from "../../API/API_USER";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -227,6 +298,15 @@ export default {
       currentClientAvt: "",
       clientBoxChats: [],
       tmpClientBoxChats: [],
+      users: [],
+      newUserSelected: {
+        id: "",
+        userName: "",
+        avatar: "",
+        email: "",
+      },
+      isShowList: false,
+      newText: "",
       listIcons: [
         "😀",
         "😃",
@@ -315,9 +395,11 @@ export default {
       ],
     };
   },
-  created() {},
+  created() {
+    this.fetchUsers();
+  },
   mounted() {
-    this.systemStore.setChangeLoading(true);
+    // this.systemStore.setChangeLoading(true);
     const pathCollectionDB = this.authStore.getAuth?.id;
 
     this.$nextTick(() => {
@@ -338,11 +420,11 @@ export default {
 
         // Move the subsequent code here
         // console.log(this.clientBoxChats);
-        this.systemStore.setChangeLoading(false);
+        // this.systemStore.setChangeLoading(false);
 
         // Check if currentClientId is not null before proceeding
         if (this.currentClientId) {
-          this.systemStore.setChangeLoading(true);
+          // this.systemStore.setChangeLoading(true);
           const messages = onSnapshot(
             query(
               collection(
@@ -355,10 +437,10 @@ export default {
               this.messages = snapshot.docs.map((doc) => {
                 return { ...doc.data(), id: doc.id };
               });
-              this.systemStore.setChangeLoading(false);
+              // this.systemStore.setChangeLoading(false);
             }
           );
-          this.systemStore.setChangeLoading(true);
+          // this.systemStore.setChangeLoading(true);
           // onUnmounted(messages);
         }
       }
@@ -366,7 +448,7 @@ export default {
   },
   methods: {
     openChat(client) {
-      this.systemStore.setChangeLoading(true);
+      // this.systemStore.setChangeLoading(true);
       this.currentClientId = client?.id;
       this.currentClientAvt = client?.avatar;
       this.currentClientUsername = client?.username;
@@ -384,10 +466,10 @@ export default {
           this.messages = snapshot.docs.map((doc) => {
             return { ...doc.data(), id: doc.id };
           });
-          this.systemStore.setChangeLoading(false);
+          // this.systemStore.setChangeLoading(false);
         }
       );
-      this.systemStore.setChangeLoading(false);
+      // this.systemStore.setChangeLoading(false);
 
       setDoc(
         doc(db, `${this.authStore.getAuth?.id}/` + this.currentClientId),
@@ -395,11 +477,63 @@ export default {
         { merge: true } // Use merge option to update only specified fields without overwriting the entire document
       );
     },
+    sendNewMessage() {
+      this.currentClientAvt = this.newUserSelected.avatar;
+      this.currentClientId = this.newUserSelected.id;
+      this.currentClientUsername = this.newUserSelected.userName;
+
+      // người gửi (last mess)
+      setDoc(doc(db, this.authStore.getAuth?.id, this.newUserSelected.id), {
+        avatar: this.newUserSelected.avatar,
+        date: Timestamp.now(),
+        lastMessage: this.newText,
+        seen: true,
+        username: this.newUserSelected.userName,
+      });
+
+      // người nhận (last mess)
+      setDoc(doc(db, this.newUserSelected.id, this.authStore.getAuth?.id), {
+        avatar: this.authStore.getAuth?.avatar,
+        date: Timestamp.now(),
+        lastMessage: this.newText,
+        seen: false,
+        username: this.authStore.getAuth?.username,
+      });
+
+      // add to chat (ng gửi)
+      addDoc(
+        collection(
+          db,
+          `${this.authStore.getAuth?.id}/` +
+            this.newUserSelected.id +
+            "/messages"
+        ),
+        {
+          text: this.newText,
+          userId: this.authStore.getAuth?.id, //id người gửi
+          date: Timestamp.now(),
+        }
+      );
+
+      // add to chat (ng nhận)
+      addDoc(
+        collection(
+          db,
+          `${this.newUserSelected.id}/` +
+            this.authStore.getAuth?.id +
+            "/messages"
+        ),
+        {
+          text: this.newText,
+          userId: this.authStore.getAuth?.id, //id người gửi
+          date: Timestamp.now(),
+        }
+      );
+
+      this.isShowNewChat = false;
+    },
     sendMessage() {
-      if (
-        this.currentClientId.trim() == "" ||
-        this.currentClientId.trim() == null
-      ) {
+      if (this.currentClientId == "" || this.currentClientId == null) {
         return swal.error("Let's add new users to chat!");
       }
       if (this.messageText.trim() == "" || this.messageText.trim() == null)
@@ -482,8 +616,24 @@ export default {
         })
         .catch((error) => {
           console.error("Error in Firebase operations:", error);
-          // Handle error if needed
         });
+    },
+    showFormNewChat() {
+      this.newUserSelected.avatar = this.users[0]?.avatar;
+      this.newUserSelected.id = this.users[0]?.id;
+      this.newUserSelected.userName = this.users[0]?.userName;
+      this.newUserSelected.email = this.users[0]?.email;
+      this.isShowNewChat = true;
+    },
+    changeSelectedNewUser(user) {
+      this.newUserSelected.avatar = user?.avatar;
+      this.newUserSelected.id = user?.id;
+      this.newUserSelected.userName = user?.userName;
+      this.newUserSelected.email = user?.email;
+    },
+    closeList() {
+      this.isShowList = false;
+      this.newText = "";
     },
     formattedDate(seconds) {
       const date = new Date(seconds * 1000);
@@ -523,6 +673,23 @@ export default {
       const minutes = String(now.getMinutes()).padStart(2, "0"); // Thêm '0' phía trước nếu phút chỉ có một chữ số
 
       return `${day} ${month} ${year} ${hours}:${minutes}`;
+    },
+    fetchUsers() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.users()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          let tmpList = [];
+          res.data.forEach((u) => {
+            if (u?.id != this.authStore.getAuth?.id) {
+              tmpList.push(u);
+            }
+          });
+          this.users = tmpList
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
     },
     hiddenIcon() {
       this.isShowIcon = false;

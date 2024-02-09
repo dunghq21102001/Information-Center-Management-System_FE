@@ -99,7 +99,10 @@
       </div>
     </div>
 
-    <!-- 5 -->
+    <!-- 5 / chat -->
+    <div class="fixed right-5 bottom-5 rounded-full bg-blur flex items-center justify-center">
+      <v-icon name="bi-chat-dots-fill" />
+    </div>
   </div>
 </template>
 <script>

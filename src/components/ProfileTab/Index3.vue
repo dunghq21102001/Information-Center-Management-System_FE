@@ -1,13 +1,16 @@
 <template>
     <div class="w-full">
-        <p class="page-sub-title">Courses</p>
-        <div class="grid grid-cols-12 gap-4">
+        <p class="page-sub-title">Children</p>
+        <!-- <div class="grid grid-cols-12 gap-4">
             <div v-for="item in listCourse" class="col-span-12 md:col-span-4">
                 <CourseCard :item="item" />
             </div>
         </div>
         <div class="w-full mx-auto mt-5 md:w-[60%]">
             <Pagination />
+        </div> -->
+
+        <div class="w-full">
         </div>
 
     </div>

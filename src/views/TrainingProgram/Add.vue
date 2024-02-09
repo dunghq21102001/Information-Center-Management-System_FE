@@ -3,7 +3,7 @@
     <FormSchema
       :schema="courseSchema"
       btn-name="Add"
-      @form-submitted="handleAddCourse"
+      @form-submitted="handleAddTP"
     />
   </div>
 </template>
@@ -16,12 +16,12 @@ export default {
   },
   data() {
     return {
-      courseSchema: schemaConfig.courseSchema(),
+      courseSchema: schemaConfig.TrainingProgramSchema(),
     };
   },
   created() {},
   methods: {
-    handleAddCourse(data) {}
+    handleAddTP(data) {}
   }
 };
 </script>

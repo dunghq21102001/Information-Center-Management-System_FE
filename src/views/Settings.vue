@@ -1,6 +1,7 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto py-3">
+      <!-- theme -->
       <div class="w-full">
         <div class="w-full py-2 flex items-center justify-between">
           <span class="text-primary text-[24px]">Theme Color</span>
@@ -23,6 +24,10 @@
           </div>
         </div>
       </div>
+
+      <!-- config khác -->
+      
+
     </div>
   </div>
 </template>

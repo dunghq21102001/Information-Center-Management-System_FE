@@ -6,13 +6,13 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-    apiKey: "AIzaSyB8LT8JPVhsfzv3v-lnfVecqDdyrDDatM0",
-    authDomain: "kid-pro-edu-bf507.firebaseapp.com",
-    projectId: "kid-pro-edu-bf507",
-    storageBucket: "kid-pro-edu-bf507.appspot.com",
-    messagingSenderId: "620120262028",
-    appId: "1:620120262028:web:59263d7c1f851e5d9d02a9",
-    measurementId: "G-YQ4LXEFRHX"
+    apiKey: "AIzaSyAeqBdAzYdMFQuBM0tlcrnfkjMV2ySZ-oo",
+    authDomain: "kidproedu-d505c.firebaseapp.com",
+    projectId: "kidproedu-d505c",
+    storageBucket: "kidproedu-d505c.appspot.com",
+    messagingSenderId: "288692354749",
+    appId: "1:288692354749:web:1b9218f8f2603f59edc1d4",
+    measurementId: "G-640J8XX8C8"
 };
 
 // Initialize Firebase

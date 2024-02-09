@@ -7,7 +7,17 @@
 <script>
 import { useAuthStore } from "../../stores/Auth";
 import { useSystemStore } from "../../stores/System";
-
+import {db} from '../../common/firebase'
+import { onSnapshot,
+  collection,
+  doc,
+  deleteDoc,
+  setDoc,
+  addDoc,
+  orderBy,
+  query,
+  Timestamp,} from 'firebase/firestore'
+  import swal from '../../common/swal'
 export default {
   setup() {
     const authStore = useAuthStore();
@@ -15,9 +25,14 @@ export default {
     return { authStore, systemStore };
   },
   data() {
-    return {};
+    return {
+      clientBoxChats: [],
+      messages: [],
+      messageText: ''
+    };
   },
   created() {},
+  mounted() {},
   methods: {},
 };
 </script>

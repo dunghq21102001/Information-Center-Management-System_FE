@@ -31,6 +31,7 @@
               v-model="userName"
               class="i-c"
               @keydown.enter="login"
+              ref="username"
             />
           </div>
 
@@ -127,12 +128,19 @@ export default {
       })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.$router.push({ name: "dashboard" });
           swal.success("Login successfully");
           this.authStore.setAuth(res.data);
           localStorage.setItem("token", res.data?.token);
           const userData = JSON.stringify(res.data);
           localStorage.setItem("userData", userData);
+          if (
+            res.data?.roleName == "Admin" ||
+            res.data?.roleName == "Manager"
+          ) {
+            this.$router.push({ name: "dashboard" });
+          } else {
+            this.$router.push({ name: "profile" });
+          }
         })
         .catch((err) => {
           swal.error(err.response?.data);
@@ -140,8 +148,10 @@ export default {
         });
     },
   },
+  mounted() {
+    this.$refs.username.focus();
+  },
   created() {
-    console.log(this.authStore.getAuth);
     if (this.authStore.getAuth != null) {
       if (this.authStore.getAuth?.roleName == "Admin")
         this.$router.push({ name: "dashboard" });

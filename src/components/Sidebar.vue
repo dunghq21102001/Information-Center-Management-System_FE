@@ -8,6 +8,10 @@
       <img src="../assets/images/logo.png" alt="logo" />
     </div>
     <div
+      v-if="
+        authStore.getAuth?.roleName == 'Admin' ||
+        authStore.getAuth?.roleName == 'Manager'
+      "
       :class="`tab-item ${route.name == 'dashboard' ? 'tab-active' : ''} ${
         systemStore.getExpandSideBar
           ? 'px-2 py-1 hover:pl-4 rounded-lg w-full'
@@ -29,12 +33,9 @@
     <div class="scroll-box mt-5">
       <ul class="w-full">
         <li
-          :class="`tab-item my-2 ${
-            systemStore.getExpandSideBar
-              ? 'px-2 py-1 rounded-lg w-full'
-              : 'rounded-none w-[120%]'
-          }`"
           v-for="item in listMenu"
+          class="tab-item my-2 px-2 py-1 rounded-lg w-full"
+          :class="item.isHidden ? 'hidden' : 'block'"
         >
           <div
             v-if="item.isHidden == false"
@@ -46,7 +47,7 @@
             } relative duration-300 w-full cursor-pointer flex`"
           >
             <v-icon :name="item.icon" scale="1.5" class="mr-5" />
-            <span>
+            <span class="text-[14px] lg:text-[16px]">
               {{ item.name }}
             </span>
             <v-icon
@@ -61,7 +62,7 @@
             <ul v-show="item.isShow" class="w-full">
               <li
                 v-for="child in item.subTab"
-                :class="`pl-12 my-1 ${
+                :class="`pl-12 my-1 text-[16px] ${
                   isSubRouteActive(item) == child.url ? 'tab-active' : ''
                 } cursor-pointer hover:pl-14 duration-200`"
                 @click="goToRoute(child.url)"
@@ -84,7 +85,7 @@ import { useRoute } from "vue-router";
 export default {
   setup() {
     const systemStore = useSystemStore();
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     const route = useRoute();
     return { systemStore, route, authStore };
   },
@@ -98,9 +99,15 @@ export default {
     "systemStore.getExpandSideBar": function (newData, oldData) {
       if (newData == false) this.resetMenuData();
     },
+    "authStore.getAuth": function (newData, oldData) {
+      this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName);
+    },
     $route(to, from) {
       this.checkToActiveParentTab(this.route.name);
     },
+  },
+  mounted() {
+    this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName);
   },
   methods: {
     goToRoute(url) {
@@ -138,9 +145,7 @@ export default {
     },
   },
 
-  created() {
-    this.listMenu = menu.sidebarMenu(this.authStore.getAuth?.roleName)
-  },
+  created() {},
 };
 </script>
 <style scoped lang="css">

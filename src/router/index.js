@@ -28,9 +28,17 @@ import UserAttendance from '../views/Attendance/UserAttendance.vue'
 import MyCalendar from '../views/Calendar/MyCalendar.vue'
 import UserCalendar from '../views/Calendar/UserCalendar.vue'
 
+// training program
+import TrainingProgram from '../views/TrainingProgram/TrainingProgram.vue'
+import CreateTP from '../views/TrainingProgram/Add.vue'
+
 // courses
 import CreateCourse from '../views/Courses/Add.vue'
 import Courses from '../views/Courses/Course.vue'
+
+// lessons
+import Lessons from '../views/Lessons/Lessons.vue'
+import CreateLesson from '../views/Lessons/Add.vue'
 
 // locations
 import Locations from '../views/Locations/Locations.vue'
@@ -55,6 +63,7 @@ const router = createRouter({
       component: Dashboard,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
       }
     },
     {
@@ -86,6 +95,7 @@ const router = createRouter({
       component: Users,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
       }
     },
     {
@@ -94,6 +104,7 @@ const router = createRouter({
       component: CreateUser,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
       }
     },
     {
@@ -102,6 +113,7 @@ const router = createRouter({
       component: UpdateUser,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
       }
     },
     {
@@ -110,6 +122,7 @@ const router = createRouter({
       component: Contract,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
       }
     },
     {
@@ -118,6 +131,7 @@ const router = createRouter({
       component: TodayAttendance,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
     {
@@ -126,6 +140,7 @@ const router = createRouter({
       component: UserAttendance,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
     {
@@ -134,6 +149,7 @@ const router = createRouter({
       component: MyCalendar,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
     {
@@ -142,6 +158,25 @@ const router = createRouter({
       component: UserCalendar,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
+      }
+    },
+    {
+      path: '/training-program',
+      name: 'training-program',
+      component: TrainingProgram,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      }
+    },
+    {
+      path: '/training-program-create',
+      name: 'training-program-create',
+      component: CreateTP,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin']
       }
     },
     {
@@ -150,6 +185,7 @@ const router = createRouter({
       component: Courses,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
       }
     },
     {
@@ -158,6 +194,27 @@ const router = createRouter({
       component: CreateCourse,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
+
+      }
+    },
+    {
+      path: '/lessons',
+      name: 'lessons',
+      component: Lessons,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      }
+    },
+    {
+      path: '/lesson-create',
+      name: 'lesson-create',
+      component: CreateLesson,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin']
+
       }
     },
     {
@@ -166,6 +223,7 @@ const router = createRouter({
       component: Locations,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
       }
     },
     {
@@ -174,6 +232,7 @@ const router = createRouter({
       component: CreateLocation,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
       }
     },
     {
@@ -182,6 +241,7 @@ const router = createRouter({
       component: Blogs,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
       }
     },
     {
@@ -190,6 +250,7 @@ const router = createRouter({
       component: Chat,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
     {
@@ -198,6 +259,8 @@ const router = createRouter({
       component: AnonymousChat,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
+
       }
     },
     {
@@ -206,6 +269,8 @@ const router = createRouter({
       component: Reports,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
+
       }
     },
     {
@@ -222,6 +287,7 @@ const router = createRouter({
       component: Settings,
       meta: {
         middleware: checkAuth,
+        requiredRole: ['Admin']
       }
     },
     {

@@ -9,8 +9,8 @@ export default class menu {
             },
             {
                 id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
-                    { name: 'Contract', url: 'contract' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
+                    { name: 'Contracts', url: 'contract' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Parent']
             },
             // {
             //     id: 3, name: 'Payroll', icon: 'la-money-check-alt-solid', subTab: [
@@ -20,7 +20,7 @@ export default class menu {
             {
                 id: 3, name: 'Chat', icon: 'bi-chat-dots-fill', subTab: [
                     { name: 'Chat', url: 'chat' },
-                    { name: 'Anonymous chat', url: 'anonymous-chat' },
+                    // { name: 'Anonymous chat', url: 'anonymous-chat' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
             {
@@ -37,9 +37,21 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
             {
+                id: 71, name: 'Training Program', icon: 'gi-bookshelf', subTab: [
+                    { name: 'Create TP', url: 'training-program-create' },
+                    { name: 'Training Program', url: 'training-program' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            },
+            {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
                     { name: 'Create Course', url: 'course-create' },
                     { name: 'Courses', url: 'courses' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            },
+            {
+                id: 72, name: 'Lessons', icon: 'md-playlesson-round', subTab: [
+                    { name: 'Create Lesson', url: 'lesson-create' },
+                    { name: 'Lessons', url: 'lessons' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
@@ -77,8 +89,8 @@ export default class menu {
         return [
             { name: 'General information', index: 1 },
             { name: 'Security', index: 2 },
-            { name: 'Courses', index: 3 },
-            { name: 'Children', index: 4 },
+            { name: 'Children', index: 3 },
+            { name: 'Installment', index: 4 },
             { name: 'Requests', index: 5 },
             { name: 'Contracts', index: 6 },
             { name: 'Schedules', index: 7 },

@@ -15,12 +15,12 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import CanvasJSChart from '@canvasjs/vue-charts';
 import { OhVueIcon, addIcons } from "oh-vue-icons";
-import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill } from "oh-vue-icons/icons"
+import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound } from "oh-vue-icons/icons"
 
 const app = createApp(App)
 
 
-addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill )
+addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound )
 window.axios = axios
 window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
 
