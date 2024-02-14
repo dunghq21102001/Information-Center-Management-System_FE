@@ -19,6 +19,7 @@
     "vue-cal": "^4.8.1",
     "vue-chartjs": "^5.2.0",
     "vue-click-outside-element": "^3.1.2",
+    "vue-json-excel3": "^1.0.19",
     "vue-router": "^4.2.5",
     "vue-sweetalert2": "^5.0.5",
     "vue3-easy-data-table": "^1.5.47"

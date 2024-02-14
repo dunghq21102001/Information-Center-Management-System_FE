@@ -7,6 +7,12 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
+        is-add="user-create"
+        excel="user-data"
+        csv="user-data"
+        :reload="true"
+        @reload-action="reloadList"
+        @update-action="updateUser"
       />
     </div>
   </div>
@@ -41,6 +47,12 @@ export default {
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
         });
+    },
+    updateUser(data) {
+      console.log(data);
+    },
+    reloadList(param) {
+      this.fetchUsers();
     },
   },
   created() {

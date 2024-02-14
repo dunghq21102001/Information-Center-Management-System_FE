@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pb-10">
+  <div class="w-full">
     <FormSchema
       :schema="courseSchema"
       btn-name="Add"

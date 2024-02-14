@@ -2,8 +2,8 @@
   <div class="w-full grid grid-cols-12 gap-3">
     <!-- 1 -->
     <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
-      <div class="flex flex-col items-center text-[18px]">
-        <span>914,001</span>
+      <div class="flex flex-col items-start xl:items-center text-[18px]">
+        <span>521</span>
         <span>Users</span>
       </div>
       <v-icon
@@ -14,7 +14,7 @@
     </div>
     <!-- 2 -->
     <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
-      <div class="flex flex-col items-center text-[18px]">
+      <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>340.201.000 VND</span>
         <span>Revenue</span>
       </div>
@@ -26,9 +26,9 @@
     </div>
     <!-- 3 -->
     <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
-      <div class="flex flex-col items-center text-[18px]">
-        <span>105.001.000 VND</span>
-        <span>Salary Paid</span>
+      <div class="flex flex-col items-start xl:items-center text-[18px]">
+        <span>401</span>
+        <span>Graduate Children</span>
       </div>
       <v-icon
         name="gi-pay-money"
@@ -38,7 +38,7 @@
     </div>
     <!-- 4 -->
     <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
-      <div class="flex flex-col items-center text-[18px]">
+      <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>241</span>
         <span>Courses</span>
       </div>

@@ -61,13 +61,20 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
-                id: 9, name: 'Reports', icon: 'hi-solid-document-report', subTab: [
-                    { name: 'Reports', url: 'reports' },
+                id: 10, name: 'Blogs', icon: 'hi-newspaper', subTab: [
+                    { name: 'Create Blog', url: 'blog-create' },
+                    { name: 'Blogs', url: 'blogs' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             {
-                id: 10, name: 'Blogs', icon: 'hi-newspaper', subTab: [
-                    { name: 'Blogs', url: 'blogs' },
+                id: 9, name: 'Equipments', icon: 'px-devices', subTab: [
+                    { name: 'Create Equipment', url: 'equipment-create' },
+                    { name: 'Equipments', url: 'equipments' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
+            },
+            {
+                id: 9, name: 'Reports', icon: 'hi-solid-document-report', subTab: [
+                    { name: 'Reports', url: 'reports' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             {

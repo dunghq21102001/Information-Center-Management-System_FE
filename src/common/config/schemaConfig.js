@@ -2,6 +2,7 @@ export default class schemaConfig {
     static userSchema(genderData = [], roleData = []) {
         return [
             { title: 'Full name', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Full name test', field: 'fullName', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'User name', field: 'userName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Gender', field: 'genderType', value: '', type: 'radio', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: genderData },
@@ -18,6 +19,21 @@ export default class schemaConfig {
             { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Price', field: 'price', value: '0', type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Image', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+        ]
+    }
+
+    static categoryEquipmentSchema() {
+        return [
+            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+        ]
+    }
+
+    static equipmentSchema() {
+        return [
+            { title: 'Code', field: 'code', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 

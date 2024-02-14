@@ -1,12 +1,12 @@
 <template>
-  <div class="w-full mt-4">
-    <div class="w-[95%] mx-auto grid grid-cols-12 gap-3">
+  <div class="w-full pt-5 min-h-[75vh]">
+    <div class="w-[90%] mx-auto grid grid-cols-12 gap-3">
       <div
         v-for="item in schemaProp"
         :key="item.title"
         :class="`col-span-12 ${
           item.w == 1 ? 'md:col-span-6' : 'md:col-span-12'
-        }`"
+        } ${item.title == 'Id' ? 'hidden' : ''}`"
       >
         <label>{{ item.title }}</label>
         <input
@@ -14,6 +14,15 @@
           @focus="item.focus = true"
           @blur="item.focus = false"
           :type="item.type"
+          :class="{ 'on-focus': item.focus }"
+          v-model="item.value"
+          class="input-cus"
+        />
+        <input
+          v-else-if="item.type === 'date'"
+          @focus="item.focus = true"
+          @blur="item.focus = false"
+          type="datetime-local"
           :class="{ 'on-focus': item.focus }"
           v-model="item.value"
           class="input-cus"
@@ -29,7 +38,10 @@
           class="input-cus"
         ></textarea>
         <div class="w-full" v-else-if="item.type === 'select'">
-          <select v-model="item.value" class="w-full px-3 py-2 mt-2">
+          <select
+            v-model="item.value"
+            class="w-full px-3 py-2 mt-[5px] select-c"
+          >
             <option v-for="i in item.listData" :value="i?.id">
               {{ i?.name }}
             </option>
@@ -100,7 +112,7 @@
         }}</small>
       </div>
     </div>
-    <div class="w-[95%] mx-auto flex items-center justify-end">
+    <div class="w-[90%] mx-auto flex items-center justify-end">
       <!-- <button class="btn-cancel px-4 py-1 mr-3">Cancel</button> -->
       <button class="btn-primary px-4 py-1" @click="submitForm">
         {{ btnProp }}
@@ -110,21 +122,36 @@
 </template>
 
 <script>
+import { ref, watch } from "vue";
 export default {
+  setup(props) {
+    const schemaProp = ref(props.schema);
+
+    watch(
+      () => props.schema,
+      (newValue) => {
+        schemaProp.value = newValue;
+      }
+    );
+
+    return {
+      schemaProp,
+    };
+  },
   props: {
     schema: Array,
     btnName: String,
   },
   data() {
     return {
-      schemaProp: this.schema,
+      // schemaProp: this.schema,
       btnProp: this.btnName,
       isValid: true,
     };
   },
   methods: {
     submitForm() {
-      this.validateForm()
+      this.validateForm();
       if (this.isValid) {
         const formDataObject = this.convertArrayToObject(this.schemaProp);
         this.$emit("form-submitted", formDataObject);
@@ -200,5 +227,11 @@ input[type="radio"] {
   -ms-transform: scale(1.5); /* IE 9 */
   -webkit-transform: scale(1.5); /* Chrome, Safari, Opera */
   transform: scale(1.5);
+}
+
+.select-c {
+  border-bottom: 2px solid rgb(212, 212, 212);
+  outline: none;
+  border-radius: 1px;
 }
 </style>

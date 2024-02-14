@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full pb-10"></div>
+    <div class="w-full"></div>
   </template>
   <script>
   export default {

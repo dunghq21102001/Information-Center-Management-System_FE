@@ -2,7 +2,7 @@
   <div class="w-full relative">
     <img
       src="../assets/images/bg-login.png"
-      class="h-screen right-0 top-0 z-10 hidden md:block"
+      class="h-screen right-0 top-0 z-10 hidden md:block w-screen"
       alt=""
     />
     <div class="w-full md:w-[80%] lg:w-[60%] z-20 absolute top-0 left-0">

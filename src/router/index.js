@@ -8,6 +8,7 @@ import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import Welcome from '../views/Welcome.vue'
 import checkAuth from '../middleware/auth'
+import PaymentResult from '../views/Payment/PaymentResult.vue'
 
 // users
 import Users from '../views/Users/Users.vue'
@@ -44,8 +45,13 @@ import CreateLesson from '../views/Lessons/Add.vue'
 import Locations from '../views/Locations/Locations.vue'
 import CreateLocation from '../views/Locations/Add.vue'
 
+// equipments
+import Equipments from '../views/Equipments/Equipments.vue'
+import CreateEquipment from '../views/Equipments/Add.vue'
+
 // blogs
 import Blogs from '../views/Blogs/Blogs.vue'
+import CreateBlog from '../views/Blogs/Add.vue'
 
 // chat
 import Chat from '../views/Chat/Chat.vue'
@@ -245,6 +251,33 @@ const router = createRouter({
       }
     },
     {
+      path: '/blog-create',
+      name: 'blog-create',
+      component: CreateBlog,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin']
+      }
+    },
+    {
+      path: '/equipments',
+      name: 'equipments',
+      component: Equipments,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
+      path: '/equipment-create',
+      name: 'equipment-create',
+      component: CreateEquipment,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
       path: '/chat',
       name: 'chat',
       component: Chat,
@@ -289,6 +322,14 @@ const router = createRouter({
         middleware: checkAuth,
         requiredRole: ['Admin']
       }
+    },
+    {
+      path: '/payment-result',
+      name: 'payment-result',
+      component: PaymentResult,
+      meta: {
+        // middleware: checkAuth,
+      },
     },
     {
       path: '/welcome',

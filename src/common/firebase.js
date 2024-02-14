@@ -19,5 +19,9 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 import { getFirestore } from 'firebase/firestore'
+import { getStorage } from 'firebase/storage'
+const storage = getStorage(app)
 
-export const db = getFirestore(app)
+const db = getFirestore(app)
+
+export { storage, db }

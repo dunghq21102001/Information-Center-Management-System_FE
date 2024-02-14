@@ -10,6 +10,7 @@
         :is-expand="true"
         :is-multi-select="true"
         :is-buy="true"
+        is-add="training-program-create"
         @show-form="checkShowForm"
       />
     </div>

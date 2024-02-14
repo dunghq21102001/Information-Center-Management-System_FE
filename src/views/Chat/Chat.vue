@@ -604,10 +604,8 @@ export default {
         )
       );
 
-      // Wait for all promises to resolve before proceeding
       Promise.all(promises)
         .then(() => {
-          // Code to execute after all Firebase operations have completed
           this.messageText = "";
           this.$nextTick(() => {
             const chatBoxContainer = this.$refs.chatBoxContainer;

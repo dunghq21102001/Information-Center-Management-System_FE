@@ -6,10 +6,20 @@
     </Transition>
     <div
       :class="
-        curRoute == 'welcome' ? 'w-full' : 'w-full lg:w-[80%] float-right'
+        curRoute == 'welcome' || curRoute == 'login'
+          ? 'w-full'
+          : 'w-full lg:w-[80%] float-right pt-24 bg-[#f9f9f9]'
       "
     >
-      <RouterView />
+      <div
+        :class="
+          curRoute == 'welcome' || curRoute == 'login'
+            ? 'w-full'
+            : 'p-5 w-[90%] mx-auto bg-white rounded-lg'
+        "
+      >
+        <RouterView />
+      </div>
     </div>
     <Loading v-show="systemStore.getLoading" />
     <div

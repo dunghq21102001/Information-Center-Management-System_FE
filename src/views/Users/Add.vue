@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full pb-10">
+  <div class="w-full">
     <FormSchema
       v-if="rolesFetched"
       :schema="userSchema"
@@ -16,6 +16,8 @@ import { useSystemStore } from "../../stores/System";
 import API_USER from "../../API/API_USER";
 import swal from "../../common/swal";
 import { useAuthStore } from "../../stores/Auth";
+import { storage } from "../../common/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default {
   props: {},
   setup() {
@@ -35,17 +37,45 @@ export default {
     this.fetchRoles();
   },
   methods: {
-    handleAddUser(formData) {
+    async handleAddUser(data) {
       this.systemStore.setChangeLoading(true);
-      formData["PasswordHash"] = "string";
-      API_USER.postUser(formData)
-        .then((res) => {
-          this.systemStore.setChangeLoading(false);
-          swal.success("New user created successfully!");
-        })
-        .catch((err) => {
-          this.systemStore.setChangeLoading(false);
-        });
+      data["PasswordHash"] = "string";
+
+      try {
+        const currentTime = new Date();
+        const uniqueFileName = "image_" + currentTime.getTime();
+        const storageRef = ref(
+          storage,
+          "avatars/" + data?.userName + uniqueFileName
+        );
+
+        // Chuyển đổi URL blob thành Blob
+        const response = await fetch(data.avatar);
+        const blob = await response.blob();
+
+        // Tải lên ảnh avatar lên Firestore
+        uploadBytes(storageRef, blob)
+          .then((snapshot) => {
+            return getDownloadURL(snapshot.ref);
+          })
+          .then((downloadURL) => {
+            data.avatar = downloadURL;
+            API_USER.postUser(data)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success("New user created successfully!");
+              })
+              .catch((err) => {
+                this.systemStore.setChangeLoading(false);
+              });
+          })
+          .catch((error) => {
+            console.log("Lỗi khi tải ảnh lên:", error);
+          });
+      } catch (error) {
+        this.systemStore.setChangeLoading(false);
+        console.error("Error uploading avatar:", error);
+      }
     },
     fetchRoles() {
       if (this.authStore.getAuth?.roleName == "Staff") {
@@ -60,7 +90,7 @@ export default {
           ]
         );
       } else {
-      this.systemStore.setChangeLoading(true);
+        this.systemStore.setChangeLoading(true);
         API_ROLE.getRoles()
           .then((res) => {
             this.systemStore.setChangeLoading(false);

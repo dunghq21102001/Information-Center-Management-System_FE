@@ -4,10 +4,11 @@
       <NormalTable
         :data="data"
         :header="header"
-        is-show-search="false"
+        :is-show-search="true"
         :is-update="true"
         :is-delete="true"
         :is-expand="true"
+        is-add="course-create"
       />
     </div>
   </div>

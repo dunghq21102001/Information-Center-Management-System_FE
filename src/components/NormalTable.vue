@@ -1,13 +1,16 @@
 <template>
   <div class="w-full my-5">
-    <div class="flex items-center justify-between w-full mb-4">
-      <div v-show="isShowSearch" class="w-full flex items-center">
+    <div class="flex items-center justify-between w-full mb-4 flex-wrap">
+      <div
+        v-show="isShowSearch"
+        class="w-full lg:w-[500px] mt-3 flex items-center"
+      >
         <select
           class="bor-no-r px-2 h-[40px] outline-none"
           v-model="selectedField"
         >
           <option
-            v-for="item in headerProp"
+            v-for="item in searchList"
             :value="item.value"
             v-show="item?.text != 'Action'"
           >
@@ -17,18 +20,60 @@
         <input
           v-model="searchQuery"
           placeholder="search . . ."
-          class="w-[180px] md:w-[400px] bor-no-l px-3 outline-none h-[40px]"
+          class="w-full lg:w-[400px] bor-no-l px-3 outline-none h-[40px]"
           type="text"
         />
       </div>
-      <button
-        v-if="isBuyProp"
-        class="btn-primary w-[120px] h-[40px]"
-        :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
-        @click="showFormBuying"
-      >
-        Buy now
-      </button>
+      <div class="flex items-center">
+        <div
+          v-if="reloadProp"
+          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
+        >
+          <v-icon @click="reloadAction" name="co-reload" scale="2" />
+        </div>
+        <div
+          v-if="excelProp != ''"
+          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
+        >
+          <download-excel
+            :data="dataProp"
+            :fields="fieldsExport"
+            worksheet="Worksheet 1"
+            :name="`${excelProp}.xls`"
+          >
+            <v-icon name="vi-file-type-excel" scale="2" />
+          </download-excel>
+        </div>
+        <div
+          v-if="csvProp != ''"
+          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
+        >
+          <download-excel
+            :data="dataProp"
+            :fields="fieldsExport"
+            worksheet="Worksheet 1"
+            type="csv"
+            :name="`${csvProp}.csv`"
+          >
+            <v-icon name="la-file-csv-solid" scale="2" fill="#08774e" />
+          </download-excel>
+        </div>
+        <button
+          v-if="isBuyProp"
+          class="btn-primary w-[120px] h-[40px] mt-3 mr-3"
+          :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
+          @click="showFormBuying"
+        >
+          Buy now
+        </button>
+        <button
+          v-if="isAddProp != ''"
+          class="btn-primary w-[120px] h-[40px] mt-3"
+          @click="goToAddNew"
+        >
+          Add New
+        </button>
+      </div>
     </div>
     <div class="w-full flex items-center justify-center">
       <!-- v-model:items-selected="itemsSelected" không có multi select-->
@@ -45,12 +90,20 @@
       >
         <template #item-image="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
-            <img :src="item?.image" class="w-full object-fill" alt="user image" />
+            <img
+              :src="item?.image"
+              class="w-full object-fill"
+              alt="user image"
+            />
           </div>
         </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
-            <img :src="item?.avatar" class="w-full object-fill" alt="user image" />
+            <img
+              :src="item?.avatar"
+              class="w-full object-fill"
+              alt="user image"
+            />
           </div>
         </template>
         <template #item-price="item">
@@ -65,6 +118,26 @@
             </span>
           </div>
         </template>
+        <template #item-dateOfBirth="item">
+          <span class="block">
+            {{ convertDate(item?.dateOfBirth) }}
+          </span>
+        </template>
+        <template #item-genderType="item">
+          <div
+            class="px-2 rounded-md flex items-center justify-center"
+            :class="item?.genderType == 'Male' ? 'bg-blue-300' : 'bg-pink-300'"
+          >
+            <span class="block text-[20px] font-bold text-white">
+              {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+            </span>
+          </div>
+        </template>
+        <template #item-creationDate="item">
+          <span class="block">
+            {{ convertDate(item?.creationDate) }}
+          </span>
+        </template>
         <template #item-operation="item">
           <div class="operation-wrapper flex items-center">
             <!-- <button
@@ -78,14 +151,19 @@
             </button> -->
             <button title="Edit" v-if="isUpdateProp" class="mr-3">
               <v-icon
-                @click="actionEdit(item)"
+                @click="editAction(item)"
                 name="fa-regular-edit"
                 :scale="1.5"
                 fill="#2ae549"
               />
             </button>
             <button title="Delete" v-if="isDeleteProp">
-              <v-icon name="md-delete" :scale="1.5" fill="#e71c1c" />
+              <v-icon
+                @click="deleteAction(item)"
+                name="md-delete"
+                :scale="1.5"
+                fill="#e71c1c"
+              />
             </button>
           </div>
         </template>
@@ -106,12 +184,20 @@
       >
         <template #item-image="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
-            <img :src="item?.image" class="w-full object-fill" alt="user image" />
+            <img
+              :src="item?.image"
+              class="w-full object-fill"
+              alt="user image"
+            />
           </div>
         </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
-            <img :src="item?.avatar" class="w-full object-fill" alt="user image" />
+            <img
+              :src="item?.avatar"
+              class="w-full object-fill"
+              alt="user image"
+            />
           </div>
         </template>
         <template #item-price="item">
@@ -119,12 +205,27 @@
             {{ convertToVND(item?.price) }}
           </span>
         </template>
+        <template #item-genderType="item">
+          <div class="">
+            {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+          </div>
+        </template>
         <template #item-syllabus="item">
           <div class="">
             <span class="hover:underline text-blue-500 cursor-pointer">
               Syllabus
             </span>
           </div>
+        </template>
+        <template #item-creationDate="item">
+          <span class="block">
+            {{ convertDate(item?.creationDate) }}
+          </span>
+        </template>
+        <template #item-dateOfBirth="item">
+          <span class="block">
+            {{ convertDate(item?.dateOfBirth) }}
+          </span>
         </template>
         <template #expand="item" v-if="isExpandProp">
           <div class="w-full mx-auto">
@@ -158,25 +259,56 @@
           <div class="operation-wrapper flex items-center">
             <button title="Edit" v-if="isUpdateProp" class="mr-3">
               <v-icon
-                @click="actionEdit(item)"
+                @click="editAction(item)"
                 name="fa-regular-edit"
                 :scale="1.5"
                 fill="#2ae549"
               />
             </button>
             <button title="Delete" v-if="isDeleteProp">
-              <v-icon name="md-delete" :scale="1.5" fill="#e71c1c" />
+              <v-icon
+                @click="deleteAction(item)"
+                name="md-delete"
+                :scale="1.5"
+                fill="#e71c1c"
+              />
             </button>
           </div>
         </template>
       </EasyDataTable>
+    </div>
+
+    <!-- edit component -->
+    <div v-show="isShowEdit" @click.self="isShowEdit = false" class="bg-fog">
+      <div
+        class="bg-white relative rounded-lg w-[90%] md:w-[60%] lg:w-[50%] max-h-[90vh] overflow-y-scroll p-4"
+      >
+        <div
+          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-gray-50 hover:rounded-full"
+          @click="isShowEdit = false"
+        >
+          &#9747;
+        </div>
+        <FormSchema
+          v-show="selectedSchemaRow != null"
+          :schema="selectedSchemaRow"
+          btn-name="Update"
+          @form-submitted="handleUpdateSchema"
+        />
+      </div>
     </div>
   </div>
 </template>
 <script>
 import { ref, watch } from "vue";
 import func from "../common/func";
+import swal from "../common/swal";
+import FormSchema from "../components/FormSchema.vue";
+import API_ROLE from "../API/API_ROLE";
 export default {
+  components: {
+    FormSchema,
+  },
   props: {
     data: {
       type: Array,
@@ -204,11 +336,26 @@ export default {
       type: Boolean,
       default: false,
     },
+    reload: {
+      type: Boolean,
+      default: false,
+    },
+    isAdd: {
+      type: String,
+      default: "",
+    },
+    excel: {
+      type: String,
+      default: "",
+    },
+    csv: {
+      type: String,
+      default: "",
+    },
   },
   setup(props) {
     // Tạo biến reactive cho dataProp
     const dataProp = ref(props.data);
-
 
     // Watch sự thay đổi của prop 'data' và cập nhật dataProp
     watch(
@@ -231,11 +378,19 @@ export default {
       isExpandProp: this.isExpand,
       isBuyProp: this.isBuy,
       isMultiSelectProp: this.isMultiSelect,
+      isAddProp: this.isAdd,
+      excelProp: this.excel,
+      csvProp: this.csv,
+      reloadProp: this.reload,
 
+      fieldsExport: {},
+      dataExport: [],
       searchQuery: "",
       selectedField: "",
+      searchList: [],
       isShowEdit: false,
-      itemsSelected: ["niwfiwfnfn"],
+      selectedSchemaRow: null,
+      itemsSelected: ["a"],
       test: [
         {
           code: "AI40",
@@ -265,15 +420,32 @@ export default {
     };
   },
   created() {
-    this.selectedField = this.headerProp[0]?.value || "";
+    // this.selectedField = this.headerProp[0]?.value || "";
+
+    let tmpSearchList = [];
+    this.headerProp.forEach((item) => {
+      if (
+        item?.text != "id" &&
+        item?.text != "Syllabus" &&
+        item?.text != "Avatar" &&
+        item?.text != "Image"
+      ) {
+        tmpSearchList.push(item);
+        this.fieldsExport[item?.value] = item?.value;
+      }
+    });
+    this.searchList = tmpSearchList;
+    this.selectedField = tmpSearchList[0]?.value || "";
   },
   methods: {
-    actionEdit(id) {
-      console.log(id);
-      this.$router.push({ name: "user-update", params: { id: id.number } });
-    },
     convertToVND(price) {
       return func.convertVND(price);
+    },
+    convertDate(date) {
+      return func.convertDate(date);
+    },
+    handleClickRow(item) {
+      console.log(item);
     },
     goToVNPay() {
       window.open(
@@ -281,8 +453,84 @@ export default {
         "_blank"
       );
     },
+    convertObjectToArray(obj) {
+      return Object.keys(obj)
+        .filter(
+          (key) =>
+            key !== "key" &&
+            key !== "index" &&
+            key !== "status" &&
+            key !== "createdBy" &&
+            key !== "creationDate" &&
+            key !== "deleteBy" &&
+            key !== "deletionDate" &&
+            key !== "modificationBy" &&
+            key !== "modificationDate" &&
+            key !== "equipments" &&
+            key !== "isDeleted"
+        )
+        .map((key) => ({ field: key, value: obj[key] }));
+    },
     showFormBuying() {
       this.$emit("showForm", true);
+    },
+    goToAddNew() {
+      this.$router.push({ name: this.isAddProp, params: {} });
+    },
+    separateUpperCase(text) {
+      // Kiểm tra xem text có chứa chữ cái hoa không
+      if (/[A-Z]/.test(text)) {
+        // Nếu có, thực hiện tách các chữ hoa ra bằng khoảng trắng
+        return text.replace(/([A-Z])/g, " $1").trim();
+      } else {
+        // Nếu không, viết hoa chữ cái đầu tiên
+        return text.charAt(0).toUpperCase() + text.slice(1);
+      }
+    },
+    editAction(item) {
+      this.isShowEdit = true;
+
+      const tmpSchema = this.convertObjectToArray(item);
+      const finalSchema = tmpSchema.map((item) => {
+        item["title"] = this.separateUpperCase(item.field);
+        item["focus"] = false;
+        item["error"] = false;
+        item["errMes"] = "This data field cannot be blank!";
+        item["w"] = 2;
+
+        if (item.field == "description" || item.field == "address")
+          item["type"] = "textarea";
+        else if (item.field == "avatar" || item.field == "image")
+          item["type"] = "image";
+        // else if (item.field == "roleId") {
+        //   item["type"] == "select";
+        //   API_ROLE.getRoles()
+        //     .then((res) => {
+        //       return (item["listData"] = res.data);
+        //     })
+        //     .catch((err) => {});
+        // }
+        else if (item.field == "genderType") {
+          item["type"] = "radio";
+          item["listData"] = ["Male", "Female"];
+        } else if (item.field == "dateOfBirth") {
+          item["type"] = "date";
+        } else item["type"] = "text";
+
+        return item;
+      });
+
+      this.selectedSchemaRow = finalSchema;
+      // this.$router.push({ name: "user-update", params: { id: id.number } });
+    },
+    deleteAction(item) {
+      this.$emit("deleteAction", item);
+    },
+    reloadAction() {
+      this.$emit("reloadAction", true);
+    },
+    handleUpdateSchema(data) {
+      this.$emit("updateAction", data);
     },
   },
 };
@@ -319,7 +567,7 @@ export default {
     --easy-table-footer-padding: 0px 10px;
     --easy-table-footer-height: 50px; */
 
-  --easy-table-rows-per-page-selector-width: 70px;
+  /* --easy-table-rows-per-page-selector-width: 70px; */
   /* --easy-table-rows-per-page-selector-option-padding: 10px; */
   /* --easy-table-rows-per-page-selector-z-index: 1; */
 
@@ -371,5 +619,18 @@ th {
 th,
 td {
   min-width: 30px;
+}
+
+.bg-fog {
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 60;
 }
 </style>

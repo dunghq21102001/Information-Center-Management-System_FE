@@ -4,7 +4,7 @@
       v-if="curRoute != 'welcome'"
       :class="`${
         systemStore.getExpandSideBar ? 'w-full ld:w-[80%]' : 'w-full'
-      } sticky top-0 left-0 right-0 duration-500 float-right h-[65px] z-40 border-cus flex justify-between items-center px-5`"
+      } fixed bg-white top-0 left-0 right-0 duration-500 float-right h-[65px] z-40 border-cus flex justify-between items-center px-5`"
     >
       <div>
         <div class="lg:hidden">
