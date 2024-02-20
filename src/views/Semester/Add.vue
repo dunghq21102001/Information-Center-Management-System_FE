@@ -3,15 +3,15 @@
     <FormSchema
       :schema="schema"
       btn-name="Add"
-      page-title="Add Location"
-      @form-submitted="handleAddLocation"
+      @form-submitted="handleAddSemester"
+      page-title="Add Semester"
     />
   </div>
 </template>
 <script>
 import { useSystemStore } from "../../stores/System";
 import schemaConfig from "../../common/config/schemaConfig";
-import API_LOCATION from "../../API/API_LOCATION";
+import API_SEMESTER from "../../API/API_SEMESTER";
 import swal from "../../common/swal";
 import FormSchema from "../../components/FormSchema.vue";
 export default {
@@ -24,17 +24,17 @@ export default {
   },
   data() {
     return {
-      schema: schemaConfig.locationSchema(),
+      schema: schemaConfig.semesterSchema(),
     };
   },
   methods: {
-    handleAddLocation(data) {
+    handleAddSemester(data) {
       this.systemStore.setChangeLoading(true);
-      API_LOCATION.postLocation(data)
+      API_SEMESTER.postSemester(data)
         .then((res) => {
           swal.success(res.data);
           this.systemStore.setChangeLoading(false);
-          this.$router.push({ name: "locations" });
+          this.$router.push({ name: "semesters" });
         })
         .catch((err) => {
           swal.error(err.response?.data);

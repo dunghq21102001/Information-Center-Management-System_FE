@@ -1,7 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Locations</span>
-
+      <span class="text-[28px] font-bold block text-gray-700">Semesters</span>
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="data"
@@ -9,13 +8,13 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
-        is-add="location-create"
-        excel="location-data"
-        csv="location-data"
+        is-add="semester-create"
+        excel="semester-data"
+        csv="semester-data"
         :reload="true"
         @reload-action="reloadList"
-        @update-action="updateLocation"
-        @delete-action="deleteLocation"
+        @update-action="updateSemester"
+        @delete-action="deleteSemester"
       />
     </div>
   </div>
@@ -24,7 +23,7 @@
 import tableConfig from "../../common/config/tableConfig";
 import NormalTable from "../../components/NormalTable.vue";
 import { useSystemStore } from "../../stores/System";
-import API_LOCATION from "../../API/API_LOCATION";
+import API_SEMESTER from "../../API/API_SEMESTER";
 import swal from "../../common/swal";
 export default {
   components: {
@@ -37,7 +36,7 @@ export default {
   data() {
     return {
       data: [],
-      header: tableConfig.locationTable(),
+      header: tableConfig.semesterTable(),
     };
   },
   created() {
@@ -46,7 +45,7 @@ export default {
   methods: {
     fetchLocations() {
       this.systemStore.setChangeLoading(true);
-      API_LOCATION.getLocations()
+      API_SEMESTER.getSemesters()
         .then((res) => {
           this.data = res.data;
           this.systemStore.setChangeLoading(false);
@@ -55,29 +54,29 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
-    updateLocation(data) {
+    updateSemester(data) {
       this.systemStore.setChangeLoading(true);
-      API_LOCATION.putLocation(data)
+      API_SEMESTER.putSemester(data)
         .then((res) => {
           swal.success(res.data);
           this.systemStore.setChangeLoading(false);
-          this.fetchLocations()
+          this.fetchLocations();
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Update location failed! Please try again");
+          swal.error("Update semester failed! Please try again");
         });
     },
     reloadList() {
       this.fetchLocations();
     },
-    deleteLocation(item) {
+    deleteSemester(item) {
       swal
-        .confirm("Are you sure you want to delete this location?")
+        .confirm("Are you sure you want to delete this semester?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
-            API_LOCATION.deleteLocation(item?.id)
+            API_SEMESTER.deleteSemester(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
                 swal.success("Deleted successfully!");

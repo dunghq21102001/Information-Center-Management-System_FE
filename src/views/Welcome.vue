@@ -29,9 +29,11 @@ export default {
     CourseDetail,
     BlogDetail,
   },
+
   data() {
     return {
       coursesList: [],
+      blogsList: [],
       mostOutstandingCoursesList: [],
       tab: 0,
       courseId: "",
@@ -53,11 +55,11 @@ export default {
     },
     selectCourse(i) {
       this.tab = "course";
-      this.courseId = i.name
+      this.courseId = i.name;
     },
     selectBlog(i) {
       this.tab = "blog";
-      this.blogId = i.name;
+      this.blogId = i?.id;
     },
   },
 };

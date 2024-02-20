@@ -1,8 +1,8 @@
 <template>
-  <div class="w-full">
+  <div class="w-full h-[78vh] overflow-hidden">
     <div class="w-full flex items-start justify-between">
       <!-- left side -->
-      <div class="w-[30%] brr-cus">
+      <div class="w-[30%] brr-cus h-[77vh]">
         <div class="w-[90%] mx-auto flex items-center justify-between mt-5">
           <input
             type="text"
@@ -23,7 +23,7 @@
         </div>
 
         <div
-          class="w-[90%] mx-auto flex flex-col items-start py-3 h-[80vh] mt-3 overflow-y-scroll"
+          class="w-[90%] mx-auto flex flex-col h-[77vh] items-start py-3 mt-3 overflow-y-scroll"
         >
           <!-- list chat -->
           <div
@@ -61,7 +61,7 @@
       </div>
 
       <!-- right side -->
-      <div class="w-[70%] flex h-[90vh] flex-col items-start justify-between">
+      <div class="w-[70%] flex h-[77vh] flex-col items-start justify-between">
         <!-- p 1 -->
         <div class="w-full h-[10%] brb-cus flex items-center">
           <div class="w-[90%] mx-auto flex items-center">

@@ -1,6 +1,8 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto">
+      <span class="text-[28px] font-bold block text-gray-700">Equipments</span>
+
       <div
         class="w-full flex items-center mt-5 mx-auto justify-start text-[20px]"
       >

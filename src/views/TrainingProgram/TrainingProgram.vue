@@ -1,7 +1,23 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto">
+      <span class="text-[28px] font-bold block text-gray-700"
+        >Training Programs</span
+      >
+      <div
+        class="w-full flex items-center mt-5 mx-auto justify-start text-[20px]"
+      >
+        <span
+          @click="changeTab(t)"
+          class="block px-3 py-1 rounded-lg cursor-pointer mr-3"
+          v-for="t in tabs"
+          :class="currentTab == t ? 'bg-gray-100' : ''"
+        >
+          {{ t }}
+        </span>
+      </div>
       <NormalTable
+        v-if="currentTab == 'Training Programs'"
         :data="data"
         :header="header"
         :is-show-search="true"
@@ -9,9 +25,32 @@
         :is-delete="true"
         :is-expand="true"
         :is-multi-select="true"
+        excel="training-program-data"
+        csv="training-program-data"
+        :reload="true"
         :is-buy="true"
         is-add="training-program-create"
+        @reload-action="reloadList"
         @show-form="checkShowForm"
+        @update-action="updateTP"
+        @delete-action="deleteTP"
+        :tp-category-list="dataCate"
+      />
+      <NormalTable
+        v-else
+        :data="dataCate"
+        :header="headerCate"
+        :is-show-search="true"
+        excel="training-program-category-data"
+        csv="training-program-category-data"
+        :reload="true"
+        :is-update="true"
+        :is-delete="true"
+        :is-expand="true"
+        @reload-action="reloadList"
+        is-add="training-program-create"
+        @update-action="updateCate"
+        @delete-action="deleteCate"
       />
     </div>
 
@@ -65,57 +104,172 @@
   </div>
 </template>
 <script>
+import API_TP from "../../API/API_TP";
 import tableConfig from "../../common/config/tableConfig";
+import swal from "../../common/swal";
 import NormalTable from "../../components/NormalTable.vue";
+import { useSystemStore } from "../../stores/system";
+import { storage } from "../../common/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import func from "../../common/func";
 export default {
-  setup() {},
+  setup() {
+    const systemStore = useSystemStore();
+    return { systemStore };
+  },
   components: { NormalTable },
   data() {
     return {
       header: tableConfig.trainingProgramTable(),
+      headerCate: tableConfig.tpCategoryTable(),
       isShowForm: false,
-      data: [
-        {
-          trainingProgramCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-        },
-        {
-          trainingProgramCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-        },
-        {
-          trainingProgramCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-        },
-        {
-          trainingProgramCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-        },
-      ],
+      tabs: ["Training Programs", "Categories"],
+      currentTab: "Training Programs",
+      data: [],
+      dataCate: [],
     };
   },
-  created() {},
+  created() {
+    this.fetchTP();
+    this.fetchTPCate();
+  },
   methods: {
+    fetchTP() {
+      this.systemStore.setChangeLoading(true);
+      API_TP.getTrainingPrograms()
+        .then((res) => {
+          this.data = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    fetchTPCate() {
+      this.systemStore.setChangeLoading(true);
+      API_TP.getTrainingProgramCategories()
+        .then((res) => {
+          this.dataCate = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     checkShowForm(isShowForm) {
       this.isShowForm = isShowForm;
+    },
+    updateCate(data) {
+      this.systemStore.setChangeLoading(true);
+      API_TP.putTrainingProgramCategory(data)
+        .then((res) => {
+          swal.success(res.data);
+          this.systemStore.setChangeLoading(false);
+          this.fetchTPCate();
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error("Updated fail! Please try again");
+        });
+    },
+    async updateTP(data) {
+      if (func.isBlobURL(data?.image)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "tp/" + uniqueFileName);
+
+          // Chuyển đổi URL blob thành Blob
+          const response = await fetch(data.image);
+          const blob = await response.blob();
+
+          // Tải lên ảnh avatar lên Firestore
+          uploadBytes(storageRef, blob)
+            .then((snapshot) => {
+              return getDownloadURL(snapshot.ref);
+            })
+            .then((downloadURL) => {
+              data.image = downloadURL;
+              API_TP.putTrainingProgram(data)
+                .then((res) => {
+                  this.systemStore.setChangeLoading(false);
+                  swal.success(res.data);
+                  this.fetchTP();
+                })
+                .catch((err) => {
+                  this.systemStore.setChangeLoading(false);
+                });
+            })
+            .catch((error) => {
+              console.log("Lỗi khi tải ảnh lên:", error);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_TP.putTrainingProgram(data)
+          .then((res) => {
+            swal.success(res.data);
+            this.systemStore.setChangeLoading(false);
+            this.fetchTP();
+          })
+          .catch((err) => {
+            this.systemStore.setChangeLoading(false);
+            swal.error("Updated fail! Please try again");
+          });
+      }
+    },
+    deleteTP(item) {
+      swal
+        .confirm("Are you sure you want to delete this training program?")
+        .then((result) => {
+          if (result.value) {
+            this.systemStore.setChangeLoading(true);
+            API_TP.deleteTrainingProgram(item?.id)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success(res.data);
+                this.fetchTP();
+              })
+              .catch((err) => {
+                this.systemStore.setChangeLoading(false);
+                swal.error("Delete failed! Please try again", 2500);
+              });
+          }
+        });
+    },
+    deleteCate(item) {
+      swal
+        .confirm(
+          "Are you sure you want to delete this training program category?"
+        )
+        .then((result) => {
+          if (result.value) {
+            this.systemStore.setChangeLoading(true);
+            API_TP.deleteTrainingProgramCategory(item?.id)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success(res.data);
+                this.fetchTPCate();
+              })
+              .catch((err) => {
+                this.systemStore.setChangeLoading(false);
+                swal.error("Delete failed! Please try again", 2500);
+              });
+          }
+        });
+    },
+    changeTab(t) {
+      this.currentTab = t;
     },
     payment() {
       window.open(
         "https://sandbox.vnpayment.vn/paymentv2/Transaction/PaymentMethod.html?token=3349400e691e4b4c8dd0b514cc9aaaa9",
         "_blank"
       );
+    },
+    reloadList() {
+      this.fetchTP();
+      this.fetchTPCate();
     },
   },
 };

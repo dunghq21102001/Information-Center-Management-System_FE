@@ -15,10 +15,10 @@
         v-for="item in statistics"
         class="col-span-12 md:col-span-6 lg:col-span-3"
       >
-        <span class="block text-primary text-[44px] text-center md:text-left">{{
+        <span class="block text-primary text-[34px] text-center md:text-left">{{
           item.total
         }}</span>
-        <p class="text-gray-400 text-center md:text-left text-[22px]">
+        <p class="text-gray-400 text-center md:text-left text-[20px]">
           {{ item.des }}
         </p>
       </div>
@@ -55,7 +55,7 @@
     </div>
     <div class="w-full flex items-center justify-center mb-5">
       <div class="flex items-center flex-col">
-        <span class="text-[28px] text-primary">More than 300+ courses</span>
+        <span class="text-[24px] text-primary">More than 300+ courses</span>
         <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
           <span class="">See more</span>
         </button>
@@ -64,21 +64,21 @@
 
     <!-- 4 -->
     <div class="w-full my-5">
-      <span class="text-[54px] font-bold text-primary">Blogs</span>
-      <div class="flex flex-col items-start">
+      <span class="text-[44px] font-bold text-primary">Blogs</span>
+      <div class="flex flex-col items-start mt-4">
         <div v-for="blog in blogs" class="w-full flex items-center">
           <div
             class="w-[200px] h-[100px] md:w-[300px] md:h-[200px] overflow-hidden flex items-center justify-center mr-5"
           >
             <img
-              :src="blog.img"
+              :src="blog.image"
               class="w-full object-fill cursor-pointer"
               alt=""
             />
           </div>
           <div class="w-[150px] md:w-[800px] xl:w-[1000px]">
             <div
-              v-show="blog.isOutstanding == true"
+              v-show="blog?.isOutstanding == true"
               class="bg-primary px-3 py-1 rounded-lg w-[120px] md:w-[200px] text-center text-white"
             >
               <span class="text-[12px] md:text-[18px]">Outstanding Blog</span>
@@ -87,11 +87,11 @@
               @click="selectBlog(blog)"
               class="truncate-text hover:underline cursor-pointer w-full text-[18px] md:text-[24px] text-[#2c2b2b] font-bold"
             >
-              {{ blog.name }}
+              {{ blog.title }}
             </p>
           </div>
         </div>
-        <div class="w-full flex items-center justify-center">
+        <div v-if="blogs.length > 4" class="w-full flex items-center justify-center">
           <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
             <span class="">See more</span>
           </button>
@@ -100,14 +100,22 @@
     </div>
 
     <!-- 5 / chat -->
-    <div class="fixed right-5 bottom-5 rounded-full bg-blur flex items-center justify-center">
+    <!-- <div
+      class="fixed right-5 bottom-5 rounded-full bg-blur flex items-center justify-center"
+    >
       <v-icon name="bi-chat-dots-fill" />
-    </div>
+    </div> -->
   </div>
 </template>
 <script>
+import API_BLOG from "../../API/API_BLOG";
+import { useSystemStore } from "../../stores/system";
 export default {
   components: {},
+  setup() {
+    const systemStore = useSystemStore();
+    return { systemStore };
+  },
   data() {
     return {
       statistics: [
@@ -140,39 +148,24 @@ export default {
           img: "https://nearlearn.com/public/images/ai-training-in-bangalore.jpeg",
         },
       ],
-      blogs: [
-        {
-          name: "Học viên đạt giải nhất cuộc thi quốc tế về thuật toán, dẫn đầu về phát triển năng lực dành cho trẻ em",
-          img: "https://www.reliablesoft.net/wp-content/uploads/2019/12/free-images-for-blogs.jpg",
-          isOutstanding: false,
-        },
-        {
-          name: "·  A Universidade de Sydney está no topo em Impacto Social, enquanto a Australian National University vem em segundo lugar globalmente",
-          img: "https://invoice.ng/blog/wp-content/uploads/2018/04/how-to-start-a-blog-in-nigeria.jpg",
-          isOutstanding: true,
-        },
-        {
-          name: "QS World University Rankings: Sustentabilidade 2024 QS Quacquarelli Symonds Logo",
-          img: "https://www.redacteur.com/blog/wp-content/uploads/sites/6/2019/08/redacteur-blog-img-contenu-page-accueil.jpg",
-          isOutstanding: false,
-        },
-        {
-          name: "Học viên đạt giải nhất cuộc thi quốc tế về thuật toán, dẫn đầu về phát triển năng lực dành cho trẻ em",
-          img: "https://www.reliablesoft.net/wp-content/uploads/2019/12/free-images-for-blogs.jpg",
-          isOutstanding: false,
-        },
-        {
-          name: "QS Reveals the World's Best Cities for Students QS Logo",
-          img: "https://cloud.z.com/vn/wp-content/uploads/2023/11/how-to-write-a-blog-post.jpeg",
-          isOutstanding: true,
-        },
-      ],
+      blogs: [],
     };
   },
-  created() {},
+  created() {
+    this.fetchBlog();
+  },
   methods: {
     selectBlog(item) {
       this.$emit("selectBlog", item);
+    },
+    fetchBlog() {
+      this.systemStore.setChangeLoading(true);
+      API_BLOG.getBlogs()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.blogs = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
   },
 };

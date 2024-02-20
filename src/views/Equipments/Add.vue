@@ -11,12 +11,14 @@
       v-if="currentTab == 'Category'"
       :schema="schema"
       btn-name="Add"
+      page-title="Add Equipment Category"
       @form-submitted="handleAddCateEquipment"
     />
     <FormSchema
       v-else
       :schema="schemaEquipment"
       btn-name="Add"
+      page-title="Add Equipment"
       @form-submitted="handleAddEquipment"
     />
   </div>
@@ -51,6 +53,7 @@ export default {
         .then((res) => {
           swal.success("Added successfully");
           this.systemStore.setChangeLoading(false);
+          this.$router.push({ name: "equipments" });
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);

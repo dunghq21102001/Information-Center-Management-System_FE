@@ -1,9 +1,9 @@
 <template>
   <div class="w-full grid grid-cols-12 gap-3">
     <!-- 1 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
+    <div @click="goToRoute('users')" class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>521</span>
+        <span>{{ usersData.length }}</span>
         <span>Users</span>
       </div>
       <v-icon
@@ -13,7 +13,7 @@
       />
     </div>
     <!-- 2 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
+    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>340.201.000 VND</span>
         <span>Revenue</span>
@@ -25,7 +25,7 @@
       />
     </div>
     <!-- 3 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
+    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>401</span>
         <span>Graduate Children</span>
@@ -37,7 +37,7 @@
       />
     </div>
     <!-- 4 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 box">
+    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>241</span>
         <span>Courses</span>
@@ -52,7 +52,8 @@
 </template>
 <script>
 import { useSystemStore } from "../stores/system";
-
+import API_EQUIPMENT from "../API/API_EQUIPMENT";
+import API_USER from "../API/API_USER";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -61,10 +62,29 @@ export default {
   components: {},
   props: {},
   data() {
-    return {};
+    return {
+      usersData: [],
+      equipmentData: [],
+    };
   },
-  methods: {},
-  created() {},
+  methods: {
+    goToRoute(pathName) {
+      this.$router.push({ name: pathName });
+    },
+    fetchUsersList() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.users()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.usersData = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    fetchEquipmentList() {},
+  },
+  created() {
+    this.fetchUsersList();
+  },
 };
 </script>
 <style scoped>

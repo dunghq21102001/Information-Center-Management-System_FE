@@ -22,4 +22,8 @@ export default class API_BLOG {
     static deleteBlog(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static assignToBlog(data) {
+        return axios.post(`${API_BASE.BASE_URL}/BlogTag`, data)
+    }
 }

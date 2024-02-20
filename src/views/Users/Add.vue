@@ -5,6 +5,7 @@
       :schema="userSchema"
       btn-name="Add"
       @form-submitted="handleAddUser"
+      page-title="Add User"
     />
   </div>
 </template>
@@ -39,7 +40,7 @@ export default {
   methods: {
     async handleAddUser(data) {
       this.systemStore.setChangeLoading(true);
-      data["PasswordHash"] = "string";
+      data["PasswordHash"] = "User@123";
 
       try {
         const currentTime = new Date();
@@ -64,6 +65,7 @@ export default {
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
                 swal.success("New user created successfully!");
+                this.$router.push({ name: "users" });
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);

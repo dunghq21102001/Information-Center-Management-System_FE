@@ -20,6 +20,6 @@ export default class API_TAG {
     }
 
     static deleteTag(id) {
-        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
+        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?tagId=${id}`)
     }
 }

@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Locations</span>
+    <span class="text-[28px] font-bold block text-gray-700">Rooms</span>
 
     <div class="w-[90%] mx-auto">
       <NormalTable
@@ -9,22 +9,24 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
-        is-add="location-create"
-        excel="location-data"
-        csv="location-data"
+        is-add="room-create"
+        excel="room-data"
+        csv="room-data"
         :reload="true"
+        :enum="true"
+        :enum-list="enum"
         @reload-action="reloadList"
-        @update-action="updateLocation"
-        @delete-action="deleteLocation"
+        @update-action="updateRoom"
+        @delete-action="deleteRoom"
       />
     </div>
   </div>
 </template>
 <script>
 import tableConfig from "../../common/config/tableConfig";
-import NormalTable from "../../components/NormalTable.vue";
 import { useSystemStore } from "../../stores/System";
-import API_LOCATION from "../../API/API_LOCATION";
+import API_ROOM from "../../API/API_ROOM.js";
+import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 export default {
   components: {
@@ -36,17 +38,19 @@ export default {
   },
   data() {
     return {
+      header: tableConfig.roomTable(),
       data: [],
-      header: tableConfig.locationTable(),
+      enum: [],
     };
   },
   created() {
-    this.fetchLocations();
+    this.fetchRooms();
+    this.fetchEnum();
   },
   methods: {
-    fetchLocations() {
+    fetchRooms() {
       this.systemStore.setChangeLoading(true);
-      API_LOCATION.getLocations()
+      API_ROOM.getRooms()
         .then((res) => {
           this.data = res.data;
           this.systemStore.setChangeLoading(false);
@@ -55,33 +59,44 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
-    updateLocation(data) {
+    updateRoom(data) {
       this.systemStore.setChangeLoading(true);
-      API_LOCATION.putLocation(data)
+      API_ROOM.putRoom(data)
         .then((res) => {
           swal.success(res.data);
           this.systemStore.setChangeLoading(false);
-          this.fetchLocations()
+          this.fetchRooms();
+        })
+        .catch((err) => {
+          swal.error("Update room failed!");
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchEnum() {
+      this.systemStore.setChangeLoading(true);
+      API_ROOM.getEnum()
+        .then((res) => {
+          this.enum = res.data;
+          this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Update location failed! Please try again");
         });
     },
     reloadList() {
-      this.fetchLocations();
+      this.fetchRooms();
     },
-    deleteLocation(item) {
+    deleteRoom(item) {
       swal
-        .confirm("Are you sure you want to delete this location?")
+        .confirm("Are you sure you want to delete this room?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
-            API_LOCATION.deleteLocation(item?.id)
+            API_ROOM.deleteRoom(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
                 swal.success("Deleted successfully!");
-                this.fetchLocations();
+                this.fetchRooms();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);

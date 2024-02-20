@@ -9,6 +9,10 @@ export default class func {
         else return 0
     }
 
+    static isBlobURL(url) {
+        return url.startsWith("blob:");
+    }
+
     static removeElementByValue(array, element) {
         let index = array.indexOf(element)
         if (index > -1) {

@@ -22,4 +22,8 @@ export default class API_ROOM {
     static deleteRoom(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static getEnum() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfRoom`)
+    }
 }

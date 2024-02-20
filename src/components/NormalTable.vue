@@ -1,9 +1,11 @@
 <template>
   <div class="w-full my-5">
-    <div class="flex items-center justify-between w-full mb-4 flex-wrap">
+    <div
+      class="flex items-start justify-between w-full mb-4 flex-wrap md:flex-nowrap"
+    >
       <div
         v-show="isShowSearch"
-        class="w-full lg:w-[500px] mt-3 flex items-center"
+        class="w-full lg:w-[400px] mt-3 flex items-center"
       >
         <select
           class="bor-no-r px-2 h-[40px] outline-none"
@@ -24,17 +26,11 @@
           type="text"
         />
       </div>
-      <div class="flex items-center">
-        <div
-          v-if="reloadProp"
-          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
-        >
+      <div class="flex items-center flex-wrap justify-end">
+        <div v-if="reloadProp" class="h-[40px] mt-3 cursor-pointer mr-1">
           <v-icon @click="reloadAction" name="co-reload" scale="2" />
         </div>
-        <div
-          v-if="excelProp != ''"
-          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
-        >
+        <div v-if="excelProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
             :data="dataProp"
             :fields="fieldsExport"
@@ -44,10 +40,7 @@
             <v-icon name="vi-file-type-excel" scale="2" />
           </download-excel>
         </div>
-        <div
-          v-if="csvProp != ''"
-          class="w-[50px] h-[40px] mt-3 cursor-pointer mr-3"
-        >
+        <div v-if="csvProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
             :data="dataProp"
             :fields="fieldsExport"
@@ -60,7 +53,7 @@
         </div>
         <button
           v-if="isBuyProp"
-          class="btn-primary w-[120px] h-[40px] mt-3 mr-3"
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
           @click="showFormBuying"
         >
@@ -68,10 +61,18 @@
         </button>
         <button
           v-if="isAddProp != ''"
-          class="btn-primary w-[120px] h-[40px] mt-3"
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           @click="goToAddNew"
         >
           Add New
+        </button>
+        <button
+          v-if="isAssignTag != ''"
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
+          :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
+          @click="assignTagAction"
+        >
+          Assign to blog
         </button>
       </div>
     </div>
@@ -95,6 +96,11 @@
               class="w-full object-fill"
               alt="user image"
             />
+          </div>
+        </template>
+        <template #item-content="item">
+          <div class="overflow-hidden flex items-center">
+            <div v-html="item?.content"></div>
           </div>
         </template>
         <template #item-avatar="item">
@@ -125,13 +131,23 @@
         </template>
         <template #item-genderType="item">
           <div
-            class="px-2 rounded-md flex items-center justify-center"
+            class="px-1 rounded-md flex items-center justify-center"
             :class="item?.genderType == 'Male' ? 'bg-blue-300' : 'bg-pink-300'"
           >
             <span class="block text-[20px] font-bold text-white">
               {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
             </span>
           </div>
+        </template>
+        <template #item-startDate="item">
+          <span class="block">
+            {{ convertDate(item?.startDate) }}
+          </span>
+        </template>
+        <template #item-endDate="item">
+          <span class="block">
+            {{ convertDate(item?.endDate) }}
+          </span>
         </template>
         <template #item-creationDate="item">
           <span class="block">
@@ -149,6 +165,14 @@
               @click="goToVNPay"
                name="bi-cart-plus-fill" :scale="1.5" fill="#38676f" />
             </button> -->
+            <button class="mr-4" title="Reset password" v-if="isResetPassProp">
+              <v-icon
+                @click="resetPassword(item)"
+                name="md-lockreset-outlined"
+                :scale="1.5"
+                fill="#0871ba"
+              />
+            </button>
             <button title="Edit" v-if="isUpdateProp" class="mr-3">
               <v-icon
                 @click="editAction(item)"
@@ -191,6 +215,11 @@
             />
           </div>
         </template>
+        <template #item-content="item">
+          <div class="overflow-hidden flex items-center">
+            <div v-html="item?.content"></div>
+          </div>
+        </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
@@ -206,7 +235,7 @@
           </span>
         </template>
         <template #item-genderType="item">
-          <div class="">
+          <div class="px-1 rounded-md flex items-center justify-center">
             {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
           </div>
         </template>
@@ -216,6 +245,16 @@
               Syllabus
             </span>
           </div>
+        </template>
+        <template #item-startDate="item">
+          <span class="block">
+            {{ convertDate(item?.startDate) }}
+          </span>
+        </template>
+        <template #item-endDate="item">
+          <span class="block">
+            {{ convertDate(item?.endDate) }}
+          </span>
         </template>
         <template #item-creationDate="item">
           <span class="block">
@@ -257,6 +296,14 @@
         </template>
         <template #item-operation="item">
           <div class="operation-wrapper flex items-center">
+            <button class="mr-4" title="Reset password" v-if="isResetPassProp">
+              <v-icon
+                @click="resetPassword(item)"
+                name="md-lockreset-outlined"
+                :scale="1.5"
+                fill="#0871ba"
+              />
+            </button>
             <button title="Edit" v-if="isUpdateProp" class="mr-3">
               <v-icon
                 @click="editAction(item)"
@@ -279,9 +326,13 @@
     </div>
 
     <!-- edit component -->
-    <div v-show="isShowEdit" @click.self="isShowEdit = false" class="bg-fog">
+    <div
+      v-if="isShowEdit"
+      @click.self="isShowEdit = false"
+      class="bg-fog-tb flex justify-end"
+    >
       <div
-        class="bg-white relative rounded-lg w-[90%] md:w-[60%] lg:w-[50%] max-h-[90vh] overflow-y-scroll p-4"
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
       >
         <div
           class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-gray-50 hover:rounded-full"
@@ -303,8 +354,9 @@
 import { ref, watch } from "vue";
 import func from "../common/func";
 import swal from "../common/swal";
-import FormSchema from "../components/FormSchema.vue";
-import API_ROLE from "../API/API_ROLE";
+import FormSchema from "./formschema.vue";
+import API_USER from "../API/API_USER";
+import { useSystemStore } from "../stores/System";
 export default {
   components: {
     FormSchema,
@@ -324,11 +376,16 @@ export default {
     },
     isDelete: Boolean,
     isUpdate: Boolean,
+    isResetPass: Boolean,
     isExpand: {
       type: Boolean,
       default: false,
     },
     isMultiSelect: {
+      type: Boolean,
+      default: false,
+    },
+    isAssignTag: {
       type: Boolean,
       default: false,
     },
@@ -352,6 +409,12 @@ export default {
       type: String,
       default: "",
     },
+    enum: {
+      type: Boolean,
+      default: false,
+    },
+    enumList: Array,
+    tpCategoryList: Array,
   },
   setup(props) {
     // Tạo biến reactive cho dataProp
@@ -365,8 +428,11 @@ export default {
       }
     );
 
+    const systemStore = useSystemStore();
+
     return {
       dataProp,
+      systemStore,
     };
   },
   data() {
@@ -376,6 +442,7 @@ export default {
       isUpdateProp: this.isUpdate,
       isDeleteProp: this.isDelete,
       isExpandProp: this.isExpand,
+      isResetPassProp: this.isResetPass,
       isBuyProp: this.isBuy,
       isMultiSelectProp: this.isMultiSelect,
       isAddProp: this.isAdd,
@@ -390,7 +457,7 @@ export default {
       searchList: [],
       isShowEdit: false,
       selectedSchemaRow: null,
-      itemsSelected: ["a"],
+      itemsSelected: [],
       test: [
         {
           code: "AI40",
@@ -447,11 +514,30 @@ export default {
     handleClickRow(item) {
       console.log(item);
     },
+    resetPassword(item) {
+      this.systemStore.setChangeLoading(true);
+      const data = {
+        id: item?.id,
+        newPasswordHash: "User@123",
+      };
+      API_USER.resetPassword(data)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Reset password successfully");
+        })
+        .catch((err) => {
+          swal.error("Something went wrong! Please try again");
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     goToVNPay() {
       window.open(
         "  http://sandbox.vnpayment.vn/tryitnow/Home/CreateOrder",
         "_blank"
       );
+    },
+    assignTagAction() {
+      this.$emit("assignToBlog", this.itemsSelected);
     },
     convertObjectToArray(obj) {
       return Object.keys(obj)
@@ -459,7 +545,7 @@ export default {
           (key) =>
             key !== "key" &&
             key !== "index" &&
-            key !== "status" &&
+            // key !== "status" &&
             key !== "createdBy" &&
             key !== "creationDate" &&
             key !== "deleteBy" &&
@@ -467,7 +553,20 @@ export default {
             key !== "modificationBy" &&
             key !== "modificationDate" &&
             key !== "equipments" &&
-            key !== "isDeleted"
+            key !== "isDeleted" &&
+            key !== "locationTrainingPrograms" &&
+            key !== "users" &&
+            key !== "scheduleRooms" &&
+            key !== "trainingPrograms" &&
+            key != "blogTags" &&
+            key != "userAccount" &&
+            key != "userId" &&
+            key != "semesterCourses" &&
+            key != "trainingProgramCategory" &&
+            key != "trainingProgramCourses" &&
+            key != "certificate" &&
+            key != "Checkbox" &&
+            key != "checkbox"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -489,7 +588,6 @@ export default {
     },
     editAction(item) {
       this.isShowEdit = true;
-
       const tmpSchema = this.convertObjectToArray(item);
       const finalSchema = tmpSchema.map((item) => {
         item["title"] = this.separateUpperCase(item.field);
@@ -510,10 +608,21 @@ export default {
         //     })
         //     .catch((err) => {});
         // }
-        else if (item.field == "genderType") {
+        else if (item.field == "status" && this.enum == true) {
+          item["type"] = "select";
+          item["listData"] = this.enumList;
+        } else if (item.field == "trainingProgramCategoryId") {
+          item["type"] = "select";
+          item["listData"] = this.tpCategoryList;
+          item["title"] = "Training Program Category";
+        } else if (item.field == "genderType") {
           item["type"] = "radio";
           item["listData"] = ["Male", "Female"];
         } else if (item.field == "dateOfBirth") {
+          item["type"] = "date";
+        } else if (item.field == "content") {
+          item["type"] = "quill";
+        } else if (item.field == "startDate" || item.field == "endDate") {
           item["type"] = "date";
         } else item["type"] = "text";
 
@@ -621,11 +730,8 @@ td {
   min-width: 30px;
 }
 
-.bg-fog {
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.bg-fog-tb {
+  background-color: rgba(0, 0, 0, 0.3);
   position: fixed;
   top: 0;
   left: 0;

@@ -1,6 +1,7 @@
 <template>
   <div class="w-full pt-5 min-h-[75vh]">
-    <div class="w-[90%] mx-auto grid grid-cols-12 gap-3">
+    <span class="text-[28px] font-bold block pl-6 text-gray-700">{{ pageTitle }}</span>
+    <div class="w-[90%] mx-auto grid grid-cols-12 gap-3 mt-5">
       <div
         v-for="item in schemaProp"
         :key="item.title"
@@ -14,9 +15,14 @@
           @focus="item.focus = true"
           @blur="item.focus = false"
           :type="item.type"
-          :class="{ 'on-focus': item.focus }"
+          :class="{
+            'on-focus': item.focus,
+            'cursor-not-allowed':
+              item.title == 'Status' || item.title == 'status',
+          }"
           v-model="item.value"
           class="input-cus"
+          :disabled="item.title == 'Status' || item.title == 'status'"
         />
         <input
           v-else-if="item.type === 'date'"
@@ -42,10 +48,20 @@
             v-model="item.value"
             class="w-full px-3 py-2 mt-[5px] select-c"
           >
-            <option v-for="i in item.listData" :value="i?.id">
-              {{ i?.name }}
+            <option v-for="i in item.listData" :value="i?.id || i?.value">
+              {{ i?.name || i?.display }}
             </option>
           </select>
+        </div>
+        <div class="w-full pt-3" v-else-if="item.type === 'quill'">
+          <QuillEditor
+            ref="quill"
+            placeholder="Type here ..."
+            theme="snow"
+            toolbar="full"
+            v-model:content="item.value"
+          >
+          </QuillEditor>
         </div>
         <div
           class="w-full flex items-center flex-wrap pt-6"
@@ -123,10 +139,14 @@
 
 <script>
 import { ref, watch } from "vue";
+import { QuillEditor } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 export default {
+  components: {
+    QuillEditor,
+  },
   setup(props) {
     const schemaProp = ref(props.schema);
-
     watch(
       () => props.schema,
       (newValue) => {
@@ -139,6 +159,7 @@ export default {
     };
   },
   props: {
+    pageTitle: String,
     schema: Array,
     btnName: String,
   },
@@ -149,11 +170,16 @@ export default {
       isValid: true,
     };
   },
+  mounted() {
+    this.setContent();
+  },
   methods: {
     submitForm() {
       this.validateForm();
       if (this.isValid) {
-        const formDataObject = this.convertArrayToObject(this.schemaProp);
+        let formDataObject = this.convertArrayToObject(this.schemaProp);
+        if (formDataObject["content"])
+          formDataObject["content"] = this.$refs.quill[0]?.getHTML();
         this.$emit("form-submitted", formDataObject);
       }
     },
@@ -198,6 +224,13 @@ export default {
       this.schemaProp.forEach((item) => {
         if (item.field === field) {
           item.value = event.target.files[0].name;
+        }
+      });
+    },
+    setContent() {
+      this.schemaProp?.map((item) => {
+        if (item?.field == "content") {
+          this.$refs.quill[0]?.pasteHTML(item?.value);
         }
       });
     },

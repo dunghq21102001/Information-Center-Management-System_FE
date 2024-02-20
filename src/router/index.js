@@ -53,6 +53,14 @@ import CreateEquipment from '../views/Equipments/Add.vue'
 import Blogs from '../views/Blogs/Blogs.vue'
 import CreateBlog from '../views/Blogs/Add.vue'
 
+// semester
+import Semesters from '../views/Semester/Semesters.vue'
+import CreateSemester from '../views/Semester/Add.vue'
+
+// rooms
+import Rooms from '../views/Rooms/Rooms.vue'
+import CreateRoom from '../views/Rooms/Add.vue'
+
 // chat
 import Chat from '../views/Chat/Chat.vue'
 import AnonymousChat from '../views/Chat/AnonymousChat.vue'
@@ -257,6 +265,42 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
+      }
+    },
+    {
+      path: '/semesters',
+      name: 'semesters',
+      component: Semesters,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
+      path: '/semester-create',
+      name: 'semester-create',
+      component: CreateSemester,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
+      path: '/rooms',
+      name: 'rooms',
+      component: Rooms,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
+      path: '/room-create',
+      name: 'room-create',
+      component: CreateRoom,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
       }
     },
     {

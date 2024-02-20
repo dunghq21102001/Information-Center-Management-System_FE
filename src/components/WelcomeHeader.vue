@@ -11,7 +11,7 @@
           <li
             v-for="item in menu"
             @click="goToTab(item.index)"
-            class="ml-3 text-[24px] text-primary cursor-pointer hover:bg-blur px-4 py-2 rounded-lg duration-100"
+            class="ml-3 text-[18px] text-primary cursor-pointer hover:bg-blur px-4 py-2 rounded-lg duration-100"
           >
             {{ item.name }}
           </li>
@@ -19,7 +19,7 @@
             @click="goTo('login')"
             class="btn-primary px-4 py-2 rounded-lg ml-3"
           >
-            <span class="text-[24px]"> Login </span>
+            <span class="text-[18px]"> Login </span>
           </button>
         </ul>
       </div>
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     getImgUrl() {
-      return `../src/assets/images/logo-welcome-${this.systemStore.getTheme.color}.png`;
+      return `/src/assets/images/logo-welcome-${this.systemStore.getTheme.color}.png`;
     },
   },
 };

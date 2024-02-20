@@ -30,10 +30,62 @@ export default class tableConfig {
 
     static trainingProgramTable() {
         return [
-            { text: "Code", value: "trainingProgramCode", sortable: true },
-            { text: "Name", value: "name", sortable: true },
-            { text: "Price", value: "Price", sortable: true, width: 200 },
+            { text: "Code", value: "trainingProgramCode", sortable: true, },
+            { text: "Name", value: "trainingProgramName", sortable: true, width: 200 },
+            { text: "Price", value: "Price", sortable: true },
             { text: "Image", value: "image", sortable: true },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static locationTable() {
+        return [
+            { text: "Name", value: "name", sortable: true },
+            { text: "Address", value: "address", sortable: true, width: 300 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static roomTable() {
+        return [
+            { text: "Name", value: "name", sortable: true },
+            { text: "Status", value: "status", sortable: true, width: 300 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static tpCategoryTable() {
+        return [
+            { text: "Name", value: "name", sortable: true, width: 200 },
+            { text: "Learning Age", value: "learningAge", sortable: true, width: 300 },
+            { text: "Description", value: "description", sortable: true, width: 300 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static blogTable() {
+        return [
+            { text: "Title", value: "title", sortable: true },
+            { text: "Image", value: "image", sortable: true, width: 300 },
+            // { text: "Content", value: "content", sortable: true, width: 900 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static semesterTable() {
+        return [
+            { text: "Semester Name", value: "semesterName", sortable: true },
+            { text: "Start Date", value: "startDate", sortable: true, width: 200 },
+            { text: "End Date", value: "endDate", sortable: true, width: 200 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+
+    static tagTable() {
+        return [
+            { text: "Tag Name", value: "tagName", sortable: true },
+            { text: "Description", value: "description", sortable: true, width: 300 },
             { text: "Action", value: "operation" }
         ]
     }

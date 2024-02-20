@@ -10,6 +10,7 @@
   "dependencies": {
     "@canvasjs/vue-charts": "^1.0.1",
     "@vuepic/vue-datepicker": "^7.4.0",
+    "@vueup/vue-quill": "^1.2.0",
     "axios": "^1.6.1",
     "chart.js": "^4.4.0",
     "firebase": "^10.7.2",
