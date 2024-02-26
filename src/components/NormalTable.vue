@@ -60,19 +60,25 @@
           Buy now
         </button>
         <button
+          v-if="isChangeStatus && itemsSelected.length > 0"
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
+          @click="updateStatusAccount"
+        >
+          Update status
+        </button>
+        <button
+          v-if="isAddSemester"
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
+          @click="addSemester"
+        >
+          Add semester
+        </button>
+        <button
           v-if="isAddProp != ''"
           class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           @click="goToAddNew"
         >
           Add New
-        </button>
-        <button
-          v-if="isAssignTag != ''"
-          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
-          :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
-          @click="assignTagAction"
-        >
-          Assign to blog
         </button>
       </div>
     </div>
@@ -103,6 +109,22 @@
             <div v-html="item?.content"></div>
           </div>
         </template>
+        <template #item-status="item">
+          <div
+            class="border-[1px] border-solid px-3 py-1 rounded-md"
+            :class="
+              item.status == 'Enable' ? 'border-green-600' : 'border-red-500'
+            "
+          >
+            <span
+              class="block"
+              :class="
+                item.status == 'Enable' ? 'text-green-600' : 'text-red-500'
+              "
+              >{{ item.status }}</span
+            >
+          </div>
+        </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
@@ -131,10 +153,17 @@
         </template>
         <template #item-genderType="item">
           <div
-            class="px-1 rounded-md flex items-center justify-center"
-            :class="item?.genderType == 'Male' ? 'bg-blue-300' : 'bg-pink-300'"
+            class="px-3 py-1 rounded-md flex items-center justify-center border-[1px] border-solid"
+            :class="
+              item?.genderType == 'Male' ? 'border-blue-600' : 'border-pink-600'
+            "
           >
-            <span class="block text-[20px] font-bold text-white">
+            <span
+              class="block font-bold"
+              :class="
+                item?.genderType == 'Male' ? 'text-blue-600' : 'text-pink-600'
+              "
+            >
               {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
             </span>
           </div>
@@ -155,7 +184,7 @@
           </span>
         </template>
         <template #item-operation="item">
-          <div class="operation-wrapper flex items-center">
+          <div class="operation-wrapper flex items-center justify-end">
             <!-- <button
               title="Register code for children"
               v-if="isRegisterCourseProp"
@@ -165,6 +194,14 @@
               @click="goToVNPay"
                name="bi-cart-plus-fill" :scale="1.5" fill="#38676f" />
             </button> -->
+            <button title="Add children" v-if="item?.roleName == 'Parent'" class="mr-3">
+              <v-icon
+                @click="addChildren(item)"
+                name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
             <button class="mr-4" title="Reset password" v-if="isResetPassProp">
               <v-icon
                 @click="resetPassword(item)"
@@ -220,6 +257,22 @@
             <div v-html="item?.content"></div>
           </div>
         </template>
+        <template #item-status="item">
+          <div
+            class="border-[1px] border-solid px-3 py-1 rounded-md"
+            :class="
+              item.status == 'Enable' ? 'border-green-600' : 'border-red-500'
+            "
+          >
+            <span
+              class="block"
+              :class="
+                item.status == 'Enable' ? 'text-green-600' : 'text-red-500'
+              "
+              >{{ item.status }}</span
+            >
+          </div>
+        </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
@@ -235,8 +288,20 @@
           </span>
         </template>
         <template #item-genderType="item">
-          <div class="px-1 rounded-md flex items-center justify-center">
-            {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+          <div
+            class="px-3 py-1 rounded-md flex items-center justify-center border-[1px] border-solid"
+            :class="
+              item?.genderType == 'Male' ? 'border-blue-600' : 'border-pink-600'
+            "
+          >
+            <span
+              class="block font-bold"
+              :class="
+                item?.genderType == 'Male' ? 'text-blue-600' : 'text-pink-600'
+              "
+            >
+              {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+            </span>
           </div>
         </template>
         <template #item-syllabus="item">
@@ -295,7 +360,15 @@
           </div>
         </template>
         <template #item-operation="item">
-          <div class="operation-wrapper flex items-center">
+          <div class="operation-wrapper flex items-center justify-end">
+            <button title="Add children" v-if="item?.roleName == 'Parent'" class="mr-3">
+              <v-icon
+                @click="addChildren(item)"
+                name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
             <button class="mr-4" title="Reset password" v-if="isResetPassProp">
               <v-icon
                 @click="resetPassword(item)"
@@ -377,15 +450,13 @@ export default {
     isDelete: Boolean,
     isUpdate: Boolean,
     isResetPass: Boolean,
+    isChangeStatus: Boolean,
+    isAddSemester: Boolean,
     isExpand: {
       type: Boolean,
       default: false,
     },
     isMultiSelect: {
-      type: Boolean,
-      default: false,
-    },
-    isAssignTag: {
       type: Boolean,
       default: false,
     },
@@ -514,6 +585,9 @@ export default {
     handleClickRow(item) {
       console.log(item);
     },
+    addChildren(item) {
+      this.$emit('addChildren', item)
+    },
     resetPassword(item) {
       this.systemStore.setChangeLoading(true);
       const data = {
@@ -536,8 +610,9 @@ export default {
         "_blank"
       );
     },
-    assignTagAction() {
-      this.$emit("assignToBlog", this.itemsSelected);
+    updateStatusAccount() {
+      this.$emit("updateStatus", this.itemsSelected);
+      this.itemsSelected = []
     },
     convertObjectToArray(obj) {
       return Object.keys(obj)
@@ -566,12 +641,16 @@ export default {
             key != "trainingProgramCourses" &&
             key != "certificate" &&
             key != "Checkbox" &&
-            key != "checkbox"
+            key != "checkbox" &&
+            key != "roleName"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
     showFormBuying() {
       this.$emit("showForm", true);
+    },
+    addSemester() {
+      this.$emit("addSemester", true);
     },
     goToAddNew() {
       this.$router.push({ name: this.isAddProp, params: {} });

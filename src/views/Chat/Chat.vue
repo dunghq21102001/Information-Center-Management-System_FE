@@ -147,7 +147,7 @@
 
         <!-- p 3 -->
         <div class="w-full h-[8%] brt-cus flex items-center">
-          <div class="w-[90%] mx-auto flex justify-between items-center">
+          <div class="w-[90%] mx-auto flex justify-between items-center mt-2">
             <input
               type="text"
               v-model="messageText"

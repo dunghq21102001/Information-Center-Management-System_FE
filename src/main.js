@@ -16,14 +16,17 @@ import '@vuepic/vue-datepicker/dist/main.css'
 import CanvasJSChart from '@canvasjs/vue-charts';
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 import JsonExcel from "vue-json-excel3";
-import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill } from "oh-vue-icons/icons"
+import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare } from "oh-vue-icons/icons"
 
 const app = createApp(App)
 
 
-addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill )
+addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare )
 window.axios = axios
 window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+
+import PrimeVue from 'primevue/config';
+import 'primevue/resources/themes/aura-light-green/theme.css'
 
 // components
 app.component("v-icon", OhVueIcon)
@@ -38,5 +41,6 @@ app.use(vueClickOutsideElement)
 app.use(createPinia())
 app.use(router)
 app.use(CanvasJSChart)
+app.use(PrimeVue);
 
 app.mount('#app')

@@ -1,20 +1,17 @@
 <template>
   <div class="w-full">
-      <span class="text-[28px] font-bold block text-gray-700">Semesters</span>
+    <span class="text-[28px] font-bold block text-gray-700">Semesters</span>
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="data"
         :header="header"
         :is-show-search="true"
-        :is-update="true"
-        :is-delete="true"
-        is-add="semester-create"
+        :is-add-semester="true"
         excel="semester-data"
         csv="semester-data"
         :reload="true"
         @reload-action="reloadList"
-        @update-action="updateSemester"
-        @delete-action="deleteSemester"
+        @add-semester="addSemester"
       />
     </div>
   </div>
@@ -40,10 +37,10 @@ export default {
     };
   },
   created() {
-    this.fetchLocations();
+    this.fetchSemester();
   },
   methods: {
-    fetchLocations() {
+    fetchSemester() {
       this.systemStore.setChangeLoading(true);
       API_SEMESTER.getSemesters()
         .then((res) => {
@@ -60,7 +57,7 @@ export default {
         .then((res) => {
           swal.success(res.data);
           this.systemStore.setChangeLoading(false);
-          this.fetchLocations();
+          this.fetchSemester();
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
@@ -68,7 +65,20 @@ export default {
         });
     },
     reloadList() {
-      this.fetchLocations();
+      this.fetchSemester();
+    },
+    addSemester(emit) {
+      this.systemStore.setChangeLoading(true);
+      API_SEMESTER.postSemester()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success(res.data);
+          this.fetchSemester()
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.info(err.response?.data);
+        });
     },
     deleteSemester(item) {
       swal
@@ -80,7 +90,7 @@ export default {
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
                 swal.success("Deleted successfully!");
-                this.fetchLocations();
+                this.fetchSemester();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);

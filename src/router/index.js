@@ -175,24 +175,24 @@ const router = createRouter({
         requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
-    {
-      path: '/training-program',
-      name: 'training-program',
-      component: TrainingProgram,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
-      }
-    },
-    {
-      path: '/training-program-create',
-      name: 'training-program-create',
-      component: CreateTP,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin']
-      }
-    },
+    // {
+    //   path: '/training-program',
+    //   name: 'training-program',
+    //   component: TrainingProgram,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager', 'Staff']
+    //   }
+    // },
+    // {
+    //   path: '/training-program-create',
+    //   name: 'training-program-create',
+    //   component: CreateTP,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin']
+    //   }
+    // },
     {
       path: '/courses',
       name: 'courses',
@@ -276,15 +276,15 @@ const router = createRouter({
         requiredRole: ['Admin', 'Manager']
       }
     },
-    {
-      path: '/semester-create',
-      name: 'semester-create',
-      component: CreateSemester,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager']
-      }
-    },
+    // {
+    //   path: '/semester-create',
+    //   name: 'semester-create',
+    //   component: CreateSemester,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager']
+    //   }
+    // },
     {
       path: '/rooms',
       name: 'rooms',

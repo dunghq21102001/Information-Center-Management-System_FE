@@ -8,6 +8,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@aspnet/signalr": "^1.0.27",
     "@canvasjs/vue-charts": "^1.0.1",
     "@vuepic/vue-datepicker": "^7.4.0",
     "@vueup/vue-quill": "^1.2.0",
@@ -16,6 +17,7 @@
     "firebase": "^10.7.2",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.1.7",
+    "primevue": "^3.48.1",
     "vue": "^3.3.11",
     "vue-cal": "^4.8.1",
     "vue-chartjs": "^5.2.0",

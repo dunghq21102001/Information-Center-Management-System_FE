@@ -71,6 +71,7 @@
             class="w-[200px] h-[100px] md:w-[300px] md:h-[200px] overflow-hidden flex items-center justify-center mr-5"
           >
             <img
+              @click="selectBlog(blog)"
               :src="blog.image"
               class="w-full object-fill cursor-pointer"
               alt=""
@@ -78,10 +79,14 @@
           </div>
           <div class="w-[150px] md:w-[800px] xl:w-[1000px]">
             <div
-              v-show="blog?.isOutstanding == true"
-              class="bg-primary px-3 py-1 rounded-lg w-[120px] md:w-[200px] text-center text-white"
+              class="px-3 py-1 rounded-lg flex items-center flex-wrap w-full"
             >
-              <span class="text-[12px] md:text-[18px]">Outstanding Blog</span>
+              <span
+                class="block bg-primary rounded-md mx-2 min-w-[50px] text-center text-white text-[18px] max-w-[200px]"
+                v-for="t in blog.tags"
+              >
+                {{ t }}
+              </span>
             </div>
             <p
               @click="selectBlog(blog)"
@@ -91,7 +96,10 @@
             </p>
           </div>
         </div>
-        <div v-if="blogs.length > 4" class="w-full flex items-center justify-center">
+        <div
+          v-if="blogs.length > 4"
+          class="w-full flex items-center justify-center"
+        >
           <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
             <span class="">See more</span>
           </button>

@@ -39,13 +39,22 @@
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
         <label for="gender">Gender</label>
-        <input
-          id="gender"
-          type="text"
-          disabled
-          class="i-cus cursor-not-allowed"
-          v-model="data.genderType"
-        />
+        <div class="flex items-center mt-[11px]">
+          <div class="flex items-center mr-4">
+            <input v-model="data.genderType" type="radio" id="male" value="Male" /><label
+              class="ml-2"
+              for="male"
+              >Male</label
+            >
+          </div>
+          <div class="flex items-center">
+            <input v-model="data.genderType" type="radio" id="female" value="Female" /><label
+              class="ml-2"
+              for="female"
+              >Female</label
+            >
+          </div>
+        </div>
       </div>
       <div class="col-span-12 flex flex-col items-start">
         <label for="fullName">Address</label>
@@ -90,12 +99,13 @@
       </div>
     </div>
     <div class="w-full flex items-center justify-end mt-5">
-      <button class="btn-primary px-3 py-1 rounded-lg">Save</button>
+      <button class="btn-primary px-3 py-1 rounded-lg" @click="updateAccount">Save</button>
     </div>
   </div>
 </template>
 <script>
 import API_USER from "../../API/API_USER";
+import swal from "../../common/swal";
 import { useAuthStore } from "../../stores/Auth";
 import { useSystemStore } from "../../stores/System";
 
@@ -141,6 +151,18 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    updateAccount() {
+      this.systemStore.setChangeLoading(true)
+      API_USER.putUser(this.data)
+      .then(res => {
+        this.systemStore.setChangeLoading(false)
+        swal.success(res.data)
+      })
+      .catch(err => {
+        this.systemStore.setChangeLoading(false)
+        swal.error(err?.response?.data)
+      })
+    }
   },
 };
 </script>

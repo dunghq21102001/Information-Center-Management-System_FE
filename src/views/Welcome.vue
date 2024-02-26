@@ -4,7 +4,7 @@
     <div class="w-[90%] mx-auto min-h-screen">
       <Home v-if="tab == 0" @select-blog="selectBlog" />
       <TrainingProgram v-else-if="tab == 1" />
-      <Blogs v-else-if="tab == 2" />
+      <Blogs v-else-if="tab == 2" @select-blog="selectBlog"/>
       <CourseDetail :id="courseId" v-else-if="tab == 'course'" />
       <BlogDetail :id="blogId" v-else-if="tab == 'blog'" />
     </div>

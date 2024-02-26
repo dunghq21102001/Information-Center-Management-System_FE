@@ -59,7 +59,7 @@ export default {
           })
           .catch((err) => {
             this.systemStore.setChangeLoading(false);
-            swal.error("Something went wrong! Please try again");
+            swal.error(err.response?.data);
           });
       } else
         swal.error(

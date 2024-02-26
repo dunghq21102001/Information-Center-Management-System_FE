@@ -25,7 +25,7 @@
 </template>
 <script>
 import { useSystemStore } from "../../stores/System";
-import {useAuthStore} from '../../stores/Auth.js'
+import { useAuthStore } from "../../stores/Auth.js";
 import schemaConfig from "../../common/config/schemaConfig";
 import swal from "../../common/swal";
 import FormSchema from "../../components/FormSchema.vue";
@@ -39,30 +39,34 @@ export default {
   },
   setup() {
     const systemStore = useSystemStore();
-    const authStore = useAuthStore()
+    const authStore = useAuthStore();
     return { systemStore, authStore };
   },
   data() {
     return {
       tabs: ["Blog", "Tag"],
       currentTab: "Blog",
-      schema: schemaConfig.blogSchema(),
+      schema: [],
       tagSchema: schemaConfig.tagSchema(),
-      isFetchEnum: false,
+      isFetch: false,
     };
   },
-  created() {},
+  created() {
+    this.fetchTags();
+  },
   methods: {
     async handleAddPost(data) {
       this.systemStore.setChangeLoading(true);
-      data['userId'] = this.authStore.getAuth?.id
-        try {
+      data["userId"] = this.authStore.getAuth?.id;
+      let fData = [];
+      data["tags"].map((item) => {
+        fData.push(item.id);
+      });
+      data["tagIds"] = fData;
+      try {
         const currentTime = new Date();
         const uniqueFileName = "image_" + currentTime.getTime();
-        const storageRef = ref(
-          storage,
-          "blogImage/" + uniqueFileName
-        );
+        const storageRef = ref(storage, "blogImage/" + uniqueFileName);
 
         // Chuyển đổi URL blob thành Blob
         const response = await fetch(data.image);
@@ -105,6 +109,15 @@ export default {
           swal.error(err.response?.data);
           this.systemStore.setChangeLoading(false);
         });
+    },
+    fetchTags() {
+      this.systemStore.setChangeLoading(true);
+      API_TAG.getTags()
+        .then((res) => {
+          this.schema = schemaConfig.blogSchema(res.data);
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
   },
 };

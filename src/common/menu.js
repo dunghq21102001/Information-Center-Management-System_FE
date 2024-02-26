@@ -25,7 +25,7 @@ export default class menu {
             },
             {
                 id: 41, name: 'Semester', icon: 'bi-diagram-3-fill', subTab: [
-                    { name: 'Add Semester', url: 'semester-create' },
+                    // { name: 'Add Semester', url: 'semester-create' },
                     { name: 'Semesters', url: 'semesters' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
@@ -47,12 +47,12 @@ export default class menu {
                     { name: 'User Attendance', url: 'user-attendance' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
-            {
-                id: 71, name: 'Training Program', icon: 'gi-bookshelf', subTab: [
-                    { name: 'Add TP', url: 'training-program-create' },
-                    { name: 'Training Program', url: 'training-program' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
-            },
+            // {
+            //     id: 71, name: 'Training Program', icon: 'gi-bookshelf', subTab: [
+            //         { name: 'Add TP', url: 'training-program-create' },
+            //         { name: 'Training Program', url: 'training-program' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            // },
             {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
                     { name: 'Add Course', url: 'course-create' },

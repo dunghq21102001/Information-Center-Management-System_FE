@@ -1,16 +1,18 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto">
-    <img class="w-full max-h-[450px]" :src="data?.image"/>
+      <img class="w-full max-h-[450px]" :src="data?.image" />
       <div class="w-full">
-      <span class="block text-center my-4 font-bold text-[40px]">
-        {{ data?.title }}
-      </span>
-      <span class="text-[16px] text-gray-500">Date: {{ convertToDate(data?.creationDate) }} | Author: {{  }}</span>
+        <span class="block text-center my-4 font-bold text-[40px]">
+          {{ data?.title }}
+        </span>
+        <span class="text-[16px] text-gray-500"
+          >Author: {{ data?.author }}</span
+        >
+      </div>
+      <div class="my-5 w-full" v-html="data?.content"></div>
     </div>
-    <div class="my-5 w-full" v-html="data?.content"></div>
   </div>
-    </div>
 </template>
 <script>
 import API_BLOG from "../../API/API_BLOG";
@@ -45,8 +47,8 @@ export default {
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
     convertToDate(date) {
-      return func.convertDate(date)
-    }
+      return func.convertDate(date);
+    },
   },
 };
 </script>

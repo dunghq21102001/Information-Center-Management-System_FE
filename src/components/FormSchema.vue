@@ -1,6 +1,8 @@
 <template>
   <div class="w-full pt-5 min-h-[75vh]">
-    <span class="text-[28px] font-bold block pl-6 text-gray-700">{{ pageTitle }}</span>
+    <span class="text-[28px] font-bold block pl-6 text-gray-700">{{
+      pageTitle
+    }}</span>
     <div class="w-[90%] mx-auto grid grid-cols-12 gap-3 mt-5">
       <div
         v-for="item in schemaProp"
@@ -49,7 +51,7 @@
             class="w-full px-3 py-2 mt-[5px] select-c"
           >
             <option v-for="i in item.listData" :value="i?.id || i?.value">
-              {{ i?.name || i?.display }}
+              {{ i?.name || i?.display || i?.tagName }}
             </option>
           </select>
         </div>
@@ -62,6 +64,17 @@
             v-model:content="item.value"
           >
           </QuillEditor>
+        </div>
+        <div class="w-full pt-3" v-else-if="item.type === 'multiSelect'">
+          <div class="card flex justify-content-center">
+            <MultiSelect
+              v-model="item.value"
+              :options="item.listData"
+              :optionLabel="`tagName`"
+              placeholder="Select 1 or more"
+              class="w-full px-3 py-1"
+            />
+          </div>
         </div>
         <div
           class="w-full flex items-center flex-wrap pt-6"
@@ -141,9 +154,12 @@
 import { ref, watch } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import MultiSelect from "primevue/multiselect";
+
 export default {
   components: {
     QuillEditor,
+    MultiSelect,
   },
   setup(props) {
     const schemaProp = ref(props.schema);
@@ -238,7 +254,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .input-cus {
   outline: none;
   border-bottom: 2px solid rgb(212, 212, 212);
@@ -267,4 +283,13 @@ input[type="radio"] {
   outline: none;
   border-radius: 1px;
 }
+
+.p-multiselect-item	{
+  padding: 10px 0;
+}
+
+.p-overlay-open {
+  box-shadow: 1px 1px 1px 1px #000;
+}
+
 </style>

@@ -38,20 +38,17 @@
         :is-show-search="true"
         excel="tag-data"
         csv="tag-data"
-        :is-multi-select="true"
         :reload="true"
         :is-update="true"
         :is-delete="true"
-        :is-assign-tag="true"
         @reload-action="reloadList"
         is-add="blog-create"
         @update-action="updateTag"
         @delete-action="deleteTag"
-        @assign-to-blog="assignToBlog"
       />
     </div>
 
-    <div
+    <!-- <div
       @click.self="isShowAssign = false"
       v-show="isShowAssign"
       class="fog-blog"
@@ -92,7 +89,7 @@
           <button @click="assignAction" class="btn-primary px-3 py-1">Assign</button>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 

@@ -45,9 +45,10 @@ export default class schemaConfig {
         ]
     }
 
-    static blogSchema() {
+    static blogSchema(tags) {
         return [
-            { title: 'Title', field: 'title', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Title', field: 'title', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Tag', field: 'tags', value: [], type: 'multiSelect', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: tags },
             { title: 'Image', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
             { title: 'Content', field: 'content', value: '', type: 'quill', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]

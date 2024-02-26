@@ -5,6 +5,8 @@
       <Statistical />
     </div>
 
+    <button class="btn-primary" @click="test">siêu test</button>
+
     <!-- part 2 -->
     <div class="w-full px-5 grid grid-cols-12 gap-3">
       <div
@@ -34,6 +36,7 @@ import Statistical from "../components/Statistical.vue";
 import BarChart from "../components/chart/BarChart.vue";
 import DoughnutChart from "../components/chart/DoughnutChart.vue";
 import PieChart from "../components/chart/PieChart.vue";
+import * as signalR from "@aspnet/signalr";
 export default {
   components: {
     BarChart,
@@ -43,10 +46,27 @@ export default {
   },
   props: {},
   data() {
-    return {};
+    return {
+      connection: "",
+    };
   },
-  methods: {},
-  created() {},
+  created() {
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7221/notificationHub")
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+    this.connection.start().catch(function (err) {
+      return console.error(err.toString());
+    });
+  },
+  methods: {
+    test() {
+      const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca82";
+      this.connection.invoke("SendMessage", "mess 1").catch(function (err) {
+        return console.error(err.toSting());
+      });
+    },
+  },
 };
 </script>
 <style scoped>

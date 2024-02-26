@@ -4,6 +4,7 @@ export default class tableConfig {
             { text: "Username", value: "userName", sortable: true },
             { text: "Full Name", value: "fullName", sortable: true, width: 200 },
             { text: "Email", value: "email", sortable: true, width: 250 },
+            { text: "Role", value: "roleName", sortable: true},
             { text: "Gender", value: "genderType", sortable: true },
             { text: "Avatar", value: "avatar", sortable: true },
             { text: "Phone", value: "phone", sortable: true },
@@ -12,6 +13,7 @@ export default class tableConfig {
             { text: "Bank Account Number", value: "bankAccountNumber", sortable: true, width: 250 },
             { text: "Bank Account Name", value: "bankAccountName", sortable: true, width: 200 },
             { text: "Address", value: "address", sortable: true, width: 400 },
+            { text: "Status", value: "status", sortable: true },
             { text: "Action", value: "operation" }
         ]
     }
@@ -77,7 +79,7 @@ export default class tableConfig {
             { text: "Semester Name", value: "semesterName", sortable: true },
             { text: "Start Date", value: "startDate", sortable: true, width: 200 },
             { text: "End Date", value: "endDate", sortable: true, width: 200 },
-            { text: "Action", value: "operation" }
+            // { text: "Action", value: "operation" }
         ]
     }
 
