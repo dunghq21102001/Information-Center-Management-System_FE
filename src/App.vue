@@ -21,6 +21,7 @@
         <RouterView />
       </div>
     </div>
+    <button @click="test">test</button>
     <Loading v-show="systemStore.getLoading" />
     <div
       ref="settingBarOpen"
@@ -48,6 +49,9 @@ import Header from "./components/Header.vue";
 import Sidebar from "./components/Sidebar.vue";
 import SettingsBar from "./components/SettingsBar.vue";
 import { useRoute } from "vue-router";
+import * as signalR from "@aspnet/signalr";
+import API_NOTI from "./API/API_NOTI";
+import { useAuthStore } from "./stores/Auth";
 export default {
   components: {
     Loading,
@@ -57,13 +61,16 @@ export default {
   },
   setup() {
     const systemStore = useSystemStore();
+    const authStore = useAuthStore();
     const route = useRoute();
-    return { systemStore, route };
+    return { systemStore, route, authStore };
   },
   data() {
     return {
       curRoute: "",
       isShowSettingBar: false,
+      notiList: "",
+      connection: null,
     };
   },
   watch: {
@@ -85,9 +92,44 @@ export default {
     closeSetting() {
       this.isShowSettingBar = false;
     },
+    fetchNoti() {
+      if (
+        this.authStore.getAuth?.id != null &&
+        this.authStore.getAuth?.id != ""
+      ) {
+        API_NOTI.getNotiByUser(this.authStore.getAuth?.id)
+          .then((res) => {
+            this.notiList = res.data;
+          })
+          .catch((err) => {});
+      }
+    },
+    test() {
+      const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca82";
+      this.connection
+        .invoke("SendMessage", userId, "mess 1")
+        .catch(function (err) {
+          console.error("Error while sending notification:", err);
+        });
+    },
+  },
+  mounted() {
+    const thisVue = this;
+    thisVue.connection.on("ReceiveMessage", function (u, message) {
+      console.log('go here');
+      thisVue.fetchNoti();
+    });
   },
   created() {
     this.changeTheme();
+
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:7221/notificationHub")
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+    this.connection.start().catch(function (err) {
+      return console.error(err.toString());
+    });
   },
 };
 </script>
