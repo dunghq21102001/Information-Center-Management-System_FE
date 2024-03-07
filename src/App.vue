@@ -21,7 +21,6 @@
         <RouterView />
       </div>
     </div>
-    <button @click="test">test</button>
     <Loading v-show="systemStore.getLoading" />
     <div
       ref="settingBarOpen"

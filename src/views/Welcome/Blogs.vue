@@ -13,7 +13,7 @@
           >
             <img
               :src="blog.image"
-              class="w-full object-fill cursor-pointer"
+              class="w-full object-cover cursor-pointer"
               alt=""
             />
           </div>

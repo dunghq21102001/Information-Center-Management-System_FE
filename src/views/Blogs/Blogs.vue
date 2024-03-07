@@ -60,7 +60,7 @@
           class="w-full mx-auto p-2 relative border-[1px] border-solid border-gray-400 rounded-md cursor-pointer flex items-start"
         >
           <div class="w-[100px] overflow-hidden">
-            <img class="w-full object-fill" :src="selectedBlog?.image" />
+            <img class="w-full object-cover" :src="selectedBlog?.image" />
           </div>
           <div class="w-[80%] pl-2">
             {{ selectedBlog?.title }}
@@ -76,7 +76,7 @@
               class="mx-auto cursor-pointer py-1 flex items-start my-2 hover:bg-gray-200"
             >
               <div class="w-[100px] overflow-hidden">
-                <img class="w-full object-fill" :src="item?.image" />
+                <img class="w-full object-cover" :src="item?.image" />
               </div>
               <div class="w-[80%] pl-2">
                 {{ item?.title }}

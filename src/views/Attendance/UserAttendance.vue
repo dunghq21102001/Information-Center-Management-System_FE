@@ -47,7 +47,7 @@
                     <img
                       :src="item?.image"
                       alt="user avt"
-                      class="w-full object-fill"
+                      class="w-full object-cover"
                     />
                   </div>
                   <span class="font-bold">{{ item.name }}</span>

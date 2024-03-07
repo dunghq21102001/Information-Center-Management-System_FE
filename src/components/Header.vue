@@ -40,7 +40,7 @@
             "
             @click="isShowProfile = !isShowProfile"
             v-click-outside-element="closeProfile"
-            class="w-[50px] h-[50px] object-fill cursor-pointer rounded-full"
+            class="w-[50px] h-[50px] object-cover cursor-pointer rounded-full"
             alt="user avatar"
           />
           <div

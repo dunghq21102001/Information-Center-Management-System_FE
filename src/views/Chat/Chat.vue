@@ -104,7 +104,7 @@
                   class="w-[40px] h-[40px] overflow-hidden rounded-full flex items-center justify-center"
                 >
                   <img
-                    class="w-full h-[40px] object-fill"
+                    class="w-full h-[40px] object-cover"
                     :src="
                       mess?.userId == authStore.getAuth?.id
                         ? authStore.getAuth?.avatar
@@ -214,7 +214,7 @@
                 <div class="w-[50px] h-[50px] overflow-hidden rounded-full">
                   <img
                     :src="u?.avatar"
-                    class="object-fill w-full h-full"
+                    class="object-cover w-full h-full"
                     alt="user avatar"
                   />
                 </div>
@@ -228,7 +228,7 @@
               <div class="w-[50px] h-[50px] overflow-hidden rounded-full">
                 <img
                   :src="newUserSelected.avatar"
-                  class="object-fill w-full h-full"
+                  class="object-cover w-full h-full"
                   alt="user avatar"
                 />
               </div>

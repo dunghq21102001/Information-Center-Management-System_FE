@@ -35,7 +35,7 @@
       <NormalTable
         v-else
         :data="categoryData"
-        :header="header"
+        :header="cateHeader"
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
@@ -69,7 +69,8 @@ export default {
       currentTab: "Equipments",
       categoryData: [],
       equipmentData: [],
-      header: tableConfig.categoryEquipmentTable(),
+      header: tableConfig.equipmentTable(),
+      cateHeader: tableConfig.categoryEquipmentTable()
     };
   },
   created() {

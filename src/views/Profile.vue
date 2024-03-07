@@ -9,7 +9,7 @@
               : 'https://static.vecteezy.com/system/resources/previews/004/819/327/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg'
           "
           alt="user img"
-          class="w-[150px] h-[150px] object-fill"
+          class="w-[150px] h-[150px] object-cover"
         />
       </div>
       <div class="flex flex-col mb-1 ml-3">

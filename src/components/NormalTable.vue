@@ -94,15 +94,21 @@
         show-index
         :search-field="selectedField"
         :search-value="searchQuery"
+        @click-row="handleClickRow"
       >
         <template #item-image="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
               :src="item?.image"
-              class="w-full object-fill"
+              class="w-full object-cover"
               alt="user image"
             />
           </div>
+        </template>
+        <template #item-warrantyDate="item">
+          <span class="block">
+            {{ convertDate(item?.warrantyDate) }}
+          </span>
         </template>
         <template #item-content="item">
           <div class="overflow-hidden flex items-center">
@@ -111,6 +117,7 @@
         </template>
         <template #item-status="item">
           <div
+            v-if="item.status == 'Enable' || item.status == 'Disable'"
             class="border-[1px] border-solid px-3 py-1 rounded-md"
             :class="
               item.status == 'Enable' ? 'border-green-600' : 'border-red-500'
@@ -124,12 +131,15 @@
               >{{ item.status }}</span
             >
           </div>
+          <div v-else>
+            {{ item.status }}
+          </div>
         </template>
         <template #item-avatar="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
               :src="item?.avatar"
-              class="w-full object-fill"
+              class="w-full object-cover"
               alt="user image"
             />
           </div>
@@ -141,7 +151,10 @@
         </template>
         <template #item-syllabus="item">
           <div class="">
-            <span class="hover:underline text-blue-500 cursor-pointer">
+            <span
+              @click="goToSyllabus(item.syllabus)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
               Syllabus
             </span>
           </div>
@@ -184,7 +197,7 @@
           </span>
         </template>
         <template #item-operation="item">
-          <div class="operation-wrapper flex items-center justify-end">
+          <div class="operation-wrapper flex items-center justify-start">
             <!-- <button
               title="Register code for children"
               v-if="isRegisterCourseProp"
@@ -194,7 +207,19 @@
               @click="goToVNPay"
                name="bi-cart-plus-fill" :scale="1.5" fill="#38676f" />
             </button> -->
-            <button title="Add children" v-if="item?.roleName == 'Parent'" class="mr-3">
+            <button class="mr-4" title="Add course" v-if="isAddChildCourse">
+              <v-icon
+                name="si-coursera"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="showAddNewCourse(item)"
+              />
+            </button>
+            <button
+              title="Add children"
+              v-if="item?.roleName == 'Parent'"
+              class="mr-3"
+            >
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
@@ -241,16 +266,22 @@
         show-index
         :search-field="selectedField"
         :search-value="searchQuery"
+        @click-row="handleClickRow"
         v-model:items-selected="itemsSelected"
       >
         <template #item-image="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
               :src="item?.image"
-              class="w-full object-fill"
+              class="w-full object-cover"
               alt="user image"
             />
           </div>
+        </template>
+        <template #item-warrantyDate="item">
+          <span class="block">
+            {{ convertDate(item?.warrantyDate) }}
+          </span>
         </template>
         <template #item-content="item">
           <div class="overflow-hidden flex items-center">
@@ -277,7 +308,7 @@
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
             <img
               :src="item?.avatar"
-              class="w-full object-fill"
+              class="w-full object-cover"
               alt="user image"
             />
           </div>
@@ -306,7 +337,10 @@
         </template>
         <template #item-syllabus="item">
           <div class="">
-            <span class="hover:underline text-blue-500 cursor-pointer">
+            <span
+              @click="goToSyllabus(item.syllabus)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
               Syllabus
             </span>
           </div>
@@ -360,8 +394,20 @@
           </div>
         </template>
         <template #item-operation="item">
-          <div class="operation-wrapper flex items-center justify-end">
-            <button title="Add children" v-if="item?.roleName == 'Parent'" class="mr-3">
+          <div class="operation-wrapper flex items-center justify-start">
+            <button class="mr-4" title="Add course" v-if="isAddChildCourse">
+              <v-icon
+                name="si-coursera"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="showAddNewCourse(item)"
+              />
+            </button>
+            <button
+              title="Add children"
+              v-if="item?.roleName == 'Parent'"
+              class="mr-3"
+            >
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
@@ -416,8 +462,32 @@
         <FormSchema
           v-show="selectedSchemaRow != null"
           :schema="selectedSchemaRow"
-          btn-name="Update"
+          btn-name="Save"
           @form-submitted="handleUpdateSchema"
+        />
+      </div>
+    </div>
+
+    <!-- add new component -->
+    <div
+      v-if="isAddNew"
+      @click.self="isAddNew = false"
+      class="bg-fog-tb flex justify-end"
+    >
+      <div
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
+      >
+        <div
+          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-gray-50 hover:rounded-full"
+          @click="isAddNew = false"
+        >
+          &#9747;
+        </div>
+        <FormSchema
+          v-show="addNewSchema != null"
+          :schema="addNewSchema"
+          btn-name="Save"
+          @form-submitted="handleAddNewSchema"
         />
       </div>
     </div>
@@ -429,7 +499,9 @@ import func from "../common/func";
 import swal from "../common/swal";
 import FormSchema from "./formschema.vue";
 import API_USER from "../API/API_USER";
+import API_COURSE from "../API/API_COURSE";
 import { useSystemStore } from "../stores/System";
+import schemaConfig from "../common/config/schemaConfig";
 export default {
   components: {
     FormSchema,
@@ -461,6 +533,10 @@ export default {
       default: false,
     },
     isBuy: {
+      type: Boolean,
+      default: false,
+    },
+    isAddChildCourse: {
       type: Boolean,
       default: false,
     },
@@ -527,8 +603,12 @@ export default {
       selectedField: "",
       searchList: [],
       isShowEdit: false,
+      isAddNew: false,
       selectedSchemaRow: null,
+      addNewSchema: null,
       itemsSelected: [],
+      parentId: "",
+      courses: [],
       test: [
         {
           code: "AI40",
@@ -574,6 +654,8 @@ export default {
     });
     this.searchList = tmpSearchList;
     this.selectedField = tmpSearchList[0]?.value || "";
+
+    this.fetchCourses();
   },
   methods: {
     convertToVND(price) {
@@ -583,10 +665,13 @@ export default {
       return func.convertDate(date);
     },
     handleClickRow(item) {
-      console.log(item);
+      this.$emit("clickToRow", item);
     },
     addChildren(item) {
-      this.$emit('addChildren', item)
+      this.parentId = item?.id;
+      this.isShowEdit = true;
+      this.selectedSchemaRow = schemaConfig.childrenSchema();
+      // this.$emit('addChildren', item)
     },
     resetPassword(item) {
       this.systemStore.setChangeLoading(true);
@@ -606,13 +691,16 @@ export default {
     },
     goToVNPay() {
       window.open(
-        "  http://sandbox.vnpayment.vn/tryitnow/Home/CreateOrder",
+        "http://sandbox.vnpayment.vn/tryitnow/Home/CreateOrder",
         "_blank"
       );
     },
+    goToSyllabus(url) {
+      window.open(url, "_blank");
+    },
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);
-      this.itemsSelected = []
+      this.itemsSelected = [];
     },
     convertObjectToArray(obj) {
       return Object.keys(obj)
@@ -642,7 +730,11 @@ export default {
             key != "certificate" &&
             key != "Checkbox" &&
             key != "checkbox" &&
-            key != "roleName"
+            key != "roleName" &&
+            key != "courses" &&
+            key != "courseType" &&
+            key != "courseId" &&
+            key != "actualNumber"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -651,6 +743,20 @@ export default {
     },
     addSemester() {
       this.$emit("addSemester", true);
+    },
+    showAddNewCourse(item) {
+      if (item?.courseType == "Single")
+        return swal.error("Single courses cannot create child courses", 2500);
+      this.isAddNew = true;
+      this.addNewSchema = schemaConfig.courseSchema(
+        this.courses,
+        this.enumList
+      );
+
+      this.addNewSchema["parentCourse"] = [item?.id];
+    },
+    handleAddNewSchema() {
+      this.$emit("addNewSchema", this.addNewSchema);
     },
     goToAddNew() {
       this.$router.push({ name: this.isAddProp, params: {} });
@@ -666,6 +772,7 @@ export default {
       }
     },
     editAction(item) {
+      this.parentId = "";
       this.isShowEdit = true;
       const tmpSchema = this.convertObjectToArray(item);
       const finalSchema = tmpSchema.map((item) => {
@@ -690,6 +797,8 @@ export default {
         else if (item.field == "status" && this.enum == true) {
           item["type"] = "select";
           item["listData"] = this.enumList;
+        } else if (item.field == "syllabus") {
+          item["type"] = "file";
         } else if (item.field == "trainingProgramCategoryId") {
           item["type"] = "select";
           item["listData"] = this.tpCategoryList;
@@ -703,6 +812,17 @@ export default {
           item["type"] = "quill";
         } else if (item.field == "startDate" || item.field == "endDate") {
           item["type"] = "date";
+          // }
+          // else if (item.field == "courseType") {
+          //   item["type"] = "select";
+          //   item["listData"] = [];
+        } else if (item.field == "prerequisite") {
+          item["type"] = "select";
+          item["listData"] = this.courses;
+        } else if (item.field == "courseId") {
+          item["title"] = "Course";
+          item["type"] = "select";
+          item["listData"] = this.courses;
         } else item["type"] = "text";
 
         return item;
@@ -718,7 +838,21 @@ export default {
       this.$emit("reloadAction", true);
     },
     handleUpdateSchema(data) {
-      this.$emit("updateAction", data);
+      if (this.parentId != "" && this.parentId != null) {
+        data["userId"] = this.parentId;
+        this.$emit("addChildrenAction", data);
+      } else this.$emit("updateAction", data);
+    },
+    fetchCourses() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.courses = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
     },
   },
 };

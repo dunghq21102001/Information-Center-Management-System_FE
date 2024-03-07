@@ -47,5 +47,9 @@ export default class API_EQUIPMENT {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_CATE}?id=${id}`)
     }
 
+    static getEnum() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfEquipment`)
+    }
+
 
 }

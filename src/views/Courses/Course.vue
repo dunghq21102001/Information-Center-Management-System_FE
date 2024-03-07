@@ -1,84 +1,164 @@
 <template>
   <div class="w-full">
+    <span class="text-[28px] font-bold block text-gray-700">Courses</span>
+
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="data"
         :header="header"
         :is-show-search="true"
+        :is-add-child-course="true"
         :is-update="true"
         :is-delete="true"
-        :is-expand="true"
         is-add="course-create"
+        excel="course-data"
+        csv="course-data"
+        :reload="true"
+        :enum="true"
+        :enum-list="enum"
+        @reload-action="reloadList"
+        @update-action="updateCourse"
+        @add-new-schema="handleAddChildCourse"
+        @delete-action="deleteCourse"
+        @click-to-row="handleClickToRow"
       />
     </div>
   </div>
 </template>
 <script>
 import tableConfig from "../../common/config/tableConfig";
+import { useSystemStore } from "../../stores/System";
+import API_COURSE from "../../API/API_COURSE.js";
 import NormalTable from "../../components/NormalTable.vue";
+import swal from "../../common/swal";
 export default {
-  setup() {},
-  components: { NormalTable },
+  components: {
+    NormalTable,
+  },
+  setup() {
+    const systemStore = useSystemStore();
+    return { systemStore };
+  },
   data() {
     return {
       header: tableConfig.courseTable(),
-      data: [
-        {
-          courseCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-          description: "Khoá học cơ bản",
-          durationTotal: "10",
-          syllabus: "",
-          discount: "15%",
-          level: "Hard",
-          entryPoint: "40",
-        },
-        {
-          courseCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-          description: "Khoá học cơ bản",
-          durationTotal: "23",
-          syllabus: "",
-          discount: "10%",
-          level: "Hard",
-          entryPoint: "20",
-        },
-        {
-          courseCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-          description: "Khoá học cơ bản",
-          durationTotal: "20",
-          syllabus: "",
-          discount: "35%",
-          level: "Hard",
-          entryPoint: "30",
-        },
-        {
-          courseCode: "JS1049",
-          price: 29520100,
-          name: "Khoá học lập trình javascript cơ bản",
-          image:
-            "https://www.classcentral.com/report/wp-content/uploads/2022/06/JavaScript-BCG-Banner-icons.png",
-          description: "Khoá học cơ bản",
-          durationTotal: "18",
-          syllabus: "",
-          discount: "25%",
-          level: "Hard",
-          entryPoint: "60",
-        },
-      ],
+      data: [],
+      enum: [],
     };
   },
-  created() {},
-  methods: {},
+  created() {
+    this.fetchCourses();
+    this.fetchEnum();
+  },
+  methods: {
+    fetchCourses() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.data = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    updateCourse(data) {
+      this.systemStore.setChangeLoading(true);
+      API_ROOM.putRoom(data)
+        .then((res) => {
+          swal.success(res.data);
+          this.systemStore.setChangeLoading(false);
+          this.fetchCourses();
+        })
+        .catch((err) => {
+          swal.error("Update room failed!");
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    async handleAddChildCourse(item) {
+      this.systemStore.setChangeLoading(true);
+      data["parentCode"] = [];
+      try {
+        // for image
+        const currentTime = new Date();
+        const uniqueFileName = "image_" + currentTime.getTime();
+        const storageRef = ref(storage, "coursesImage/" + uniqueFileName);
+        const responseImage = await fetch(data.image);
+        const blobImage = await responseImage.blob();
+
+        // for file syllabus
+        const currentTime2 = new Date();
+        const uniqueFileName2 = "file_" + currentTime2.getTime();
+        const storageRef2 = ref(storage, "files/" + uniqueFileName2 + ".pdf");
+        const responseSyllabus = await fetch(data.syllabus);
+        const arrayBuffer = await responseSyllabus.arrayBuffer();
+        const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
+
+        // Upload both image and file asynchronously
+        const [imageSnapshot, fileSnapshot] = await Promise.all([
+          uploadBytes(storageRef, blobImage).then((snapshot) =>
+            getDownloadURL(snapshot.ref)
+          ),
+          uploadBytes(storageRef2, fileBlob).then((snapshot) =>
+            getDownloadURL(snapshot.ref)
+          ),
+        ]);
+
+        // Update data with the uploaded URLs
+        data.image = imageSnapshot;
+        data.syllabus = fileSnapshot;
+
+        // Call API after both uploads are successful
+        await API_COURSE.postCourse(data)
+          .then((res) => {
+            this.systemStore.setChangeLoading(false);
+            swal.success(res.data);
+          })
+          .catch((err) => {
+            swal.error(err?.response?.data);
+            this.systemStore.setChangeLoading(false);
+          });
+      } catch (error) {
+        this.systemStore.setChangeLoading(false);
+        console.error("Error uploading files:", error);
+      }
+    },
+    fetchEnum() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getEnum()
+        .then((res) => {
+          this.enum = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    handleClickToRow(item) {
+      this.$router.push({ name: "course-detail", params: { id: item?.id } });
+    },
+    reloadList() {
+      this.fetchCourses();
+    },
+    deleteCourse(item) {
+      swal
+        .confirm("Are you sure you want to delete this course?")
+        .then((result) => {
+          if (result.value) {
+            this.systemStore.setChangeLoading(true);
+            API_COURSE.deleteCourse(item?.id)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success("Deleted successfully!");
+                this.fetchCourses();
+              })
+              .catch((err) => {
+                this.systemStore.setChangeLoading(false);
+                swal.error("Delete failed! Please try again", 2500);
+              });
+          }
+        });
+    },
+  },
 };
 </script>

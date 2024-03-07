@@ -36,9 +36,15 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
             {
-                id: 5, name: 'Classrooms', icon: 'co-room', subTab: [
+                id: 5, name: 'Rooms', icon: 'co-room', subTab: [
                     { name: 'Add Room', url: 'room-create' },
                     { name: 'Rooms', url: 'rooms' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Teacher']
+            },
+            {
+                id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
+                    { name: 'Add Class', url: 'class-create' },
+                    { name: 'Classes', url: 'classes' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Teacher']
             },
             {
@@ -60,9 +66,32 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
-                id: 72, name: 'Lessons', icon: 'md-playlesson-round', subTab: [
-                    { name: 'Add Lesson', url: 'lesson-create' },
-                    { name: 'Lessons', url: 'lessons' },
+                id: 2145, name: 'Enrollment', icon: 'vi-file-type-key', subTab: [
+                    { name: 'Enrollment', url: 'enrollment' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
+            },
+            // {
+            //     id: 72, name: 'Lessons', icon: 'md-playlesson-round', subTab: [
+            //         { name: 'Add Lesson', url: 'lesson-create' },
+            //         { name: 'Lessons', url: 'lessons' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            // },
+            {
+                id: 76, name: 'Divisions', icon: 'md-imageaspectratio-sharp', subTab: [
+                    { name: 'Add Division', url: 'division-create' },
+                    { name: 'Divisions', url: 'divisions' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            },
+            {
+                id: 751, name: 'Questions', icon: 'bi-question-circle-fill', subTab: [
+                    { name: 'Add Question', url: 'question-create' },
+                    { name: 'Questions', url: 'questions' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            },
+            {
+                id: 726, name: 'Documents', icon: 'hi-document-text', subTab: [
+                    { name: 'Add Document', url: 'document-create' },
+                    { name: 'Documents', url: 'documents' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {

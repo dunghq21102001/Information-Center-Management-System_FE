@@ -51,7 +51,7 @@ export default class tableConfig {
     static roomTable() {
         return [
             { text: "Name", value: "name", sortable: true },
-            { text: "Status", value: "status", sortable: true, width: 300 },
+            { text: "Status", value: "status", sortable: true },
             { text: "Action", value: "operation" }
         ]
     }
@@ -92,18 +92,27 @@ export default class tableConfig {
         ]
     }
 
+    static divisionTable() {
+        return [
+            { text: "Name", value: "name", sortable: true },
+            { text: "Description", value: "description", sortable: true, width: 300 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
     static courseTable() {
         return [
             { text: "Code", value: "courseCode", sortable: true },
+            { text: "Name", value: "name", sortable: true, width: 300 },
             { text: "Price", value: "price", sortable: true },
-            { text: "Name", value: "name", sortable: true, width: 200 },
-            { text: "Image", value: "image", sortable: true },
-            { text: "Duration Total", value: "durationTotal", sortable: true, width: 200 },
+            { text: "Course Type", value: "courseType", sortable: true, width: 150 },
+            // { text: "Image", value: "image", sortable: true },
+            // { text: "Duration Total", value: "durationTotal", sortable: true, width: 200 },
             { text: "Syllabus", value: "syllabus", sortable: true },
-            { text: "Discount", value: "discount", sortable: true },
-            { text: "Level", value: "level", sortable: true },
-            { text: "Entry Point", value: "entryPoint", sortable: true },
-            { text: "Description", value: "description", sortable: true, width: 300 },
+            // { text: "Discount", value: "discount", sortable: true },
+            // { text: "Level", value: "level", sortable: true },
+            // { text: "Entry Point", value: "entryPoint", sortable: true, width: 140 },
+            // { text: "Description", value: "description", sortable: true, width: 300 },
             { text: "Action", value: "operation" }
         ]
     }
@@ -111,9 +120,37 @@ export default class tableConfig {
     static categoryEquipmentTable() {
         return [
             { text: "Name", value: "name", sortable: true, width: 200 },
-            { text: "Description", value: "description", sortable: true },
-            { text: "Created Date", value: "creationDate", sortable: true, width: 200 },
+            { text: "Warranty Date", value: "warrantyDate", sortable: true, width: 200 },
             { text: "Action", value: "operation" }
+        ]
+    }
+
+    static equipmentTable() {
+        return [
+            { text: "Name", value: "name", sortable: true, width: 200 },
+            { text: "Code", value: "code", sortable: true, width: 200 },
+            { text: "Price", value: "price", sortable: true, width: 200 },
+            { text: "Warranty Date", value: "warrantyDate", sortable: true, width: 200 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static classTable() {
+        return [
+            { text: "Class Code", value: "classCode", sortable: true, width: 200 },
+            { text: "Expected Children", value: "expectedNumber", sortable: true, width: 200},
+            { text: "Actual Children", value: "actualNumber", sortable: true, width: 200},
+            { text: "Limit Children", value: "maxNumber", sortable: true, width: 200},
+            { text: "Start Date", value: "startDate", sortable: true, width: 200 },
+            { text: "End Date", value: "endDate", sortable: true, width: 200},
+            { text: "Status", value: "statusOfClass", sortable: true},
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static enrollmentTable() {
+        return [
+            
         ]
     }
 }

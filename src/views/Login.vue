@@ -11,7 +11,7 @@
       >
         <img
           src="../assets/images/logoForLogin.png"
-          class="w-full object-fill"
+          class="w-full object-cover"
           alt=""
         />
       </div>

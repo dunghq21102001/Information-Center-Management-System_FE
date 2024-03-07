@@ -4,7 +4,7 @@
     <div class="w-[95%] mx-auto overflow-hidden rounded-lg my-5">
       <img
         src="../../assets/images/banner-1.png"
-        class="w-full object-fill"
+        class="w-full object-cover"
         alt=""
       />
     </div>
@@ -27,15 +27,15 @@
     <!-- 3 -->
     <div class="w-full my-10 grid gap-4 grid-cols-12">
       <div
-        v-for="course in coursesList"
+        v-for="course in courses"
         class="col-span-12 md:col-span-6 lg:col-span-3"
       >
         <div
           class="w-full overflow-hidden flex h-[200px] items-start justify-center"
         >
           <img
-            :src="course.img"
-            class="w-full object-fill h-[200px] cursor-pointer"
+            :src="course.image"
+            class="w-full object-cover h-[200px] cursor-pointer"
             alt=""
           />
         </div>
@@ -47,13 +47,12 @@
             {{ course.name }}
           </span>
         </div>
-        <!-- <button class="h-btn btn-primary px-3 py-1 rounded-lg w-[200px]">
-          See more
-          <span>➜</span>
-        </button> -->
       </div>
     </div>
-    <div class="w-full flex items-center justify-center mb-5">
+    <div
+      v-if="courses.length > 4"
+      class="w-full flex items-center justify-center mb-5"
+    >
       <div class="flex items-center flex-col">
         <span class="text-[24px] text-primary">More than 300+ courses</span>
         <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
@@ -64,7 +63,7 @@
 
     <!-- 4 -->
     <div class="w-full my-5">
-      <span class="text-[44px] font-bold text-primary">Blogs</span>
+      <span v-if="blogs.length > 0" class="text-[44px] font-bold text-primary">Blogs</span>
       <div class="flex flex-col items-start mt-4">
         <div v-for="blog in blogs" class="w-full flex items-center">
           <div
@@ -73,7 +72,7 @@
             <img
               @click="selectBlog(blog)"
               :src="blog.image"
-              class="w-full object-fill cursor-pointer"
+              class="w-full object-cover cursor-pointer"
               alt=""
             />
           </div>
@@ -117,6 +116,7 @@
 </template>
 <script>
 import API_BLOG from "../../API/API_BLOG";
+import API_COURSE from "../../API/API_COURSE";
 import { useSystemStore } from "../../stores/system";
 export default {
   components: {},
@@ -157,14 +157,27 @@ export default {
         },
       ],
       blogs: [],
+      courses: [],
     };
   },
   created() {
     this.fetchBlog();
+    this.fetchCourse();
   },
   methods: {
     selectBlog(item) {
       this.$emit("selectBlog", item);
+    },
+    fetchCourse() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.courses = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
     },
     fetchBlog() {
       this.systemStore.setChangeLoading(true);

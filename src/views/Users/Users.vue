@@ -19,7 +19,7 @@
         @update-action="updateUser"
         @delete-action="deleteUser"
         @update-status="updateStatusAccount"
-        @add-children="addChildren"
+        @add-children-action="addChildren"
       />
     </div>
   </div>
@@ -98,6 +98,7 @@ export default {
                   this.fetchUsers();
                 })
                 .catch((err) => {
+                  swal.error(err?.response?.data)
                   this.systemStore.setChangeLoading(false);
                 });
             })
@@ -117,22 +118,49 @@ export default {
             this.fetchUsers();
           })
           .catch((err) => {
+            swal.error(err?.response?.data)
             this.systemStore.setChangeLoading(false);
           });
       }
     },
-    addChildren(data) {
+    async addChildren(data) {
       this.systemStore.setChangeLoading(true);
-      API_USER.postChildren(data)
-        .then((res) => {
-          this.systemStore.setChangeLoading(false);
-          swal.success("Tạo trẻ thành công");
-          this.fetchUsers();
-        })
-        .catch((err) => {
-          swal.error("Tạo thất bại! Vui lòng thử lại");
-          this.systemStore.setChangeLoading(false);
-        });
+      try {
+        const currentTime = new Date();
+        const uniqueFileName = "image_" + currentTime.getTime();
+        const storageRef = ref(
+          storage,
+          "avatars/" + uniqueFileName
+        );
+
+        // Chuyển đổi URL blob thành Blob
+        const response = await fetch(data.image);
+        const blob = await response.blob();
+
+        // Tải lên ảnh avatar lên Firestore
+        uploadBytes(storageRef, blob)
+          .then((snapshot) => {
+            return getDownloadURL(snapshot.ref);
+          })
+          .then((downloadURL) => {
+            data.image = downloadURL;
+            API_USER.postChildren(data)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success("New children created successfully!");
+                this.fetchUsers()
+              })
+              .catch((err) => {
+                this.systemStore.setChangeLoading(false);
+              });
+          })
+          .catch((error) => {
+            console.log("Lỗi khi tải ảnh lên:", error);
+          });
+      } catch (error) {
+        this.systemStore.setChangeLoading(false);
+        console.error("Error uploading avatar:", error);
+      }
     },
     deleteUser(item) {
       swal

@@ -36,6 +36,7 @@ import CreateTP from '../views/TrainingProgram/Add.vue'
 // courses
 import CreateCourse from '../views/Courses/Add.vue'
 import Courses from '../views/Courses/Course.vue'
+import CourseDetail from '../views/Courses/CourseDetail.vue'
 
 // lessons
 import Lessons from '../views/Lessons/Lessons.vue'
@@ -44,6 +45,18 @@ import CreateLesson from '../views/Lessons/Add.vue'
 // locations
 import Locations from '../views/Locations/Locations.vue'
 import CreateLocation from '../views/Locations/Add.vue'
+
+// divisions
+import Divisions from '../views/Division/Division.vue'
+import CreateDivision from '../views/Division/Add.vue'
+
+// classes
+import Classes from '../views/Classes/Classes.vue'
+import CreateClass from '../views/Classes/Add.vue'
+
+// enrollment
+import Enrollment from '../views/Enrollment/Enrollment.vue'
+
 
 // equipments
 import Equipments from '../views/Equipments/Equipments.vue'
@@ -213,21 +226,50 @@ const router = createRouter({
       }
     },
     {
-      path: '/lessons',
-      name: 'lessons',
-      component: Lessons,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
-      }
-    },
-    {
-      path: '/lesson-create',
-      name: 'lesson-create',
-      component: CreateLesson,
+      path: '/course-detail/:id',
+      name: 'course-detail',
+      component: CourseDetail,
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
+
+      }
+    },
+    // {
+    //   path: '/lessons',
+    //   name: 'lessons',
+    //   component: Lessons,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager', 'Staff']
+    //   }
+    // },
+    // {
+    //   path: '/lesson-create',
+    //   name: 'lesson-create',
+    //   component: CreateLesson,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin']
+
+    //   }
+    // },
+    {
+      path: '/divisions',
+      name: 'divisions',
+      component: Divisions,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
+      }
+    },
+    {
+      path: '/division-create',
+      name: 'division-create',
+      component: CreateDivision,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager']
 
       }
     },
@@ -244,6 +286,33 @@ const router = createRouter({
       path: '/location-create',
       name: 'location-create',
       component: CreateLocation,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin']
+      }
+    },
+    {
+      path: '/enrollment',
+      name: 'enrollment',
+      component: Enrollment,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Staff', 'Admin']
+      }
+    },
+    {
+      path: '/classes',
+      name: 'classes',
+      component: Classes,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin']
+      }
+    },
+    {
+      path: '/class-create',
+      name: 'class-create',
+      component: CreateClass,
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']

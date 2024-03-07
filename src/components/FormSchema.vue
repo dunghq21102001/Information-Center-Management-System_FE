@@ -46,14 +46,34 @@
           class="input-cus"
         ></textarea>
         <div class="w-full" v-else-if="item.type === 'select'">
-          <select
+          <!-- <select
             v-model="item.value"
             class="w-full px-3 py-2 mt-[5px] select-c"
           >
             <option v-for="i in item.listData" :value="i?.id || i?.value">
               {{ i?.name || i?.display || i?.tagName }}
             </option>
-          </select>
+          </select> -->
+          <Dropdown
+            v-model="item.value"
+            :options="item.listData"
+            :optionValue="getDisplayValue(item.listData)"
+            :optionLabel="getDisplayField(item.listData)"
+            placeholder="Select one"
+            class="w-full py-[11px] pl-3"
+          >
+            <template #option="slotProps">
+              <div class="w-full">
+                <div>
+                  {{
+                    slotProps?.option?.display ||
+                    slotProps?.option?.name ||
+                    slotProps?.option?.tagName
+                  }}
+                </div>
+              </div>
+            </template>
+          </Dropdown>
         </div>
         <div class="w-full pt-3" v-else-if="item.type === 'quill'">
           <QuillEditor
@@ -103,7 +123,7 @@
             v-show="item?.value != ''"
             class="absolute right-3 h-[100px] w-[100px] top-[50%] translate-y-[-50%] overflow-hidden"
           >
-            <img :src="item?.value" class="w-full object-fill" />
+            <img :src="item?.value" class="w-full object-cover" />
           </div>
           <input
             type="file"
@@ -127,7 +147,9 @@
             v-show="item?.value != ''"
             class="absolute right-3 text-right top-[50%] w-[190px] md:w-[400px] lg:w-[500px] overflow-hidden translate-y-[-50%]"
           >
-            <span class="block w-full">{{ item?.value }}</span>
+            <span class="block w-full">{{
+              item?.value != "" ? "Selected file" : ""
+            }}</span>
           </div>
           <input
             @change="changeFile($event, item?.field)"
@@ -155,11 +177,13 @@ import { ref, watch } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import MultiSelect from "primevue/multiselect";
-
+import Dropdown from "primevue/dropdown";
+import swal from "../common/swal";
 export default {
   components: {
     QuillEditor,
     MultiSelect,
+    Dropdown,
   },
   setup(props) {
     const schemaProp = ref(props.schema);
@@ -197,18 +221,42 @@ export default {
         if (formDataObject["content"])
           formDataObject["content"] = this.$refs.quill[0]?.getHTML();
         this.$emit("form-submitted", formDataObject);
-      }
+      } else
+        return swal.error("You must fill in all necessary information!", 3000);
     },
     validateForm() {
       this.isValid = true;
       this.schemaProp.forEach((item) => {
-        if (!item.value) {
-          item.error = true;
-          this.isValid = false;
-        } else {
-          item.error = false;
+        if (
+          item?.field != "bankAccountNumber" &&
+          item?.field != "bankAccountName" &&
+          item?.field != "bankName"
+        ) {
+          if (item.field === "phone") {
+            if (!this.isValidPhoneNumber(item.value)) {
+              item.error = true;
+              this.isValid = false;
+              item.errMes = "Phone is not valid!";
+            } else {
+              item.error = false;
+            }
+          } else {
+            if (
+              item.value === null ||
+              (typeof item.value === "string" && item.value.trim() === "")
+            ) {
+              item.error = true;
+              this.isValid = false;
+            } else {
+              item.error = false;
+            }
+          }
         }
       });
+    },
+    isValidPhoneNumber(phoneNumber) {
+      const phoneRegex = /^\d{10}$/;
+      return phoneRegex.test(phoneNumber);
     },
     convertArrayToObject(formData) {
       return formData.reduce((acc, item) => {
@@ -226,6 +274,14 @@ export default {
     },
     handleFileChange(event, field) {
       const files = event.target.files;
+      if (!this.validateImage(files)) {
+        event.target.value = null;
+        swal.error(
+          "You can only choose images in jpg/ jpeg/ png/ gif format",
+          2500
+        );
+        return;
+      }
       this.handleFiles(files, field);
     },
     handleFiles(files, field) {
@@ -236,10 +292,37 @@ export default {
         }
       });
     },
+    validateImage(files) {
+      const allowedExtensions = /(\.jpg|\.jpeg|\.png|\.gif)$/i;
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!allowedExtensions.exec(file.name)) {
+          return false;
+        }
+      }
+      return true;
+    },
+    validatePDF(files) {
+      const allowedExtensions = /(\.pdf)$/i; // Chỉ cho phép tệp PDF
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (!allowedExtensions.exec(file.name)) {
+          return false;
+        }
+      }
+      return true;
+    },
     changeFile(event, field) {
+      const files = event.target.files;
+      if (!this.validatePDF(files)) {
+        event.target.value = null;
+        swal.error("You can only select PDF files", 2500);
+        return;
+      }
       this.schemaProp.forEach((item) => {
         if (item.field === field) {
-          item.value = event.target.files[0].name;
+          const tmpURL = URL.createObjectURL(files[0]);
+          item.value = tmpURL;
         }
       });
     },
@@ -249,6 +332,23 @@ export default {
           this.$refs.quill[0]?.pasteHTML(item?.value);
         }
       });
+    },
+    getDisplayField(item) {
+      // {{ i?.name || i?.display || i?.tagName }}
+      let fieldName = "";
+      if (item[0]?.name) fieldName = "name";
+      if (item[0]?.display) fieldName = "display";
+      if (item[0]?.tagName) fieldName = "tagName";
+
+      return fieldName;
+    },
+    getDisplayValue(item) {
+      let value = "";
+      if (item[0]?.name) value = "id";
+      if (item[0]?.display) value = "value";
+      if (item[0]?.tagName) value = "id";
+
+      return value;
     },
   },
 };
@@ -284,12 +384,11 @@ input[type="radio"] {
   border-radius: 1px;
 }
 
-.p-multiselect-item	{
+.p-multiselect-item {
   padding: 10px 0;
 }
 
 .p-overlay-open {
   box-shadow: 1px 1px 1px 1px #000;
 }
-
 </style>

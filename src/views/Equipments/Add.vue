@@ -15,7 +15,7 @@
       @form-submitted="handleAddCateEquipment"
     />
     <FormSchema
-      v-else
+      v-else-if="currentTab == 'Equipment' && fetchCount == 3"
       :schema="schemaEquipment"
       btn-name="Add"
       page-title="Add Equipment"
@@ -28,6 +28,7 @@ import FormSchema from "../../components/FormSchema.vue";
 import schemaConfig from "../../common/config/schemaConfig";
 import { useSystemStore } from "../../stores/system";
 import API_EQUIPMENT from "../../API/API_EQUIPMENT";
+import API_ROOM from "../../API/API_ROOM";
 import swal from "../../common/swal";
 export default {
   setup() {
@@ -42,10 +43,29 @@ export default {
       tabs: ["Equipment", "Category"],
       currentTab: "Equipment",
       schema: schemaConfig.categoryEquipmentSchema(),
-      schemaEquipment: schemaConfig.equipmentSchema(),
+      schemaEquipment: [],
+      enum: [],
+      rooms: [],
+      category: [],
+      fetchCount: 0,
     };
   },
-  created() {},
+  watch: {
+    fetchCount() {
+      if (this.fetchCount == 3) {
+        this.schemaEquipment = schemaConfig.equipmentSchema(
+          this.category,
+          this.rooms,
+          this.enum
+        );
+      }
+    },
+  },
+  created() {
+    this.fetchCate();
+    this.fetchRoom();
+    this.fetchEnum();
+  },
   methods: {
     handleAddCateEquipment(data) {
       this.systemStore.setChangeLoading(true);
@@ -57,9 +77,58 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
+          swal.error(err?.response?.data)
         });
     },
-    handleAddEquipment(data) {},
+    handleAddEquipment(data) {
+      this.systemStore.setChangeLoading(true);
+      API_EQUIPMENT.postEquipments(data)
+        .then((res) => {
+          swal.success("Added successfully");
+          this.systemStore.setChangeLoading(false);
+          this.$router.push({ name: "equipments" });
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err?.response?.data)
+        });
+    },
+    fetchEnum() {
+      this.systemStore.setChangeLoading(true);
+      API_EQUIPMENT.getEnum()
+        .then((res) => {
+          this.enum = res.data;
+          this.fetchCount++;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchRoom() {
+      this.systemStore.setChangeLoading(true);
+      API_ROOM.getRooms()
+        .then((res) => {
+          this.rooms = res.data;
+          this.fetchCount++;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchCate() {
+      this.systemStore.setChangeLoading(true);
+      API_EQUIPMENT.categoryEquipments()
+        .then((res) => {
+          this.category = res.data;
+          this.fetchCount++;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
   },
 };
 </script>
