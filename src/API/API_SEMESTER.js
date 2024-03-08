@@ -22,4 +22,12 @@ export default class API_SEMESTER {
     static deleteSemester(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static getSemesterCourse() {
+        return axios.get(`${API_BASE.BASE_URL}/SemesterCourse`)
+    }
+
+    static postSemesterCourse(data) {
+        return axios.post(`${API_BASE.BASE_URL}/SemesterCourse`, data)
+    }
 }

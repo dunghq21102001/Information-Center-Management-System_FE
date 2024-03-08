@@ -7,11 +7,15 @@
         :header="header"
         :is-show-search="true"
         :is-add-semester="true"
+        :dataList="courses"
+        dataListTitle="Add course to semester"
+        :isAddByList="true"
         excel="semester-data"
         csv="semester-data"
         :reload="true"
         @reload-action="reloadList"
         @add-semester="addSemester"
+        @submit-list="addCourseToSemester"
       />
     </div>
   </div>
@@ -21,6 +25,7 @@ import tableConfig from "../../common/config/tableConfig";
 import NormalTable from "../../components/NormalTable.vue";
 import { useSystemStore } from "../../stores/System";
 import API_SEMESTER from "../../API/API_SEMESTER";
+import API_COURSE from "../../API/API_COURSE";
 import swal from "../../common/swal";
 export default {
   components: {
@@ -33,18 +38,52 @@ export default {
   data() {
     return {
       data: [],
+      courses: [],
       header: tableConfig.semesterTable(),
     };
   },
+
   created() {
     this.fetchSemester();
+    this.fetchCourses();
   },
   methods: {
+    addCourseToSemester(item) {
+      let tmp = [];
+      item.childrenList.map((i) => {
+        if (i?.select == true) tmp.push(i?.id);
+      });
+
+      this.systemStore.setChangeLoading(true);
+      API_SEMESTER.postSemesterCourse({
+        semesterId: item?.parentObject?.id,
+        courseId: tmp,
+      })
+        .then((res) => {
+          swal.success("Add successfully!");
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          swal.error("Add failed! Please try again!");
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     fetchSemester() {
       this.systemStore.setChangeLoading(true);
       API_SEMESTER.getSemesters()
         .then((res) => {
           this.data = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchCourses() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.courses = res.data;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
@@ -73,7 +112,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success(res.data);
-          this.fetchSemester()
+          this.fetchSemester();
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);

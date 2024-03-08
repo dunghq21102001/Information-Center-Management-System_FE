@@ -83,17 +83,23 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
-                id: 751, name: 'Questions', icon: 'bi-question-circle-fill', subTab: [
-                    { name: 'Add Question', url: 'question-create' },
-                    { name: 'Questions', url: 'questions' },
+                id: 74216, name: 'Advice Request', icon: 'fa-tasks', subTab: [
+                    { name: 'Add Advice', url: 'advice-create' },
+                    { name: 'Advice Request', url: 'advice-request' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
-            {
-                id: 726, name: 'Documents', icon: 'hi-document-text', subTab: [
-                    { name: 'Add Document', url: 'document-create' },
-                    { name: 'Documents', url: 'documents' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
-            },
+            // {
+            //     id: 751, name: 'Questions', icon: 'bi-question-circle-fill', subTab: [
+            //         { name: 'Add Question', url: 'question-create' },
+            //         { name: 'Questions', url: 'questions' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            // },
+            // {
+            //     id: 726, name: 'Documents', icon: 'hi-document-text', subTab: [
+            //         { name: 'Add Document', url: 'document-create' },
+            //         { name: 'Documents', url: 'documents' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            // },
             {
                 id: 8, name: 'Locations', icon: 'io-location-sharp', subTab: [
                     { name: 'Add Location', url: 'location-create' },
@@ -147,9 +153,9 @@ export default class menu {
     static welcomeMenu() {
         return [
             { name: 'Home', index: 0 },
-            { name: 'Training Program', index: 1 },
+            // { name: 'Training Program', index: 1 },
             { name: 'Blogs', index: 2 },
-            { name: 'Outstanding Students', index: 3 },
+            // { name: 'Outstanding Students', index: 3 },
 
         ]
     }

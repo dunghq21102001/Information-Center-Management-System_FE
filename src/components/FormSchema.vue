@@ -334,12 +334,13 @@ export default {
       });
     },
     getDisplayField(item) {
-      // {{ i?.name || i?.display || i?.tagName }}
+      // {{ i?.name || i?.display || i?.tagName || semesterName }}
       let fieldName = "";
       if (item[0]?.name) fieldName = "name";
       if (item[0]?.display) fieldName = "display";
       if (item[0]?.tagName) fieldName = "tagName";
-
+      if (item[0]?.semesterName) fieldName = "semesterName";
+      
       return fieldName;
     },
     getDisplayValue(item) {

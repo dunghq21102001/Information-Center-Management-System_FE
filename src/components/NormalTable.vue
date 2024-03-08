@@ -94,7 +94,6 @@
         show-index
         :search-field="selectedField"
         :search-value="searchQuery"
-        @click-row="handleClickRow"
       >
         <template #item-image="item">
           <div class="w-[100px] h-[100px] overflow-hidden flex items-center">
@@ -159,6 +158,16 @@
             </span>
           </div>
         </template>
+        <template #item-detail="item">
+          <div class="">
+            <span
+              @click="handleGetDetail(item)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Detail
+            </span>
+          </div>
+        </template>
         <template #item-dateOfBirth="item">
           <span class="block">
             {{ convertDate(item?.dateOfBirth) }}
@@ -216,6 +225,18 @@
               />
             </button>
             <button
+              class="mr-4"
+              title="Add course to semester"
+              v-if="isAddByList"
+            >
+              <v-icon
+                name="si-coursera"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="showDataList(item)"
+              />
+            </button>
+            <button
               title="Add children"
               v-if="item?.roleName == 'Parent'"
               class="mr-3"
@@ -266,7 +287,6 @@
         show-index
         :search-field="selectedField"
         :search-value="searchQuery"
-        @click-row="handleClickRow"
         v-model:items-selected="itemsSelected"
       >
         <template #item-image="item">
@@ -345,6 +365,16 @@
             </span>
           </div>
         </template>
+        <template #item-detail="item">
+          <div class="">
+            <span
+              @click="handleGetDetail(item)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Detail
+            </span>
+          </div>
+        </template>
         <template #item-startDate="item">
           <span class="block">
             {{ convertDate(item?.startDate) }}
@@ -404,6 +434,18 @@
               />
             </button>
             <button
+              class="mr-4"
+              title="Add course to semester"
+              v-if="isAddByList"
+            >
+              <v-icon
+                name="si-coursera"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="showDataList(item)"
+              />
+            </button>
+            <button
               title="Add children"
               v-if="item?.roleName == 'Parent'"
               class="mr-3"
@@ -454,10 +496,13 @@
         class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
       >
         <div
-          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-gray-50 hover:rounded-full"
-          @click="isShowEdit = false"
+          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-red-500 hover:rounded-full"
         >
-          &#9747;
+          <v-icon
+            @click="isShowEdit = false"
+            name="io-close-outline"
+            scale="1.5"
+          />
         </div>
         <FormSchema
           v-show="selectedSchemaRow != null"
@@ -478,10 +523,13 @@
         class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
       >
         <div
-          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-gray-50 hover:rounded-full"
-          @click="isAddNew = false"
+          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-red-500 hover:rounded-full"
         >
-          &#9747;
+          <v-icon
+            @click="isAddNew = false"
+            name="io-close-outline"
+            scale="1.5"
+          />
         </div>
         <FormSchema
           v-show="addNewSchema != null"
@@ -491,13 +539,40 @@
         />
       </div>
     </div>
+
+    <!-- data list -->
+    <div
+      v-if="isShowDataList"
+      @click.self="isShowDataList = false"
+      class="bg-fog-tb flex justify-end"
+    >
+      <div
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
+      >
+        <div
+          class="absolute top-5 w-[30px] h-[30px] flex items-center justify-center right-5 text-[25px] cursor-pointer hover:bg-red-500 hover:rounded-full"
+        >
+          <v-icon
+            @click="isShowDataList = false"
+            name="io-close-outline"
+            scale="1.5"
+          />
+        </div>
+        <FormList
+          :data="dataList"
+          :title="dataListTitle"
+          @handle-submit-list="submitList"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { ref, watch } from "vue";
 import func from "../common/func";
 import swal from "../common/swal";
-import FormSchema from "./formschema.vue";
+import FormSchema from "./FormSchema.vue";
+import FormList from "./FormList.vue";
 import API_USER from "../API/API_USER";
 import API_COURSE from "../API/API_COURSE";
 import { useSystemStore } from "../stores/System";
@@ -505,9 +580,14 @@ import schemaConfig from "../common/config/schemaConfig";
 export default {
   components: {
     FormSchema,
+    FormList,
   },
   props: {
     data: {
+      type: Array,
+      default: [],
+    },
+    dataList: {
       type: Array,
       default: [],
     },
@@ -519,6 +599,7 @@ export default {
       type: Boolean,
       default: false,
     },
+    dataListTitle: String,
     isDelete: Boolean,
     isUpdate: Boolean,
     isResetPass: Boolean,
@@ -537,6 +618,10 @@ export default {
       default: false,
     },
     isAddChildCourse: {
+      type: Boolean,
+      default: false,
+    },
+    isAddByList: {
       type: Boolean,
       default: false,
     },
@@ -596,6 +681,8 @@ export default {
       excelProp: this.excel,
       csvProp: this.csv,
       reloadProp: this.reload,
+      isAddByListProp: this.isAddByList,
+      dataListProp: this.dataList,
 
       fieldsExport: {},
       dataExport: [],
@@ -603,9 +690,11 @@ export default {
       selectedField: "",
       searchList: [],
       isShowEdit: false,
+      isShowDataList: false,
       isAddNew: false,
       selectedSchemaRow: null,
       addNewSchema: null,
+      selectedParentItemOfDataList: null,
       itemsSelected: [],
       parentId: "",
       courses: [],
@@ -664,7 +753,7 @@ export default {
     convertDate(date) {
       return func.convertDate(date);
     },
-    handleClickRow(item) {
+    handleGetDetail(item) {
       this.$emit("clickToRow", item);
     },
     addChildren(item) {
@@ -672,6 +761,10 @@ export default {
       this.isShowEdit = true;
       this.selectedSchemaRow = schemaConfig.childrenSchema();
       // this.$emit('addChildren', item)
+    },
+    showDataList(item) {
+      this.isShowDataList = true;
+      this.selectedParentItemOfDataList = item;
     },
     resetPassword(item) {
       this.systemStore.setChangeLoading(true);
@@ -701,6 +794,14 @@ export default {
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);
       this.itemsSelected = [];
+    },
+    submitList(item) {
+      const data = {
+        parentObject: this.selectedParentItemOfDataList,
+        childrenList: item,
+      };
+      this.$emit("submitList", data);
+      this.selectedParentItemOfDataList = null;
     },
     convertObjectToArray(obj) {
       return Object.keys(obj)

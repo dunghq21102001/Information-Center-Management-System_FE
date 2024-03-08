@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white py-5 sd-cus">
+  <div class="w-full bg-white py-5 sd-cus hidden md:block">
     <div class="w-[90%] mx-auto flex justify-between">
       <img src="../assets/images/logo.png" class="w-[200px]" alt="" />
       <p class="w-[30%]">

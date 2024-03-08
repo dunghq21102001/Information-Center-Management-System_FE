@@ -61,9 +61,53 @@
       </div>
     </div>
 
+    <!-- advice request -->
+    <div class="adr-cus h-[900px] relative hidden md:block">
+      <div
+        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-10"
+      >
+        <input
+          type="text"
+          class="input-ad"
+          placeholder="Fullname"
+          v-model="adviceRequest.fullName"
+        />
+        <input
+          type="text"
+          class="input-ad"
+          placeholder="Email"
+          v-model="adviceRequest.email"
+        />
+        <input
+          type="text"
+          class="input-ad"
+          placeholder="Phone"
+          v-model="adviceRequest.phone"
+        />
+        <input
+          type="text"
+          class="input-ad"
+          placeholder="Address"
+          v-model="adviceRequest.address"
+        />
+        <select name="" id="" class="input-ad" v-model="adviceRequest.location">
+          <option value="" disabled>Select location</option>
+          <option :value="l?.name" v-for="l in locations">
+            {{ l?.name }}
+          </option>
+        </select>
+
+        <div @click="postAdviceRequest" id="breathing-button">
+          Register now to receive consultation
+        </div>
+      </div>
+    </div>
+
     <!-- 4 -->
     <div class="w-full my-5">
-      <span v-if="blogs.length > 0" class="text-[44px] font-bold text-primary">Blogs</span>
+      <span v-if="blogs.length > 0" class="text-[44px] font-bold text-primary"
+        >Blogs</span
+      >
       <div class="flex flex-col items-start mt-4">
         <div v-for="blog in blogs" class="w-full flex items-center">
           <div
@@ -117,7 +161,11 @@
 <script>
 import API_BLOG from "../../API/API_BLOG";
 import API_COURSE from "../../API/API_COURSE";
+import API_LOCATION from "../../API/API_LOCATION";
+import API_USER from "../../API/API_USER";
 import { useSystemStore } from "../../stores/system";
+import swal from "../../common/swal";
+import axios from "axios";
 export default {
   components: {},
   setup() {
@@ -138,35 +186,68 @@ export default {
         },
         { total: "98%", des: "Tỷ lệ học viên có việc làm sau khi tốt nghiệp" },
       ],
-      coursesList: [
-        {
-          name: "Khoá học AI cơ bản",
-          img: "https://nearlearn.com/public/images/ai-training-in-bangalore.jpeg",
-        },
-        {
-          name: "Khoá học Mỹ thuật số nâng cao",
-          img: "https://www.venturelessons.com/wp-content/uploads/2020/05/digital-art-courses-scaled.jpg",
-        },
-        {
-          name: "Nhập môn khoa học máy tính dành cho sinh viên và người sắp đi làm iên và người sắp đi làm",
-          img: "https://som.edu.vn/wp-content/uploads/2023/12/giao-trinh-hoc-may-machine-learning-tao-som-1024x582.jpg",
-        },
-        {
-          name: "Khoá học AI cơ bản",
-          img: "https://nearlearn.com/public/images/ai-training-in-bangalore.jpeg",
-        },
-      ],
+      locations: [],
       blogs: [],
       courses: [],
+      adviceRequest: {
+        fullName: "",
+        email: "",
+        phone: "",
+        address: "",
+        location: "",
+      },
     };
   },
   created() {
     this.fetchBlog();
+    this.fetchLocation();
     this.fetchCourse();
   },
   methods: {
+    postAdviceRequest() {
+      if (
+        this.adviceRequest.fullName.trim() == "" ||
+        this.adviceRequest.email.trim() == "" ||
+        this.adviceRequest.location == "" ||
+        this.adviceRequest.phone.trim() == "" ||
+        this.adviceRequest.address.trim() == ""
+      ) {
+        return swal.error("Please fill full information to get advice!");
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_USER.postAdviceRequest(this.adviceRequest)
+          .then((res) => {
+            swal.success(
+              "Create request successfully! Please wait for us to connect and advise you",
+              3000
+            );
+            this.systemStore.setChangeLoading(false);
+            this.adviceRequest = {
+              fullName: "",
+              email: "",
+              phone: "",
+              address: "",
+              location: "",
+            };
+          })
+          .catch((err) => {
+            this.systemStore.setChangeLoading(false);
+          });
+      }
+    },
     selectBlog(item) {
       this.$emit("selectBlog", item);
+    },
+    fetchLocation() {
+      this.systemStore.setChangeLoading(true);
+      API_LOCATION.getLocations()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.locations = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
     },
     fetchCourse() {
       this.systemStore.setChangeLoading(true);
@@ -198,5 +279,82 @@ export default {
   overflow: hidden;
   -webkit-line-clamp: 2;
   text-overflow: ellipsis;
+}
+
+.adr-cus {
+  background: url("../../assets/images/addvice-request.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  width: 100%;
+}
+
+.input-ad {
+  padding: 10px 10px;
+  outline: none;
+  border-radius: 10px;
+  width: 100%;
+}
+
+#breathing-button {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #3cc8b4;
+  -webkit-animation: breathing 2s ease-out infinite normal;
+  animation: breathing 2s ease-out infinite normal;
+  font-size: 16px;
+  background: #3cc8b4;
+  color: #fff;
+  -webkit-font-smoothing: antialiased;
+  border-radius: 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+@-webkit-keyframes breathing {
+  0% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  25% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+
+  60% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  100% {
+    -webkit-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+}
+
+@keyframes breathing {
+  0% {
+    -webkit-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  25% {
+    -webkit-transform: scale(1);
+    -ms-transform: scale(1);
+    transform: scale(1);
+  }
+
+  60% {
+    -webkit-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+  }
+
+  100% {
+    -webkit-transform: scale(0.9);
+    -ms-transform: scale(0.9);
+    transform: scale(0.9);
+  }
 }
 </style>

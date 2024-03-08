@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <FormSchema
-      v-if="isFetch == true"
+      v-if="fetchCount == 2"
       :schema="schema"
       btn-name="Add"
       page-title="Add Room"
@@ -16,6 +16,7 @@ import swal from "../../common/swal";
 import FormSchema from "../../components/FormSchema.vue";
 import API_CLASS from "../../API/API_CLASS";
 import API_COURSE from "../../API/API_COURSE";
+import API_SEMESTER from "../../API/API_SEMESTER";
 export default {
   components: {
     FormSchema,
@@ -27,11 +28,21 @@ export default {
   data() {
     return {
       schema: schemaConfig.classSchema(),
-      isFetch: false,
+      courses: [],
+      semesters: [],
+      fetchCount: 0,
     };
+  },
+  watch: {
+    fetchCount() {
+      if (this.fetchCount == 2) {
+        this.schema = schemaConfig.classSchema(this.courses, this.semesters);
+      }
+    },
   },
   created() {
     this.fetchCourse();
+    this.fetchSemester();
   },
   methods: {
     handleAddLocation(data) {
@@ -47,13 +58,30 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    fetchSemester() {
+      this.systemStore.setChangeLoading(true);
+      API_SEMESTER.getSemesters()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          let tmpData = res.data;
+          tmpData = tmpData.map((item) => {
+             item["name"] = item?.semesterName;
+             return item
+          });
+          this.semesters = tmpData;
+          this.fetchCount++;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     fetchCourse() {
       this.systemStore.setChangeLoading(true);
       API_COURSE.getCourses()
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.schema = schemaConfig.classSchema(res.data);
-          this.isFetch = true;
+          this.courses = res.data;
+          this.fetchCount++;
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);

@@ -4,7 +4,7 @@ export default class tableConfig {
             { text: "Username", value: "userName", sortable: true },
             { text: "Full Name", value: "fullName", sortable: true, width: 200 },
             { text: "Email", value: "email", sortable: true, width: 250 },
-            { text: "Role", value: "roleName", sortable: true},
+            { text: "Role", value: "roleName", sortable: true },
             { text: "Gender", value: "genderType", sortable: true },
             { text: "Avatar", value: "avatar", sortable: true },
             { text: "Phone", value: "phone", sortable: true },
@@ -79,7 +79,7 @@ export default class tableConfig {
             { text: "Semester Name", value: "semesterName", sortable: true },
             { text: "Start Date", value: "startDate", sortable: true, width: 200 },
             { text: "End Date", value: "endDate", sortable: true, width: 200 },
-            // { text: "Action", value: "operation" }
+            { text: "Action", value: "operation" }
         ]
     }
 
@@ -113,6 +113,7 @@ export default class tableConfig {
             // { text: "Level", value: "level", sortable: true },
             // { text: "Entry Point", value: "entryPoint", sortable: true, width: 140 },
             // { text: "Description", value: "description", sortable: true, width: 300 },
+            { text: "Detail", value: "detail" },
             { text: "Action", value: "operation" }
         ]
     }
@@ -121,6 +122,19 @@ export default class tableConfig {
         return [
             { text: "Name", value: "name", sortable: true, width: 200 },
             { text: "Warranty Date", value: "warrantyDate", sortable: true, width: 200 },
+            { text: "Action", value: "operation" }
+        ]
+    }
+
+    static adviceRequestTable() {
+        return [
+            { text: "Full Name", value: "fullName", sortable: true, width: 200 },
+            { text: "Email", value: "email", sortable: true, width: 200 },
+            { text: "Phone", value: "phone", sortable: true },
+            { text: "Address", value: "address", sortable: true, width: 250 },
+            { text: "Location", value: "location", sortable: true },
+            { text: "Tested", value: "isTested", sortable: true },
+            { text: "Status", value: "statusAdviseRequest", sortable: true },
             { text: "Action", value: "operation" }
         ]
     }
@@ -138,19 +152,19 @@ export default class tableConfig {
     static classTable() {
         return [
             { text: "Class Code", value: "classCode", sortable: true, width: 200 },
-            { text: "Expected Children", value: "expectedNumber", sortable: true, width: 200},
-            { text: "Actual Children", value: "actualNumber", sortable: true, width: 200},
-            { text: "Limit Children", value: "maxNumber", sortable: true, width: 200},
+            { text: "Expected Children", value: "expectedNumber", sortable: true, width: 200 },
+            { text: "Actual Children", value: "actualNumber", sortable: true, width: 200 },
+            { text: "Limit Children", value: "maxNumber", sortable: true, width: 200 },
             { text: "Start Date", value: "startDate", sortable: true, width: 200 },
-            { text: "End Date", value: "endDate", sortable: true, width: 200},
-            { text: "Status", value: "statusOfClass", sortable: true},
+            { text: "End Date", value: "endDate", sortable: true, width: 200 },
+            { text: "Status", value: "statusOfClass", sortable: true },
             { text: "Action", value: "operation" }
         ]
     }
 
     static enrollmentTable() {
         return [
-            
+
         ]
     }
 }

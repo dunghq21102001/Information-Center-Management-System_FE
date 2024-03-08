@@ -47,5 +47,20 @@ export default class API_USER {
         return axios.put(`${API_BASE.BASE_URL}/Children`, data)
     }
 
+    static postAdviceRequest(data) {
+        return axios.post(`${API_BASE.BASE_URL}/AdviseRequest`, data)
+    }
+
+    static getAdviceRequest() {
+        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest`)
+    }
+
+    static putAdviceRequest(data) {
+        return axios.put(`${API_BASE.BASE_URL}/AdviseRequest`, data)
+    }
+
+    static deleteAdviceRequest(id) {
+        return axios.delete(`${API_BASE.BASE_URL}/AdviseRequest?id=${id}`)
+    }
 
 }

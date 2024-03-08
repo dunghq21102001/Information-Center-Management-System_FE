@@ -106,10 +106,11 @@ export default class schemaConfig {
         ]
     }
 
-    static classSchema(courses = []) {
+    static classSchema(courses = [], semesters = []) {
         return [
-            { title: 'Class Code', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Class Code', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
             { title: 'Course', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: courses },
+            { title: 'Semester', field: 'semesterId', value: semesters[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: semesters },
             { title: 'Start Date', field: 'startDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'End Date', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'maxNumber', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },

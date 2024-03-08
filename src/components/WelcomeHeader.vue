@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full sd-cus sticky top-0 left-0 right-0 bg-white">
+  <div class="w-full sd-cus sticky top-0 left-0 right-0 z-50 bg-white">
     <div class="w-[98%] md:w-[90%] mx-auto">
       <div
         class="w-full flex items-center justify-center md:justify-between min-h-[100px]"

@@ -62,6 +62,10 @@ import Enrollment from '../views/Enrollment/Enrollment.vue'
 import Equipments from '../views/Equipments/Equipments.vue'
 import CreateEquipment from '../views/Equipments/Add.vue'
 
+// advice request
+import AdviceRequest from '../views/AdviceRequest/AdviceRequest.vue'
+import CreateAdviceRequest from '../views/AdviceRequest/Add.vue'
+
 // blogs
 import Blogs from '../views/Blogs/Blogs.vue'
 import CreateBlog from '../views/Blogs/Add.vue'
@@ -334,6 +338,24 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
+      }
+    },
+    {
+      path: '/advice-request',
+      name: 'advice-request',
+      component: AdviceRequest,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Staff']
+      }
+    },
+    {
+      path: '/advice-create',
+      name: 'advice-create',
+      component: CreateAdviceRequest,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Staff']
       }
     },
     {
