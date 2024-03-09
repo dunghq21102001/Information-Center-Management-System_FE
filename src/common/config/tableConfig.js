@@ -76,7 +76,7 @@ export default class tableConfig {
 
     static semesterTable() {
         return [
-            { text: "Semester Name", value: "semesterName", sortable: true },
+            { text: "Name", value: "name", sortable: true },
             { text: "Start Date", value: "startDate", sortable: true, width: 200 },
             { text: "End Date", value: "endDate", sortable: true, width: 200 },
             { text: "Action", value: "operation" }
@@ -158,13 +158,25 @@ export default class tableConfig {
             { text: "Start Date", value: "startDate", sortable: true, width: 200 },
             { text: "End Date", value: "endDate", sortable: true, width: 200 },
             { text: "Status", value: "statusOfClass", sortable: true },
+            { text: 'Detail', value: 'detail' },
             { text: "Action", value: "operation" }
+        ]
+    }
+
+    static childrenInClassTable() {
+        return [
+            { text: "Name", value: "nameChildren", sortable: true },
+            // { text: "Action", value: "operation" }
         ]
     }
 
     static enrollmentTable() {
         return [
-
+            { text: "Class Code", value: "classCode", sortable: true, width: 200 },
+            { text: "Register Date", value: "registerDate", sortable: true, width: 200 },
+            { text: "commission", value: "commission", sortable: true },
+            { text: "Children Name", value: "childrenName", sortable: true, width: 200 },
+            // { text: "Action", value: "operation" }
         ]
     }
 }

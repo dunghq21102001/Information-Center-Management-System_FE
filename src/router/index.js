@@ -4,10 +4,12 @@ import AboutView from '../views/AboutView.vue'
 import Dashboard from '../views/Dashboard.vue'
 import Profile from '../views/Profile.vue'
 import PageNotFound from '../views/Page404.vue'
+import PermissionDenied from '../views/PermissionDenied.vue'
 import Login from '../views/Login.vue'
 import Settings from '../views/Settings.vue'
 import Welcome from '../views/Welcome.vue'
 import checkAuth from '../middleware/auth'
+import checkValidRole from '../middleware/role'
 import PaymentResult from '../views/Payment/PaymentResult.vue'
 
 // users
@@ -53,6 +55,7 @@ import CreateDivision from '../views/Division/Add.vue'
 // classes
 import Classes from '../views/Classes/Classes.vue'
 import CreateClass from '../views/Classes/Add.vue'
+import ClassDetail from '../views/Classes/ClassDetail.vue'
 
 // enrollment
 import Enrollment from '../views/Enrollment/Enrollment.vue'
@@ -95,7 +98,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/login',
@@ -127,7 +131,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager', 'Staff']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/user-create',
@@ -136,25 +141,27 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager', 'Staff']
-      }
+      },
+      beforeEnter: checkValidRole
     },
-    {
-      path: '/user-update/:id',
-      name: 'user-update',
-      component: UpdateUser,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
-      }
-    },
+    // {
+    //   path: '/user-update/:id',
+    //   name: 'user-update',
+    //   component: UpdateUser,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager', 'Staff']
+    //   }
+    // },
     {
       path: '/contract',
       name: 'contract',
       component: Contract,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent', 'Teacher']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/today-attendance',
@@ -163,7 +170,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/user-attendance',
@@ -172,7 +180,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/my-calendar',
@@ -216,8 +225,9 @@ const router = createRouter({
       component: Courses,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager']
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/course-create',
@@ -226,8 +236,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/course-detail/:id',
@@ -235,9 +245,9 @@ const router = createRouter({
       component: CourseDetail,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
-
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      },
+      beforeEnter: checkValidRole
     },
     // {
     //   path: '/lessons',
@@ -265,7 +275,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/division-create',
@@ -274,8 +285,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/locations',
@@ -284,7 +295,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/location-create',
@@ -293,7 +305,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/enrollment',
@@ -301,8 +314,9 @@ const router = createRouter({
       component: Enrollment,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Staff', 'Admin']
-      }
+        requiredRole: ['Staff', 'Admin', 'Manager']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/classes',
@@ -310,8 +324,9 @@ const router = createRouter({
       component: Classes,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/class-create',
@@ -319,8 +334,19 @@ const router = createRouter({
       component: CreateClass,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
-      }
+        requiredRole: ['Admin', 'Manager']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/class-detail/:id',
+      name: 'class-detail',
+      component: ClassDetail,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/blogs',
@@ -329,7 +355,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/blog-create',
@@ -338,7 +365,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/advice-request',
@@ -347,7 +375,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Staff']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/advice-create',
@@ -356,7 +385,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Staff']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/semesters',
@@ -365,7 +395,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     // {
     //   path: '/semester-create',
@@ -383,7 +414,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/room-create',
@@ -392,7 +424,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/equipments',
@@ -400,8 +433,9 @@ const router = createRouter({
       component: Equipments,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager']
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/equipment-create',
@@ -409,8 +443,9 @@ const router = createRouter({
       component: CreateEquipment,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager']
-      }
+        requiredRole: ['Admin', 'Manager', 'Staff']
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/chat',
@@ -438,8 +473,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/salary',
@@ -478,6 +513,14 @@ const router = createRouter({
       path: "/:catchAll(.*)",
       name: "not-found",
       component: PageNotFound,
+      meta: {
+        // middleware: checkAuth,
+      }
+    },
+    {
+      path: "/permission-denied",
+      name: "permission-denied",
+      component: PermissionDenied,
       meta: {
         // middleware: checkAuth,
       }

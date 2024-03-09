@@ -1,17 +1,16 @@
 import { useAuthStore } from '../stores/Auth'
 export default function role(to, from, next, router) {
-    const user = JSON.parse(sessionStorage.getItem('auth'))
+    // const user = JSON.parse(localStorage.getItem('userData'))
 
     const authStore = useAuthStore()
-    authStore.setAuth(user)
+    // authStore.setAuth(user)
 
-    const requiredRoles = to.meta.requiredRole;
-    const userRole = authStore.getAuth
+    const requiredRole = to.meta.requiredRole;
+    const userRole = authStore.getAuth?.roleName
 
-    if (userRole?.listRoles?.[0] !== requiredRole) {
+    if (!requiredRole.includes(userRole)) {
         next('/permission-denied')
     } else {
         next()
     }
-
 }

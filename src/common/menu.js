@@ -45,7 +45,7 @@ export default class menu {
                 id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
                     { name: 'Add Class', url: 'class-create' },
                     { name: 'Classes', url: 'classes' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff','Teacher']
             },
             {
                 id: 6, name: 'Attendance', icon: 'md-taskalt', subTab: [

@@ -15,6 +15,7 @@
         :reload="true"
         :enum="true"
         :enum-list="courses"
+        @click-to-row="gotoDetail"
         @reload-action="reloadList"
         @update-action="updateClass"
         @delete-action="deleteClass"
@@ -29,13 +30,15 @@ import API_CLASS from "../../API/API_CLASS.js";
 import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 import API_COURSE from "../../API/API_COURSE.js";
+import { useAuthStore } from "../../stores/Auth.js";
 export default {
   components: {
     NormalTable,
   },
   setup() {
     const systemStore = useSystemStore();
-    return { systemStore };
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
   },
   data() {
     return {
@@ -72,6 +75,9 @@ export default {
           swal.error("Update room failed!");
           this.systemStore.setChangeLoading(false);
         });
+    },
+    gotoDetail(item) {
+      this.$router.push({ name: "class-detail", params: { id: item?.id } });
     },
     reloadList() {
       this.fetchClass();

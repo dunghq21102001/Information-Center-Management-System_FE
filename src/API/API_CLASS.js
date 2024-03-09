@@ -23,6 +23,10 @@ export default class API_CLASS {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?ClassId=${id}`)
     }
 
+    static getChildrenByClassId(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetChildrenByClassId/${id}`)
+    }
+
     static getEnum() {
         return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfRoom`)
     }

@@ -109,6 +109,11 @@
             {{ convertDate(item?.warrantyDate) }}
           </span>
         </template>
+        <template #item-registerDate="item">
+          <span class="block">
+            {{ convertDate(item?.registerDate) }}
+          </span>
+        </template>
         <template #item-content="item">
           <div class="overflow-hidden flex items-center">
             <div v-html="item?.content"></div>
@@ -146,6 +151,11 @@
         <template #item-price="item">
           <span class="block">
             {{ convertToVND(item?.price) }}
+          </span>
+        </template>
+        <template #item-commission="item">
+          <span class="block">
+            {{ convertToVND(item?.commission) }}
           </span>
         </template>
         <template #item-syllabus="item">
@@ -224,13 +234,9 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
-            <button
-              class="mr-4"
-              title="Add course to semester"
-              v-if="isAddByList"
-            >
+            <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
               <v-icon
-                name="si-coursera"
+                name="bi-plus-circle"
                 :scale="1.5"
                 fill="#0871ba"
                 @click="showDataList(item)"
@@ -303,6 +309,11 @@
             {{ convertDate(item?.warrantyDate) }}
           </span>
         </template>
+        <template #item-registerDate="item">
+          <span class="block">
+            {{ convertDate(item?.registerDate) }}
+          </span>
+        </template>
         <template #item-content="item">
           <div class="overflow-hidden flex items-center">
             <div v-html="item?.content"></div>
@@ -336,6 +347,11 @@
         <template #item-price="item">
           <span class="block">
             {{ convertToVND(item?.price) }}
+          </span>
+        </template>
+        <template #item-commission="item">
+          <span class="block">
+            {{ convertToVND(item?.commission) }}
           </span>
         </template>
         <template #item-genderType="item">
@@ -433,13 +449,9 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
-            <button
-              class="mr-4"
-              title="Add course to semester"
-              v-if="isAddByList"
-            >
+            <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
               <v-icon
-                name="si-coursera"
+                name="bi-plus-circle"
                 :scale="1.5"
                 fill="#0871ba"
                 @click="showDataList(item)"
@@ -559,7 +571,7 @@
           />
         </div>
         <FormList
-          :data="dataList"
+          :data-list="dataList"
           :title="dataListTitle"
           @handle-submit-list="submitList"
         />

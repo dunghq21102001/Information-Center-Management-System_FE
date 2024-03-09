@@ -4,7 +4,7 @@
       v-if="fetchCount == 2"
       :schema="schema"
       btn-name="Add"
-      page-title="Add Room"
+      page-title="Add Class"
       @form-submitted="handleAddLocation"
     />
   </div>
@@ -63,12 +63,7 @@ export default {
       API_SEMESTER.getSemesters()
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          let tmpData = res.data;
-          tmpData = tmpData.map((item) => {
-             item["name"] = item?.semesterName;
-             return item
-          });
-          this.semesters = tmpData;
+          this.semesters = res.data;
           this.fetchCount++;
         })
         .catch((err) => {

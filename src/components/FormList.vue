@@ -1,14 +1,23 @@
 <template>
   <div class="w-full mt-5 py-5">
-    <span class="text-[24px] font-bold text-gray-700">{{ title }}</span>
+    <span class="text-[24px] font-bold text-gray-700 block">{{ title }}</span>
+    <input
+      type="text"
+      placeholder="Search..."
+      class="i-cus"
+      v-model="searchValue"
+      @input="handleSearch"
+    />
     <div class="w-full overflow-y-scroll max-h-[75vh] hide-scrollbar">
       <div
         v-for="i in dataProp"
         class="flex items-center justify-between px-3 py-2 brb-cus"
       >
-        <label :for="i?.name" class="block">{{ i?.name }}</label>
+        <label :for="i?.name || i?.fullName" class="block">{{
+          i?.name || i?.fullName
+        }}</label>
         <input
-          :id="i?.name"
+          :id="i?.name || i?.fullName"
           type="checkbox"
           class="cb-cus"
           v-model="i.select"
@@ -27,7 +36,7 @@ import { useSystemStore } from "../stores/System.js";
 export default {
   props: {
     title: String,
-    data: {
+    dataList: {
       type: Array,
       default: [],
     },
@@ -39,7 +48,9 @@ export default {
   data() {
     return {
       isConvertToSelect: false,
-      dataProp: this.data,
+      dataProp: this.dataList,
+      dataBackup: [],
+      searchValue: "",
     };
   },
   created() {
@@ -53,9 +64,28 @@ export default {
         return item;
       });
       this.dataProp = tmpArr;
+      this.dataBackup = tmpArr;
     },
     submit() {
       this.$emit("handleSubmitList", this.dataProp);
+    },
+    handleSearch() {
+      if (this.searchValue.trim() !== "") {
+        this.dataProp = this.dataBackup.filter((item) => {
+          if (item?.name) {
+            return item.name
+              .toLowerCase()
+              .includes(this.searchValue.toLowerCase());
+          }
+          if (item?.fullName) {
+            return item.fullName
+              .toLowerCase()
+              .includes(this.searchValue.toLowerCase());
+          }
+        });
+      } else {
+        this.dataProp = [...this.dataBackup];
+      }
     },
   },
 };

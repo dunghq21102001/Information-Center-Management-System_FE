@@ -39,6 +39,10 @@ export default class API_USER {
         return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ChangeStatus`, data)
     }
 
+    static getChildrenByStaff() {
+        return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrensByStaffId`)
+    }
+
     static postChildren(data) {
         return axios.post(`${API_BASE.BASE_URL}/Children`, data)
     }
