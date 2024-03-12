@@ -3,7 +3,8 @@
     <FormSchema
       v-if="fetchCount == 2"
       :schema="courseSchema"
-      btn-name="Add"
+      btn-name="Tạo"
+      page-title="Tạo khoá học"
       @form-submitted="handleAddCourse"
     />
   </div>

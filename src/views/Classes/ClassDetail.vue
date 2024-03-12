@@ -127,11 +127,11 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.getChildrenByClass(this.$route.params.id);
-          swal.success("Add children to class successfully!");
+          swal.success("Thêm trẻ vào lớp thành công");
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Something went wrong! Please try again");
+          swal.error("Có lỗi xảy ra! Vui lòng thử lại");
         });
     },
     reloadList() {

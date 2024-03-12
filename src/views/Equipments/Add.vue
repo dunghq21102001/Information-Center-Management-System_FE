@@ -10,15 +10,15 @@
     <FormSchema
       v-if="currentTab == 'Category'"
       :schema="schema"
-      btn-name="Add"
-      page-title="Add Equipment Category"
+      btn-name="Tạo"
+      page-title="Tạo danh mục thiết bị"
       @form-submitted="handleAddCateEquipment"
     />
     <FormSchema
       v-else-if="currentTab == 'Equipment' && fetchCount == 3"
       :schema="schemaEquipment"
-      btn-name="Add"
-      page-title="Add Equipment"
+      btn-name="Tạo"
+      page-title="Tạo thiết bị"
       @form-submitted="handleAddEquipment"
     />
   </div>
@@ -71,7 +71,7 @@ export default {
       this.systemStore.setChangeLoading(true);
       API_EQUIPMENT.postCategoryEquipment(data)
         .then((res) => {
-          swal.success("Added successfully");
+          swal.success("Thêm thành công");
           this.systemStore.setChangeLoading(false);
           this.$router.push({ name: "equipments" });
         })
@@ -84,7 +84,7 @@ export default {
       this.systemStore.setChangeLoading(true);
       API_EQUIPMENT.postEquipments(data)
         .then((res) => {
-          swal.success("Added successfully");
+          swal.success("Thêm thành công");
           this.systemStore.setChangeLoading(false);
           this.$router.push({ name: "equipments" });
         })

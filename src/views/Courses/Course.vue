@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Courses</span>
+    <span class="text-[28px] font-bold block text-gray-700">Khoá học</span>
 
     <div class="w-[90%] mx-auto">
       <NormalTable
@@ -71,7 +71,7 @@ export default {
           this.fetchCourses();
         })
         .catch((err) => {
-          swal.error("Update room failed!");
+          swal.error("Cập nhật thất bại!");
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -142,19 +142,19 @@ export default {
     },
     deleteCourse(item) {
       swal
-        .confirm("Are you sure you want to delete this course?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_COURSE.deleteCourse(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchCourses();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

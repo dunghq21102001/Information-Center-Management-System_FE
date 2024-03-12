@@ -74,19 +74,19 @@ import API_DIVISION from "../../API/API_DIVISION";
       },
       deleteDivision(item) {
         swal
-          .confirm("Are you sure you want to delete this division?")
+          .confirm("Bạn có chắc chắn muốn xoá không?")
           .then((result) => {
             if (result.value) {
               this.systemStore.setChangeLoading(true);
               API_DIVISION.deleteDivision(item?.id)
                 .then((res) => {
                   this.systemStore.setChangeLoading(false);
-                  swal.success("Deleted successfully!");
+                  swal.success("Xoá thành công!");
                   this.fetchDivisions();
                 })
                 .catch((err) => {
                   this.systemStore.setChangeLoading(false);
-                  swal.error("Delete failed! Please try again", 2500);
+                  swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
                 });
             }
           });

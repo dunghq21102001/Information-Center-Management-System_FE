@@ -128,7 +128,7 @@ export default {
       })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          swal.success("Login successfully");
+          swal.success("Đăng nhập thành công");
           this.authStore.setAuth(res.data);
           localStorage.setItem("token", res.data?.token);
           const userData = JSON.stringify(res.data);

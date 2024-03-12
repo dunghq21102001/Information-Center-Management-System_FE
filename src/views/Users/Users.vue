@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Users</span>
+    <span class="text-[28px] font-bold block text-gray-700">Người dùng</span>
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="users"
@@ -147,7 +147,7 @@ export default {
             API_USER.postChildren(data)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("New children created successfully!");
+                swal.success("Tạo mới trẻ thành công");
                 this.fetchUsers()
               })
               .catch((err) => {
@@ -164,14 +164,14 @@ export default {
     },
     deleteUser(item) {
       swal
-        .confirm("Are you sure you want to delete this user?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_USER.deleteUser(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchUsers();
               })
               .catch((err) => {

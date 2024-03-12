@@ -54,7 +54,7 @@ export default {
           newPasswordHash: this.pass1,
         })
           .then((res) => {
-            swal.success("Change password successfully!");
+            swal.success("Đổi mật khẩu thành công!");
             this.systemStore.setChangeLoading(false);
           })
           .catch((err) => {

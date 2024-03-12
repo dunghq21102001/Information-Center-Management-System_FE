@@ -10,15 +10,15 @@
     <FormSchema
       v-if="currentTab == 'Blog'"
       :schema="schema"
-      page-title="Add Blog"
-      btn-name="Add"
+      page-title="Tạo bài viết"
+      btn-name="Tạo"
       @form-submitted="handleAddPost"
     />
     <FormSchema
       v-else
-      page-title="Add Tag"
+      page-title="Tạo nhãn"
       :schema="tagSchema"
-      btn-name="Add"
+      btn-name="Tạo"
       @form-submitted="handleAddTag"
     />
   </div>

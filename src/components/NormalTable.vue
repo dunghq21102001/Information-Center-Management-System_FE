@@ -28,10 +28,16 @@
       </div>
       <div class="flex items-center flex-wrap justify-end">
         <div v-if="reloadProp" class="h-[40px] mt-3 cursor-pointer mr-1">
-          <v-icon @click="reloadAction" name="co-reload" scale="2" />
+          <v-icon
+            v-tooltip="'Tải lại dữ liệu'"
+            @click="reloadAction"
+            name="co-reload"
+            scale="2"
+          />
         </div>
         <div v-if="excelProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
+            v-tooltip="'Tải xuống Excel'"
             :data="dataProp"
             :fields="fieldsExport"
             worksheet="Worksheet 1"
@@ -42,6 +48,7 @@
         </div>
         <div v-if="csvProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
+            v-tooltip="'Tải xuống CSV'"
             :data="dataProp"
             :fields="fieldsExport"
             worksheet="Worksheet 1"
@@ -57,28 +64,28 @@
           :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
           @click="showFormBuying"
         >
-          Buy now
+          Mua ngay
         </button>
         <button
           v-if="isChangeStatus && itemsSelected.length > 0"
           class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           @click="updateStatusAccount"
         >
-          Update status
+          Đổi trạng thái
         </button>
         <button
           v-if="isAddSemester"
           class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           @click="addSemester"
         >
-          Add semester
+          Thêm Kỳ mới
         </button>
         <button
           v-if="isAddProp != ''"
           class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           @click="goToAddNew"
         >
-          Add New
+          Thêm mới
         </button>
       </div>
     </div>
@@ -90,6 +97,7 @@
         theme-color="#007d88"
         :headers="headerProp"
         buttons-pagination
+        :rows-per-page="4"
         :items="dataProp"
         show-index
         :search-field="selectedField"
@@ -100,7 +108,7 @@
             <img
               :src="item?.image"
               class="w-full object-cover"
-              alt="user image"
+              alt="Ảnh người dùng"
             />
           </div>
         </template>
@@ -122,7 +130,7 @@
         <template #item-status="item">
           <div
             v-if="item.status == 'Enable' || item.status == 'Disable'"
-            class="border-[1px] border-solid px-3 py-1 rounded-md"
+            class="border-[1px] text-center border-solid px-3 py-1 rounded-md"
             :class="
               item.status == 'Enable' ? 'border-green-600' : 'border-red-500'
             "
@@ -144,7 +152,7 @@
             <img
               :src="item?.avatar"
               class="w-full object-cover"
-              alt="user image"
+              alt="Ảnh người dùng"
             />
           </div>
         </template>
@@ -174,7 +182,7 @@
               @click="handleGetDetail(item)"
               class="hover:underline text-blue-500 cursor-pointer"
             >
-              Detail
+              Chi tiết
             </span>
           </div>
         </template>
@@ -187,16 +195,16 @@
           <div
             class="px-3 py-1 rounded-md flex items-center justify-center border-[1px] border-solid"
             :class="
-              item?.genderType == 'Male' ? 'border-blue-600' : 'border-pink-600'
+              item?.genderType == 'Nam' ? 'border-blue-600' : 'border-pink-600'
             "
           >
             <span
               class="block font-bold"
               :class="
-                item?.genderType == 'Male' ? 'text-blue-600' : 'text-pink-600'
+                item?.genderType == 'Nam' ? 'text-blue-600' : 'text-pink-600'
               "
             >
-              {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+              {{ item?.genderType == "Nam" ? "♂️" : "♀️" }}
             </span>
           </div>
         </template>
@@ -215,6 +223,18 @@
             {{ convertDate(item?.creationDate) }}
           </span>
         </template>
+        <template #item-isTested="item">
+          <span
+            class="block border-[1px] border-solid px-2 py-1 rounded-md text-center"
+            :class="
+              item.isTested == true
+                ? 'border-green-600 text-green-600'
+                : 'border-red-500 text-red-500'
+            "
+          >
+            {{ item?.isTested == true ? "Đã test" : "Chưa test" }}
+          </span>
+        </template>
         <template #item-operation="item">
           <div class="operation-wrapper flex items-center justify-start">
             <!-- <button
@@ -226,7 +246,11 @@
               @click="goToVNPay"
                name="bi-cart-plus-fill" :scale="1.5" fill="#38676f" />
             </button> -->
-            <button class="mr-4" title="Add course" v-if="isAddChildCourse">
+            <button
+              class="mr-4"
+              v-tooltip="'Thêm khoá học con'"
+              v-if="isAddChildCourse"
+            >
               <v-icon
                 name="si-coursera"
                 :scale="1.5"
@@ -234,7 +258,7 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
-            <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
+            <button class="mr-4" v-tooltip="dataListTitle" v-if="isAddByList">
               <v-icon
                 name="bi-plus-circle"
                 :scale="1.5"
@@ -243,7 +267,7 @@
               />
             </button>
             <button
-              title="Add children"
+              v-tooltip="'Thêm trẻ'"
               v-if="item?.roleName == 'Parent'"
               class="mr-3"
             >
@@ -254,7 +278,11 @@
                 fill="#3398db"
               />
             </button>
-            <button class="mr-4" title="Reset password" v-if="isResetPassProp">
+            <button
+              class="mr-4"
+              v-tooltip="'Đặt lại mật khẩu'"
+              v-if="isResetPassProp"
+            >
               <v-icon
                 @click="resetPassword(item)"
                 name="md-lockreset-outlined"
@@ -262,7 +290,7 @@
                 fill="#0871ba"
               />
             </button>
-            <button title="Edit" v-if="isUpdateProp" class="mr-3">
+            <button v-tooltip="'Cập nhật'" v-if="isUpdateProp" class="mr-3">
               <v-icon
                 @click="editAction(item)"
                 name="fa-regular-edit"
@@ -270,7 +298,7 @@
                 fill="#2ae549"
               />
             </button>
-            <button title="Delete" v-if="isDeleteProp">
+            <button v-tooltip="'Xoá'" v-if="isDeleteProp">
               <v-icon
                 @click="deleteAction(item)"
                 name="md-delete"
@@ -289,6 +317,7 @@
         theme-color="#007d88"
         :headers="headerProp"
         buttons-pagination
+        :rows-per-page="4"
         :items="dataProp"
         show-index
         :search-field="selectedField"
@@ -300,7 +329,7 @@
             <img
               :src="item?.image"
               class="w-full object-cover"
-              alt="user image"
+              alt="Ảnh người dùng"
             />
           </div>
         </template>
@@ -321,7 +350,7 @@
         </template>
         <template #item-status="item">
           <div
-            class="border-[1px] border-solid px-3 py-1 rounded-md"
+            class="border-[1px] border-solid text-center px-3 py-1 rounded-md"
             :class="
               item.status == 'Enable' ? 'border-green-600' : 'border-red-500'
             "
@@ -340,7 +369,7 @@
             <img
               :src="item?.avatar"
               class="w-full object-cover"
-              alt="user image"
+              alt="Ảnh người dùng"
             />
           </div>
         </template>
@@ -358,16 +387,16 @@
           <div
             class="px-3 py-1 rounded-md flex items-center justify-center border-[1px] border-solid"
             :class="
-              item?.genderType == 'Male' ? 'border-blue-600' : 'border-pink-600'
+              item?.genderType == 'Nam' ? 'border-blue-600' : 'border-pink-600'
             "
           >
             <span
               class="block font-bold"
               :class="
-                item?.genderType == 'Male' ? 'text-blue-600' : 'text-pink-600'
+                item?.genderType == 'Nam' ? 'text-blue-600' : 'text-pink-600'
               "
             >
-              {{ item?.genderType == "Male" ? "♂️" : "♀️" }}
+              {{ item?.genderType == "Nam" ? "♂️" : "♀️" }}
             </span>
           </div>
         </template>
@@ -404,6 +433,18 @@
         <template #item-creationDate="item">
           <span class="block">
             {{ convertDate(item?.creationDate) }}
+          </span>
+        </template>
+        <template #item-isTested="item">
+          <span
+            class="block border-[1px] border-solid px-2 py-1 rounded-md text-center"
+            :class="
+              item.isTested == true
+                ? 'border-green-600 text-green-600'
+                : 'border-red-500 text-red-500'
+            "
+          >
+            {{ item?.isTested == true ? "Đã test" : "Chưa test" }}
           </span>
         </template>
         <template #item-dateOfBirth="item">
@@ -441,7 +482,11 @@
         </template>
         <template #item-operation="item">
           <div class="operation-wrapper flex items-center justify-start">
-            <button class="mr-4" title="Add course" v-if="isAddChildCourse">
+            <button
+              class="mr-4"
+              v-tooltip="'Thêm khoá học con'"
+              v-if="isAddChildCourse"
+            >
               <v-icon
                 name="si-coursera"
                 :scale="1.5"
@@ -458,7 +503,7 @@
               />
             </button>
             <button
-              title="Add children"
+              v-tooltip="'Thêm trẻ'"
               v-if="item?.roleName == 'Parent'"
               class="mr-3"
             >
@@ -469,7 +514,11 @@
                 fill="#3398db"
               />
             </button>
-            <button class="mr-4" title="Reset password" v-if="isResetPassProp">
+            <button
+              class="mr-4"
+              v-tooltip="'Đặt lại mật khẩu'"
+              v-if="isResetPassProp"
+            >
               <v-icon
                 @click="resetPassword(item)"
                 name="md-lockreset-outlined"
@@ -477,7 +526,7 @@
                 fill="#0871ba"
               />
             </button>
-            <button title="Edit" v-if="isUpdateProp" class="mr-3">
+            <button v-tooltip="'Cập nhật'" v-if="isUpdateProp" class="mr-3">
               <v-icon
                 @click="editAction(item)"
                 name="fa-regular-edit"
@@ -485,7 +534,7 @@
                 fill="#2ae549"
               />
             </button>
-            <button title="Delete" v-if="isDeleteProp">
+            <button v-tooltip="'Xoá'" v-if="isDeleteProp">
               <v-icon
                 @click="deleteAction(item)"
                 name="md-delete"
@@ -519,7 +568,7 @@
         <FormSchema
           v-show="selectedSchemaRow != null"
           :schema="selectedSchemaRow"
-          btn-name="Save"
+          btn-name="Lưu"
           @form-submitted="handleUpdateSchema"
         />
       </div>
@@ -546,7 +595,7 @@
         <FormSchema
           v-show="addNewSchema != null"
           :schema="addNewSchema"
-          btn-name="Save"
+          btn-name="Lưu"
           @form-submitted="handleAddNewSchema"
         />
       </div>
@@ -787,10 +836,10 @@ export default {
       API_USER.resetPassword(data)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          swal.success("Reset password successfully");
+          swal.success("Đặt lại mật khẩu thành công");
         })
         .catch((err) => {
-          swal.error("Something went wrong! Please try again");
+          swal.error("Có lỗi xảy ra! Vui lòng thử lại");
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -847,7 +896,9 @@ export default {
             key != "courses" &&
             key != "courseType" &&
             key != "courseId" &&
-            key != "actualNumber"
+            key != "actualNumber" &&
+            key != "childrenProfiles" &&
+            key != "locationName"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -859,7 +910,7 @@ export default {
     },
     showAddNewCourse(item) {
       if (item?.courseType == "Single")
-        return swal.error("Single courses cannot create child courses", 2500);
+        return swal.error("Khoá học đơn không thể tạo khoá học con!", 2500);
       this.isAddNew = true;
       this.addNewSchema = schemaConfig.courseSchema(
         this.courses,
@@ -908,6 +959,12 @@ export default {
         //     .catch((err) => {});
         // }
         else if (item.field == "status" && this.enum == true) {
+          if (this.enumList) {
+            this.enumList.map((i) => {
+              if (i?.display == item.value) return (item.value = i?.value);
+            });
+          }
+
           item["type"] = "select";
           item["listData"] = this.enumList;
         } else if (item.field == "syllabus") {
@@ -918,7 +975,7 @@ export default {
           item["title"] = "Training Program Category";
         } else if (item.field == "genderType") {
           item["type"] = "radio";
-          item["listData"] = ["Male", "Female"];
+          item["listData"] = ["Nam", "Nữ"];
         } else if (item.field == "dateOfBirth") {
           item["type"] = "date";
         } else if (item.field == "content") {
@@ -936,6 +993,11 @@ export default {
           item["title"] = "Course";
           item["type"] = "select";
           item["listData"] = this.courses;
+        } else if (item.field == "isTested") {
+          item["title"] = "Tested";
+          item["type"] = "radio";
+          item["listData"] = ["True", "False"];
+          item["value"] = item.value == true ? "True" : "False";
         } else item["type"] = "text";
 
         return item;

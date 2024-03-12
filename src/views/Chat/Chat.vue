@@ -534,7 +534,7 @@ export default {
     },
     sendMessage() {
       if (this.currentClientId == "" || this.currentClientId == null) {
-        return swal.error("Let's add new users to chat!");
+        return swal.error("Hãy thêm người dùng mới để bắt đầu trò chuyện!", 2500);
       }
       if (this.messageText.trim() == "" || this.messageText.trim() == null)
         return;

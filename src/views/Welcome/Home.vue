@@ -212,13 +212,13 @@ export default {
         this.adviceRequest.phone.trim() == "" ||
         this.adviceRequest.address.trim() == ""
       ) {
-        return swal.error("Please fill full information to get advice!");
+        return swal.error("Bạn phải điền tất cả thông tin để đăng ký tư vấn");
       } else {
         this.systemStore.setChangeLoading(true);
         API_USER.postAdviceRequest(this.adviceRequest)
           .then((res) => {
             swal.success(
-              "Create request successfully! Please wait for us to connect and advise you",
+              "Bạn đã đăng ký tư vấn thành công! Vui lòng chờ đợi chúng tôi liên lạc qua email hoặc số điện thoại",
               3000
             );
             this.systemStore.setChangeLoading(false);
@@ -231,6 +231,7 @@ export default {
             };
           })
           .catch((err) => {
+            swal.error(err.response?.data);
             this.systemStore.setChangeLoading(false);
           });
       }

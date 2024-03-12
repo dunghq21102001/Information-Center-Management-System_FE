@@ -56,7 +56,7 @@ export default class API_USER {
     }
 
     static getAdviceRequest() {
-        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest`)
+        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/AdviseRequests`)
     }
 
     static putAdviceRequest(data) {
@@ -65,6 +65,14 @@ export default class API_USER {
 
     static deleteAdviceRequest(id) {
         return axios.delete(`${API_BASE.BASE_URL}/AdviseRequest?id=${id}`)
+    }
+
+    static getChildrenByParentId(id) {
+        return
+    }
+
+    static getClassesByChildrenId(id) {
+        return
     }
 
 }

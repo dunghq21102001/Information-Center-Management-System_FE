@@ -109,7 +109,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchCategoryEquipment();
-          swal.success("Update category successfully!");
+          swal.success("Cập nhật thành công");
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false)
@@ -122,7 +122,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchEquipment();
-          swal.success("Update equipment successfully!");
+          swal.success("Cập nhật thành công");
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false)
@@ -131,38 +131,38 @@ export default {
     },
     deleteEquipment(item) {
       swal
-        .confirm("Are you sure you want to delete this category?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_EQUIPMENT.deleteEquipment(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchEquipment();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });
     },
     deleteCategory(item) {
       swal
-        .confirm("Are you sure you want to delete this category?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_EQUIPMENT.deleteCategoryEquipment(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchCategoryEquipment();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

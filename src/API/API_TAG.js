@@ -4,7 +4,7 @@ export default class API_TAG {
     static BASE_PATH = 'Tag'
 
     static getTags() {
-        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/Tags`)
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/BlogTags`)
     }
 
     static getTagById(id) {

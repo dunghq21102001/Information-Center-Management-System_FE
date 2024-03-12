@@ -8,7 +8,7 @@ export default class API_COURSE {
     }
 
     static getCourseById(id) {
-        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetCourseById?id=${id}`)
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetCourseById/${id}`)
     }
 
     static postCourse(data) {

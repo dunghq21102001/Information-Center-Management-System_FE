@@ -2,9 +2,9 @@
   <div class="w-full">
     <FormSchema
       :schema="schema"
-      btn-name="Add"
+      btn-name="Tạo"
       @form-submitted="handleAddSemester"
-      page-title="Add Semester"
+      page-title="Tạo kì"
     />
   </div>
 </template>

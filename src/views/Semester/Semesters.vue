@@ -60,11 +60,11 @@ export default {
         courseId: tmp,
       })
         .then((res) => {
-          swal.success("Add successfully!");
+          swal.success("Thêm thành công");
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
-          swal.error("Add failed! Please try again!");
+          swal.error("Thêm thất bại! Vui lòng thử lại");
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -100,7 +100,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Update semester failed! Please try again");
+          swal.error("Cập nhật thất bại! Vui lòng thử lại");
         });
     },
     reloadList() {
@@ -121,19 +121,19 @@ export default {
     },
     deleteSemester(item) {
       swal
-        .confirm("Are you sure you want to delete this semester?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_SEMESTER.deleteSemester(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchSemester();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

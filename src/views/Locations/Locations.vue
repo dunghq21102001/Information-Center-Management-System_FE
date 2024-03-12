@@ -65,7 +65,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Update location failed! Please try again");
+          swal.error("Cập nhật thất bại! Vui lòng thử lại");
         });
     },
     reloadList() {
@@ -73,19 +73,19 @@ export default {
     },
     deleteLocation(item) {
       swal
-        .confirm("Are you sure you want to delete this location?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_LOCATION.deleteLocation(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công!");
                 this.fetchLocations();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

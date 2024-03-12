@@ -3,8 +3,8 @@
     <FormSchema
       v-if="isFetchEnum"
       :schema="schema"
-      btn-name="Add"
-      page-title="Add Room"
+      btn-name="Tạo"
+      page-title="Tạo phòng học"
       @form-submitted="handleAddLocation"
     />
   </div>

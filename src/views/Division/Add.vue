@@ -2,8 +2,8 @@
   <div class="w-full">
     <FormSchema
       :schema="schema"
-      btn-name="Add"
-      page-title="Add Division"
+      btn-name="Tạo"
+      page-title="Tạo phòng chuyên môn"
       @form-submitted="handleAdd"
     />
   </div>

@@ -45,16 +45,16 @@
               v-model="data.genderType"
               type="radio"
               id="male"
-              value="Male"
-            /><label class="ml-2" for="male">Male</label>
+              value="Nam"
+            /><label class="ml-2" for="male">Nam</label>
           </div>
           <div class="flex items-center">
             <input
               v-model="data.genderType"
               type="radio"
               id="female"
-              value="Female"
-            /><label class="ml-2" for="female">Female</label>
+              value="Nữ"
+            /><label class="ml-2" for="female">Nữ</label>
           </div>
         </div>
       </div>
@@ -166,11 +166,11 @@ export default {
         this.data.dateOfBirth.trim() == ""
       ) {
         return swal.error(
-          "You should fill all information to update your profile"
+          "Bạn phải điền tất cả thông tin để cập nhật thông tin cá nhân"
         );
       }
       if (!this.isValidPhoneNumber(this.data.phone))
-        return swal.error("Invalid phone number!");
+        return swal.error("Số điện thoại không hợp lệ!");
       this.systemStore.setChangeLoading(true);
       API_USER.putUser(this.data)
         .then((res) => {

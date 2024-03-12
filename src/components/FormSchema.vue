@@ -9,7 +9,7 @@
         :key="item.title"
         :class="`col-span-12 ${
           item.w == 1 ? 'md:col-span-6' : 'md:col-span-12'
-        } ${item.title == 'Id' ? 'hidden' : ''}`"
+        } ${item.title == 'Id' || item.title == 'Location' ? 'hidden' : ''}`"
       >
         <label>{{ item.title }}</label>
         <input
@@ -222,7 +222,7 @@ export default {
           formDataObject["content"] = this.$refs.quill[0]?.getHTML();
         this.$emit("form-submitted", formDataObject);
       } else
-        return swal.error("You must fill in all necessary information!", 3000);
+        return swal.error("Bạn cần phải điền tất cả thông tin cần thiết", 3000);
     },
     validateForm() {
       this.isValid = true;
@@ -236,9 +236,15 @@ export default {
             if (!this.isValidPhoneNumber(item.value)) {
               item.error = true;
               this.isValid = false;
-              item.errMes = "Phone is not valid!";
+              item.errMes = "Số điện thoại không hợp lệ";
             } else {
               item.error = false;
+            }
+          } else if (item.field == "tags") {
+            if (item.value.length == 0) {
+              item.error = true
+              this.isValid = false;
+              item.errMes = "Bạn phải chọn ít nhất 1 nhãn cho blog";
             }
           } else {
             if (
@@ -277,7 +283,7 @@ export default {
       if (!this.validateImage(files)) {
         event.target.value = null;
         swal.error(
-          "You can only choose images in jpg/ jpeg/ png/ gif format",
+          "Chỉ có thể chọn ảnh với các định dạng sau: jpg/ jpeg/ png/ gif",
           2500
         );
         return;
@@ -316,7 +322,7 @@ export default {
       const files = event.target.files;
       if (!this.validatePDF(files)) {
         event.target.value = null;
-        swal.error("You can only select PDF files", 2500);
+        swal.error("Chỉ có thể chọn file PDF", 2500);
         return;
       }
       this.schemaProp.forEach((item) => {
@@ -340,7 +346,7 @@ export default {
       if (item[0]?.display) fieldName = "display";
       if (item[0]?.tagName) fieldName = "tagName";
       if (item[0]?.semesterName) fieldName = "semesterName";
-      
+
       return fieldName;
     },
     getDisplayValue(item) {

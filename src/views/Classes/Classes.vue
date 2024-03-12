@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Classes</span>
+    <span class="text-[28px] font-bold block text-gray-700">Lớp học</span>
 
     <div class="w-[90%] mx-auto">
       <NormalTable
@@ -9,9 +9,9 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
-        is-add="room-create"
-        excel="room-data"
-        csv="room-data"
+        is-add="class-create"
+        excel="class-data"
+        csv="class-data"
         :reload="true"
         :enum="true"
         :enum-list="courses"
@@ -72,7 +72,7 @@ export default {
           this.fetchClass();
         })
         .catch((err) => {
-          swal.error("Update room failed!");
+          swal.error("Cập nhật thất bại! Vui lòng thử lại");
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -84,19 +84,19 @@ export default {
     },
     deleteClass(item) {
       swal
-        .confirm("Are you sure you want to delete this class?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_CLASS.deleteClass(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công");
                 this.fetchClass();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

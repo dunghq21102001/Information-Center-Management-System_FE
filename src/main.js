@@ -15,13 +15,25 @@ import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 import CanvasJSChart from '@canvasjs/vue-charts';
 import { OhVueIcon, addIcons } from "oh-vue-icons";
+
+import {
+    // Directives
+    vTooltip,
+    vClosePopper,
+    // Components
+    Dropdown,
+    Tooltip,
+    Menu
+  } from 'floating-vue'
+  import 'floating-vue/dist/style.css'
+
 import JsonExcel from "vue-json-excel3";
-import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare, MdImageaspectratioSharp, BiQuestionCircleFill, HiDocumentText, SiGoogleclassroom, ViFileTypeKey, FaTasks, BiPlusCircle } from "oh-vue-icons/icons"
+import { RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare, MdImageaspectratioSharp, BiQuestionCircleFill, HiDocumentText, SiGoogleclassroom, ViFileTypeKey, FaTasks, BiPlusCircle, GiArchiveRegister } from "oh-vue-icons/icons"
 
 const app = createApp(App)
 
 
-addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare, MdImageaspectratioSharp, BiQuestionCircleFill, HiDocumentText, SiGoogleclassroom, ViFileTypeKey, FaTasks, BiPlusCircle )
+addIcons(RiMenu2Line, IoNotifications, MdSpacedashboardOutlined, FaFileContract, HiUserGroup, BiCalendarWeek, CoRoom, LaMoneyCheckAltSolid, MdKeyboardarrowdown, MdKeyboardarrowright, GiReceiveMoney, GiPayMoney, GiBookCover, FaRegularEdit, MdDelete, MdTaskalt, SiCoursera, MdHighlightoffRound, BiCheckCircle, BiCircleHalf, FaUserAlt, FaKey, CoGmail, BiEyeFill, BiEyeSlashFill, CoHamburgerMenu, IoCloseOutline, IoLocationSharp, HiSolidDocumentReport, HiDownload, IoSettingsSharp, HiNewspaper, BiChatDotsFill, BiEmojiSmileFill, BiCartPlusFill, GiBookshelf, MdPlaylessonRound, PxDevices, ViFileTypeExcel, LaFileCsvSolid, CoReload, MdLockresetOutlined, BiDiagram3Fill, MdChildcare, MdImageaspectratioSharp, BiQuestionCircleFill, HiDocumentText, SiGoogleclassroom, ViFileTypeKey, FaTasks, BiPlusCircle, GiArchiveRegister )
 window.axios = axios
 window.axios.defaults.headers.common = { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
 
@@ -34,6 +46,13 @@ app.component('EasyDataTable', Vue3EasyDataTable);
 app.component('vue-cal', VueCal);
 app.component('VueDatePicker', VueDatePicker);
 app.component("downloadExcel", JsonExcel);
+
+app.directive('tooltip', vTooltip)
+app.directive('close-popper', vClosePopper)
+
+app.component('VDropdown', Dropdown)
+app.component('VTooltip', Tooltip)
+app.component('VMenu', Menu)
 
 // use
 app.use(VueSweetalert2)

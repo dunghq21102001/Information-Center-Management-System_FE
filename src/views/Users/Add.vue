@@ -3,9 +3,9 @@
     <FormSchema
       v-if="rolesFetched"
       :schema="userSchema"
-      btn-name="Add"
+      btn-name="Tạo"
       @form-submitted="handleAddUser"
-      page-title="Add User"
+      page-title="Tạo người dùng"
     />
   </div>
 </template>
@@ -83,7 +83,7 @@ export default {
       if (this.authStore.getAuth?.roleName == "Staff") {
         this.rolesFetched = true;
         this.userSchema = schemaConfig.userSchema(
-          ["Male", "Female"],
+          ["Nam", "Nữ"],
           [
             {
               id: "d5fa55c7-315d-4634-9c73-08dbbc3f3a54",
@@ -98,7 +98,7 @@ export default {
             this.systemStore.setChangeLoading(false);
             this.rolesFetched = true;
             this.userSchema = schemaConfig.userSchema(
-              ["Male", "Female"],
+              ["Nam", "Nữ"],
               res.data
             );
           })

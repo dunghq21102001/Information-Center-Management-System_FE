@@ -165,7 +165,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Updated fail! Please try again");
+          swal.error("Cập nhật thất bại! Vui lòng thử lại");
         });
     },
     async updateTP(data) {
@@ -214,13 +214,13 @@ export default {
           })
           .catch((err) => {
             this.systemStore.setChangeLoading(false);
-            swal.error("Updated fail! Please try again");
+            swal.error("Cập nhật thất bại! Vui lòng thử lại");
           });
       }
     },
     deleteTP(item) {
       swal
-        .confirm("Are you sure you want to delete this training program?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
@@ -232,7 +232,7 @@ export default {
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });
@@ -240,7 +240,7 @@ export default {
     deleteCate(item) {
       swal
         .confirm(
-          "Are you sure you want to delete this training program category?"
+          "Bạn có chắc chắn muốn xoá không?"
         )
         .then((result) => {
           if (result.value) {
@@ -253,7 +253,7 @@ export default {
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });

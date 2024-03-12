@@ -1,27 +1,20 @@
 export default class schemaConfig {
     static userSchema(genderData = [], roleData = []) {
         return [
-            { title: 'Full name', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'User name', field: 'userName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Tên đăng nhập', field: 'userName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Gender', field: 'genderType', value: '', type: 'radio', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: genderData },
-            { title: 'Phone', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Role', field: 'roleId', value: roleData[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: roleData },
-            { title: 'Address', field: 'address', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Avatar', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Giới tính', field: 'genderType', value: 'Nam', type: 'radio', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: genderData },
+            { title: 'Điện thoại', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Vị trí', field: 'roleId', value: roleData[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: roleData },
+            { title: 'Địa chỉ', field: 'address', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Ảnh đại diện', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
-    // {
-    //     "userId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    //     "fullName": "string",
-    //     "birthDay": "string",
-    //     "image": "string",
-    //     "specialSkill": "string"
-    //   }
 
     static childrenSchema() {
         return [
-            { title: 'Full name', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Birthday', field: 'birthDay', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Special Skill', field: 'specialSkill', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
             // { title: 'Gender', field: 'genderType', value: '', type: 'radio', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: genderData },
@@ -39,6 +32,18 @@ export default class schemaConfig {
         ]
     }
 
+    static adviceRequest(locations = [], testData = []) {
+        return [
+            { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Điện thoại', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Thi đầu vào', field: 'tested', value: 'False', type: 'radio', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: testData },
+            { title: 'Khu vực', field: 'location', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2, listData: locations },
+            { title: 'Địa chỉ', field: 'address', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+
+        ]
+    }
+
     static TrainingProgramCategorySchema() {
         return [
             { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
@@ -49,8 +54,8 @@ export default class schemaConfig {
 
     static locationSchema() {
         return [
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Address', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Tên khu vực', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Địa chỉ', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 
@@ -64,39 +69,39 @@ export default class schemaConfig {
 
     static blogSchema(tags) {
         return [
-            { title: 'Title', field: 'title', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Tag', field: 'tags', value: [], type: 'multiSelect', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: tags },
-            { title: 'Image', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Content', field: 'content', value: '', type: 'quill', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Tiêu đề', field: 'title', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Nhãn', field: 'tags', value: [], type: 'multiSelect', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: tags },
+            { title: 'Ảnh', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Nội dung', field: 'content', value: '', type: 'quill', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 
     static tagSchema() {
         return [
-            { title: 'Tag Name', field: 'tagName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Nhãn', field: 'tagName', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 
     static roomSchema(status = []) {
         return [
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Status', field: 'status', value: status[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: status },
+            { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Trạng thái', field: 'status', value: status[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: status },
         ]
     }
 
 
     static categoryEquipmentSchema() {
         return [
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 
     static divisionSchema() {
         return [
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 
@@ -108,42 +113,42 @@ export default class schemaConfig {
 
     static classSchema(courses = [], semesters = []) {
         return [
-            { title: 'Class Code', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Course', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: courses },
-            { title: 'Semester', field: 'semesterId', value: semesters[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: semesters },
-            { title: 'Start Date', field: 'startDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'End Date', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'maxNumber', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'expectedNumber', field: 'expectedNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Khoá học', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: courses },
+            { title: 'Kỳ', field: 'semesterId', value: semesters[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: semesters },
+            { title: 'Ngày bắt đầu', field: 'startDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Ngày kết thúc', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Số trẻ tối đa', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Số trẻ dự kiến', field: 'expectedNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
 
         ]
     }
 
     static equipmentSchema(categoryList = [], roomList = [], status = []) {
         return [
-            { title: 'Category', field: 'categoryEquipmentId', value: categoryList[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: categoryList },
+            { title: 'Danh mục', field: 'categoryEquipmentId', value: categoryList[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: categoryList },
             // { title: 'room', field: 'roomId', value: roomList[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: roomList },
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Code', field: 'code', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Price', field: 'price', value: '', type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Status', field: 'status', value: status[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: status },
-            { title: 'Warranty Date', field: 'warrantyDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Tên thiết bị', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Mã', field: 'code', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Giá', field: 'price', value: '', type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Trạng thái', field: 'status', value: status[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: status },
+            { title: 'Hạn bảo hành', field: 'warrantyDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
         ]
     }
 
     static courseSchema(courses = [], type = []) {
         return [
-            { title: 'Code', field: 'courseCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Price', field: 'price', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Duration Total', field: 'durationTotal', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Entry Point', field: 'entryPoint', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Level', field: 'level', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
-            { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Prerequisite', field: 'prerequisite', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2, listData: courses },
-            { title: 'Course Type', field: 'courseType', value: type[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2, listData: type },
+            { title: 'Mã', field: 'courseCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Tên khoá học', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Giá', field: 'price', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Tổng số slot', field: 'durationTotal', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Điểm đầu vào', field: 'entryPoint', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Cấp độ', field: 'level', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Môn tiên quyết', field: 'prerequisite', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2, listData: courses },
+            { title: 'Loại khoá học', field: 'courseType', value: type[0]?.value, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2, listData: type },
             { title: 'Syllabus', field: 'syllabus', value: '', type: 'file', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
-            { title: 'Image', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Ảnh', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
         ]
     }
 }

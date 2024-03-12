@@ -10,7 +10,7 @@
     <FormSchema
       v-if="currentTab == 'Training Programs'"
       :schema="tpSchema"
-      btn-name="Add"
+      btn-name="Tạo"
       page-title="Add Training Programs"
       @form-submitted="handleAddTP"
     />
@@ -74,7 +74,7 @@ export default {
                 this.$router.push({ name: "training-program" });
               })
               .catch((err) => {
-                swal.error('Something went wrong! Please try again')
+                swal.error('Có lỗi xảy ra! Vui lòng thử lại')
                 this.systemStore.setChangeLoading(false);
               });
           })
@@ -96,7 +96,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Created fail! Please try again");
+          swal.error("Tạo mới thất bại! Vui lòng thử lại");
         });
     },
     fetchTpCate() {

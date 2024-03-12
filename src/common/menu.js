@@ -45,7 +45,7 @@ export default class menu {
                 id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
                     { name: 'Add Class', url: 'class-create' },
                     { name: 'Classes', url: 'classes' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff','Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
             },
             {
                 id: 6, name: 'Attendance', icon: 'md-taskalt', subTab: [
@@ -66,7 +66,7 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
-                id: 2145, name: 'Enrollment', icon: 'vi-file-type-key', subTab: [
+                id: 2145, name: 'Enrollment', icon: 'gi-archive-register', subTab: [
                     { name: 'Enrollment', url: 'enrollment' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
@@ -86,7 +86,7 @@ export default class menu {
                 id: 74216, name: 'Advice Request', icon: 'fa-tasks', subTab: [
                     { name: 'Add Advice', url: 'advice-create' },
                     { name: 'Advice Request', url: 'advice-request' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
             // {
             //     id: 751, name: 'Questions', icon: 'bi-question-circle-fill', subTab: [

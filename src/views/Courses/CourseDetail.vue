@@ -140,7 +140,6 @@ export default {
         })
         .catch((err) => {
           this.$router.push({ name: "not-found", params: { catchAll: "404" } });
-
           this.systemStore.setChangeLoading(false);
         });
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto">
-      <span class="text-[28px] font-bold block text-gray-700">Blogs</span>
+      <span class="text-[28px] font-bold block text-gray-700">Bài viết</span>
       <div
         class="w-full flex items-center mt-5 mx-auto justify-start text-[20px]"
       >
@@ -169,7 +169,7 @@ export default {
         this.isShowAssign = false
       })
       .catch(err => {
-        swal.error('Assign failed! Please try again')
+        swal.error('Gán nhãn vào blog thất bại! Vui lòng thử lại')
         this.systemStore.setChangeLoading(true)
       })
     },
@@ -232,38 +232,38 @@ export default {
     },
     deleteBlog(item) {
       swal
-        .confirm("Are you sure you want to delete this blog?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_BLOG.deleteBlog(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công");
                 this.fetchBlog();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });
     },
     deleteTag(item) {
       swal
-        .confirm("Are you sure you want to delete this tag?")
+        .confirm("Bạn có chắc chắn muốn xoá không?")
         .then((result) => {
           if (result.value) {
             this.systemStore.setChangeLoading(true);
             API_TAG.deleteTag(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
-                swal.success("Deleted successfully!");
+                swal.success("Xoá thành công");
                 this.fetchTag();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
-                swal.error("Delete failed! Please try again", 2500);
+                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
               });
           }
         });
@@ -279,7 +279,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Updated failed! Please try again");
+          swal.error("Cập nhật thất bại! Vui lòng thử lại");
         });
     },
     reloadList() {
