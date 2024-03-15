@@ -23,12 +23,12 @@ export default class menu {
                     // { name: 'Anonymous chat', url: 'anonymous-chat' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
-            {
-                id: 41, name: 'Semester', icon: 'bi-diagram-3-fill', subTab: [
-                    // { name: 'Add Semester', url: 'semester-create' },
-                    { name: 'Semesters', url: 'semesters' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
-            },
+            // {
+            //     id: 41, name: 'Semester', icon: 'bi-diagram-3-fill', subTab: [
+            //         { name: 'Add Semester', url: 'semester-create' },
+            //         { name: 'Semesters', url: 'semesters' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
+            // },
             {
                 id: 4, name: 'Calendar', icon: 'bi-calendar-week', subTab: [
                     { name: 'My Calendar', url: 'my-calendar' },

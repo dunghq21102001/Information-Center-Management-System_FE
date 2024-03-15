@@ -2,6 +2,7 @@
   <div class="w-full">
     <div class="w-[90%] mx-auto mt-5">
       <vue-cal
+        locale="vi"
         :editable-events="{
           title: isPermissionProp.title,
           drag: isPermissionProp.drag,

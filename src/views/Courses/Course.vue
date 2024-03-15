@@ -10,6 +10,8 @@
         :is-add-child-course="true"
         :is-update="true"
         :is-delete="true"
+        :is-multi-select="true"
+        :is-buy="true"
         is-add="course-create"
         excel="course-data"
         csv="course-data"

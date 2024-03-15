@@ -104,7 +104,7 @@ export default class tableConfig {
         return [
             { text: "Mã", value: "courseCode", sortable: true },
             { text: "Tên", value: "name", sortable: true },
-            { text: "Giá", value: "price", sortable: true },
+            // { text: "Giá", value: "price", sortable: true },
             { text: "Loại", value: "courseType", sortable: true, width: 150 },
             // { text: "Image", value: "image", sortable: true },
             // { text: "Duration Total", value: "durationTotal", sortable: true },

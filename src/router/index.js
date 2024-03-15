@@ -388,16 +388,16 @@ const router = createRouter({
       },
       beforeEnter: checkValidRole
     },
-    {
-      path: '/semesters',
-      name: 'semesters',
-      component: Semesters,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager']
-      },
-      beforeEnter: checkValidRole
-    },
+    // {
+    //   path: '/semesters',
+    //   name: 'semesters',
+    //   component: Semesters,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager']
+    //   },
+    //   beforeEnter: checkValidRole
+    // },
     // {
     //   path: '/semester-create',
     //   name: 'semester-create',
@@ -456,16 +456,16 @@ const router = createRouter({
         requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
       }
     },
-    {
-      path: '/anonymous-chat',
-      name: 'anonymous-chat',
-      component: AnonymousChat,
-      meta: {
-        middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
+    // {
+    //   path: '/anonymous-chat',
+    //   name: 'anonymous-chat',
+    //   component: AnonymousChat,
+    //   meta: {
+    //     middleware: checkAuth,
+    //     requiredRole: ['Admin', 'Manager', 'Staff']
 
-      }
-    },
+    //   }
+    // },
     {
       path: '/reports',
       name: 'reports',
@@ -476,14 +476,14 @@ const router = createRouter({
       },
       beforeEnter: checkValidRole
     },
-    {
-      path: '/salary',
-      name: 'salary',
-      component: Salary,
-      meta: {
-        middleware: checkAuth,
-      }
-    },
+    // {
+    //   path: '/salary',
+    //   name: 'salary',
+    //   component: Salary,
+    //   meta: {
+    //     middleware: checkAuth,
+    //   }
+    // },
     {
       path: '/settings',
       name: 'settings',

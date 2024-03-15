@@ -1,5 +1,29 @@
 <template>
   <div class="w-[250px] md:w-[420px] h-screen bg-white overflow-y-scroll">
+    <div
+    class="mt-5"
+      v-if="
+        authStore.getAuth?.roleName == 'Admin' ||
+        authStore.getAuth?.roleName == 'Manager'
+      "
+      :class="`tab-item ${route.name == 'dashboard' ? 'tab-active' : ''} ${
+        systemStore.getExpandSideBar
+          ? 'px-2 py-1 hover:pl-4 rounded-lg w-full'
+          : 'rounded-none w-[120%]'
+      }`"
+    >
+      <div
+        class="flex items-center cursor-pointer"
+        @click="goToRoute('dashboard')"
+      >
+        <v-icon
+          name="md-spacedashboard-outlined"
+          :scale="systemStore.getExpandSideBar ? 1.5 : 1.5"
+          class="mr-5"
+        />
+        <span> Dashboard </span>
+      </div>
+    </div>
     <ul class="w-full mt-5">
       <li
         class="tab-item my-2 px-2 py-1 rounded-lg w-full"
@@ -45,11 +69,13 @@
 import menu from "../common/menu";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../stores/Auth";
+import { useSystemStore } from "../stores/System";
 export default {
   setup() {
     const route = useRoute();
     const authStore = useAuthStore();
-    return { route, authStore };
+    const systemStore = useSystemStore()
+    return { route, authStore, systemStore };
   },
   components: {},
   data() {

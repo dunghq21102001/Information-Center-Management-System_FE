@@ -99,7 +99,6 @@
         buttons-pagination
         :rows-per-page="4"
         :items="dataProp"
-        show-index
         :search-field="selectedField"
         :search-value="searchQuery"
       >
@@ -319,7 +318,6 @@
         buttons-pagination
         :rows-per-page="4"
         :items="dataProp"
-        show-index
         :search-field="selectedField"
         :search-value="searchQuery"
         v-model:items-selected="itemsSelected"
@@ -796,7 +794,10 @@ export default {
         item?.text != "id" &&
         item?.text != "Syllabus" &&
         item?.text != "Avatar" &&
-        item?.text != "Image"
+        item?.text != "Image" &&
+        item?.text != 'Hành động' &&
+        item?.text != 'Chi tiết' &&
+        item?.text != 'Ảnh'
       ) {
         tmpSearchList.push(item);
         this.fieldsExport[item?.value] = item?.value;
@@ -898,7 +899,9 @@ export default {
             key != "courseId" &&
             key != "actualNumber" &&
             key != "childrenProfiles" &&
-            key != "locationName"
+            key != "locationName" &&
+            key != 'classes'&&
+            key != 'lessons'
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },

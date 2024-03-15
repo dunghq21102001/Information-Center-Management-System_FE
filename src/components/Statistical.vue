@@ -4,7 +4,7 @@
     <div @click="goToRoute('users')" class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>{{ usersData.length }}</span>
-        <span>Users</span>
+        <span>Người dùng</span>
       </div>
       <v-icon
         name="hi-user-group"
@@ -16,7 +16,7 @@
     <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>340.201.000 VND</span>
-        <span>Revenue</span>
+        <span>Doanh thu</span>
       </div>
       <v-icon
         name="gi-receive-money"
@@ -28,7 +28,7 @@
     <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>401</span>
-        <span>Graduate Children</span>
+        <span>Học sinh</span>
       </div>
       <v-icon
         name="gi-pay-money"
@@ -40,7 +40,7 @@
     <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>241</span>
-        <span>Courses</span>
+        <span>Khoá học</span>
       </div>
       <v-icon
         name="gi-book-cover"
