@@ -795,9 +795,9 @@ export default {
         item?.text != "Syllabus" &&
         item?.text != "Avatar" &&
         item?.text != "Image" &&
-        item?.text != 'Hành động' &&
-        item?.text != 'Chi tiết' &&
-        item?.text != 'Ảnh'
+        item?.text != "Hành động" &&
+        item?.text != "Chi tiết" &&
+        item?.text != "Ảnh"
       ) {
         tmpSearchList.push(item);
         this.fieldsExport[item?.value] = item?.value;
@@ -900,8 +900,9 @@ export default {
             key != "actualNumber" &&
             key != "childrenProfiles" &&
             key != "locationName" &&
-            key != 'classes'&&
-            key != 'lessons'
+            key != "classes" &&
+            key != "lessons" &&
+            key != "semesterId"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },

@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <FormSchema
-      v-if="fetchCount == 2"
+      v-if="fetchCount == 1"
       :schema="schema"
       btn-name="Tạo"
       page-title="Tạo lớp học"
@@ -35,14 +35,14 @@ export default {
   },
   watch: {
     fetchCount() {
-      if (this.fetchCount == 2) {
-        this.schema = schemaConfig.classSchema(this.courses, this.semesters);
+      if (this.fetchCount == 1) {
+        this.schema = schemaConfig.classSchema(this.courses);
       }
     },
   },
   created() {
     this.fetchCourse();
-    this.fetchSemester();
+    // this.fetchSemester();
   },
   methods: {
     handleAddLocation(data) {

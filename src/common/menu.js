@@ -63,7 +63,7 @@ export default class menu {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
                     { name: 'Add Course', url: 'course-create' },
                     { name: 'Courses', url: 'courses' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
                 id: 2145, name: 'Enrollment', icon: 'gi-archive-register', subTab: [

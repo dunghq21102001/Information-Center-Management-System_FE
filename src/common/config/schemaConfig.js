@@ -111,11 +111,11 @@ export default class schemaConfig {
         ]
     }
 
-    static classSchema(courses = [], semesters = []) {
+    static classSchema(courses = []) {
         return [
-            { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 2 },
+            { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Khoá học', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: courses },
-            { title: 'Kỳ', field: 'semesterId', value: semesters[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: semesters },
+            // { title: 'Kỳ', field: 'semesterId', value: semesters[0]?.id, type: 'select', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1, listData: semesters },
             { title: 'Ngày bắt đầu', field: 'startDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Ngày kết thúc', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },
             { title: 'Số trẻ tối đa', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'This data field cannot be blank!', w: 1 },

@@ -131,8 +131,8 @@ export default class tableConfig {
             { text: "Họ tên", value: "fullName", sortable: true },
             { text: "Email", value: "email", sortable: true },
             { text: "Điện thoại", value: "phone", sortable: true },
-            { text: "Địa chỉ", value: "address", sortable: true },
-            { text: "Khu vực", value: "location", sortable: true },
+            // { text: "Địa chỉ", value: "address", sortable: true },
+            // { text: "Khu vực", value: "location", sortable: true },
             { text: "Thi đầu vào", value: "isTested", sortable: true, width: 150 },
             { text: "Trạng thái", value: "statusAdviseRequest", sortable: true },
             { text: "Hành động", value: "operation" }
@@ -156,7 +156,7 @@ export default class tableConfig {
             { text: "Số học sinh", value: "actualNumber", sortable: true, width: 130 },
             // { text: "Học sinh tối đa", value: "maxNumber", sortable: true },
             { text: "Ngày bắt đầu", value: "startDate", sortable: true, width: 170 },
-            { text: "Ngày kết thúc", value: "endDate", sortable: true, width: 170 },
+            // { text: "Ngày kết thúc", value: "endDate", sortable: true, width: 170 },
             { text: "Trạng thái", value: "statusOfClass", sortable: true },
             { text: 'Chi tiết', value: 'detail', width: 90 },
             { text: "Hành động", value: "operation" }
