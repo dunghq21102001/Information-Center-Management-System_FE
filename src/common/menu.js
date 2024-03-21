@@ -66,6 +66,11 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
+                id: 7, name: 'Order', icon: 'bi-box-seam', subTab: [
+                    { name: 'Order', url: 'order-list' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Parent']
+            },
+            {
                 id: 2145, name: 'Enrollment', icon: 'gi-archive-register', subTab: [
                     { name: 'Enrollment', url: 'enrollment' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']

@@ -81,9 +81,16 @@ import CreateSemester from '../views/Semester/Add.vue'
 import Rooms from '../views/Rooms/Rooms.vue'
 import CreateRoom from '../views/Rooms/Add.vue'
 
+// order
+import OrderList from '../views/OrderList/OrderList.vue'
+
 // chat
 import Chat from '../views/Chat/Chat.vue'
 import AnonymousChat from '../views/Chat/AnonymousChat.vue'
+
+// order
+import Order from '../views/Order/Order.vue'
+import OrderDetail from '../views/Order/OrderDetail.vue'
 
 // reports
 import Reports from '../views/Reports/Reports.vue'
@@ -424,6 +431,36 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/order',
+      name: 'order',
+      component: Order,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/order-detail',
+      name: 'order-detail',
+      component: OrderDetail,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/order-list',
+      name: 'order-list',
+      component: OrderList,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
       },
       beforeEnter: checkValidRole
     },

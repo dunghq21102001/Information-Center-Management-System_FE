@@ -1,0 +1,32 @@
+import axios from "axios"
+import API_BASE from "./API_BASE"
+export default class API_ORDER {
+    static BASE_PATH = 'Order'
+
+    static getOrders() {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/Orders`)
+    }
+
+    static getOrderById(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/${id}`)
+    }
+
+    static postOrder(data) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateOrder`, data)
+    }
+    static postPayment(orderId) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreatePayment/${orderId}`)
+    }
+
+    static momoReturn() {
+        
+    }
+
+    static putOrder(data) {
+        return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
+    }
+
+    static deleteOrder(id) {
+        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
+    }
+}

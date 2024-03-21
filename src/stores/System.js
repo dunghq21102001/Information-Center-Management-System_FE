@@ -6,7 +6,8 @@ export const useSystemStore = defineStore('system', {
         themeColor: JSON.parse(localStorage.getItem('theme')) || {
             color: '007d88',
             blur: 'd9eced'
-        }
+        },
+        courseData: []
     }),
     getters: {
         getExpandSideBar: state => {
@@ -17,6 +18,9 @@ export const useSystemStore = defineStore('system', {
         },
         getTheme: state => {
             return state.themeColor
+        },
+        getCourseData: state => {
+            return state.courseData
         }
     },
     actions: {
@@ -28,6 +32,9 @@ export const useSystemStore = defineStore('system', {
         },
         setChangeTheme(item) {
             this.themeColor = item
+        },
+        setCourseData(item) {
+            this.courseData = item
         }
 
     },

@@ -91,7 +91,7 @@
               v-model="item.value"
               :options="item.listData"
               :optionLabel="`tagName`"
-              placeholder="Select 1 or more"
+              placeholder="Chọn 1 hoặc nhiều"
               class="w-full px-3 py-1"
             />
           </div>

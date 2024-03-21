@@ -90,6 +90,11 @@
           placeholder="Address"
           v-model="adviceRequest.address"
         />
+        <input
+          type="datetime-local"
+          class="input-ad"
+          v-model="adviceRequest.testDate"
+        />
         <select name="" id="" class="input-ad" v-model="adviceRequest.location">
           <option value="" disabled>Select location</option>
           <option :value="l?.name" v-for="l in locations">
@@ -194,6 +199,7 @@ export default {
         email: "",
         phone: "",
         address: "",
+        testDate: "",
         location: "",
       },
     };
@@ -210,6 +216,7 @@ export default {
         this.adviceRequest.email.trim() == "" ||
         this.adviceRequest.location == "" ||
         this.adviceRequest.phone.trim() == "" ||
+        this.adviceRequest.testDate.trim() == "" ||
         this.adviceRequest.address.trim() == ""
       ) {
         return swal.error("Bạn phải điền tất cả thông tin để đăng ký tư vấn");

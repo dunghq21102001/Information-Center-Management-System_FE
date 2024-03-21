@@ -160,6 +160,11 @@
             {{ convertToVND(item?.price) }}
           </span>
         </template>
+        <template #item-totalAmount="item">
+          <span class="block">
+            {{ convertToVND(item?.totalAmount) }}
+          </span>
+        </template>
         <template #item-commission="item">
           <span class="block">
             {{ convertToVND(item?.commission) }}
@@ -188,6 +193,21 @@
         <template #item-dateOfBirth="item">
           <span class="block">
             {{ convertDate(item?.dateOfBirth) }}
+          </span>
+        </template>
+        <template #item-orderDate="item">
+          <span class="block">
+            {{ convertDate(item?.orderDate) }}
+          </span>
+        </template>
+        <template #item-testDate="item">
+          <span class="block">
+            {{ convertDate(item?.testDate) }}
+          </span>
+        </template>
+        <template #item-purchaseDate="item">
+          <span class="block">
+            {{ convertDate(item?.purchaseDate) }}
           </span>
         </template>
         <template #item-genderType="item">
@@ -236,15 +256,6 @@
         </template>
         <template #item-operation="item">
           <div class="operation-wrapper flex items-center justify-start">
-            <!-- <button
-              title="Register code for children"
-              v-if="isRegisterCourseProp"
-              class="mr-3"
-            >
-              <v-icon
-              @click="goToVNPay"
-               name="bi-cart-plus-fill" :scale="1.5" fill="#38676f" />
-            </button> -->
             <button
               class="mr-4"
               v-tooltip="'Thêm khoá học con'"
@@ -273,6 +284,15 @@
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
+            <button v-tooltip="'Thanh toán đơn hàng'" class="mr-3">
+              <v-icon
+                @click="handlePayment(item)"
+                v-if="isPaymentProp"
+                name="md-payment-round"
                 :scale="1.5"
                 fill="#3398db"
               />
@@ -376,6 +396,11 @@
             {{ convertToVND(item?.price) }}
           </span>
         </template>
+        <template #item-totalAmount="item">
+          <span class="block">
+            {{ convertToVND(item?.totalAmount) }}
+          </span>
+        </template>
         <template #item-commission="item">
           <span class="block">
             {{ convertToVND(item?.commission) }}
@@ -414,7 +439,7 @@
               @click="handleGetDetail(item)"
               class="hover:underline text-blue-500 cursor-pointer"
             >
-              Detail
+              Chi tiết
             </span>
           </div>
         </template>
@@ -448,6 +473,21 @@
         <template #item-dateOfBirth="item">
           <span class="block">
             {{ convertDate(item?.dateOfBirth) }}
+          </span>
+        </template>
+        <template #item-orderDate="item">
+          <span class="block">
+            {{ convertDate(item?.orderDate) }}
+          </span>
+        </template>
+        <template #item-testDate="item">
+          <span class="block">
+            {{ convertDate(item?.testDate) }}
+          </span>
+        </template>
+        <template #item-purchaseDate="item">
+          <span class="block">
+            {{ convertDate(item?.purchaseDate) }}
           </span>
         </template>
         <template #expand="item" v-if="isExpandProp">
@@ -508,6 +548,15 @@
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
+            <button v-tooltip="'Thanh toán đơn hàng'" class="mr-3">
+              <v-icon
+                @click="handlePayment(item)"
+                name="md-payment-round"
+                v-if="isPaymentProp"
                 :scale="1.5"
                 fill="#3398db"
               />
@@ -664,6 +713,10 @@ export default {
     isResetPass: Boolean,
     isChangeStatus: Boolean,
     isAddSemester: Boolean,
+    isPayment: {
+      type: Boolean,
+      default: false,
+    },
     isExpand: {
       type: Boolean,
       default: false,
@@ -742,6 +795,7 @@ export default {
       reloadProp: this.reload,
       isAddByListProp: this.isAddByList,
       dataListProp: this.dataList,
+      isPaymentProp: this.isPayment,
 
       fieldsExport: {},
       dataExport: [],
@@ -844,11 +898,8 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
-    goToVNPay() {
-      window.open(
-        "http://sandbox.vnpayment.vn/tryitnow/Home/CreateOrder",
-        "_blank"
-      );
+    handlePayment(item) {
+      this.$emit("paymentAction", item);
     },
     goToSyllabus(url) {
       window.open(url, "_blank");
@@ -902,12 +953,15 @@ export default {
             key != "locationName" &&
             key != "classes" &&
             key != "lessons" &&
-            key != "semesterId"
+            key != "semesterId" &&
+            key != "roomId" &&
+            key != "categoryEquipmentId" &&
+            key != "code"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
     showFormBuying() {
-      this.$emit("showForm", true);
+      this.$emit("showForm", this.itemsSelected);
     },
     addSemester() {
       this.$emit("addSemester", true);
@@ -1002,6 +1056,10 @@ export default {
           item["type"] = "radio";
           item["listData"] = ["True", "False"];
           item["value"] = item.value == true ? "True" : "False";
+        } else if (item.field == "purchaseDate") {
+          item["type"] = "date";
+        } else if (item.field == "testDate") {
+          item["type"] = "date";
         } else item["type"] = "text";
 
         return item;

@@ -11,8 +11,8 @@ export default class API_QUESTION {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/${id}`)
     }
 
-    static getQuestionsByLesson(id) {
-        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetByLesson/${id}`)
+    static getQuestionsOrCreateQuiz(data) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateExam`, data)
     }
 
     static postQuestion(data) {
@@ -24,6 +24,6 @@ export default class API_QUESTION {
     }
 
     static deleteQuestion(id) {
-        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
+        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?QuestionId=${id}`)
     }
 }

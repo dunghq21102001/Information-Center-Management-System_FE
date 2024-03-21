@@ -23,6 +23,7 @@
         @add-new-schema="handleAddChildCourse"
         @delete-action="deleteCourse"
         @click-to-row="handleClickToRow"
+        @show-form="goToOrder"
       />
     </div>
   </div>
@@ -31,6 +32,7 @@
 import tableConfig from "../../common/config/tableConfig";
 import { useSystemStore } from "../../stores/System";
 import API_COURSE from "../../API/API_COURSE.js";
+import API_ORDER from "../../API/API_ORDER";
 import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 export default {
@@ -142,24 +144,45 @@ export default {
     reloadList() {
       this.fetchCourses();
     },
-    deleteCourse(item) {
-      swal
-        .confirm("Bạn có chắc chắn muốn xoá không?")
-        .then((result) => {
-          if (result.value) {
-            this.systemStore.setChangeLoading(true);
-            API_COURSE.deleteCourse(item?.id)
-              .then((res) => {
-                this.systemStore.setChangeLoading(false);
-                swal.success("Xoá thành công!");
-                this.fetchCourses();
-              })
-              .catch((err) => {
-                this.systemStore.setChangeLoading(false);
-                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
-              });
-          }
+    goToOrder(item) {
+      // this.systemStore.setCourseData(item)
+      // this.$router.push({ name: "order", params: {} });
+      console.log(item);
+      let finalData = [];
+      item.map((i) => {
+        finalData.push(i?.id);
+        return i;
+      });
+
+      this.systemStore.setChangeLoading(true);
+      API_ORDER.postOrder({
+        listCourseId: finalData,
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Tạo đơn hàng thành công!");
+          this.$router.push({ name: "order-list", params: {} });
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
         });
+    },
+    deleteCourse(item) {
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_COURSE.deleteCourse(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.fetchCourses();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+            });
+        }
+      });
     },
   },
 };

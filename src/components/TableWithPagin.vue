@@ -17,9 +17,8 @@
           <td
             v-for="(value, key) in item"
             :key="key"
-            class="px-6 py-4 whitespace-nowrap"
-          >
-            {{ value }}
+            class="px-4 py-2 max-w-[300px]"
+          >{{ value }}
           </td>
         </tr>
       </tbody>
@@ -30,7 +29,7 @@
         :disabled="currentPage === 1"
         class="py-2 px-4 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-500 hover:text-gray-700"
       >
-        Previous
+        Trang trước
       </button>
       <span>{{ currentPage }} / {{ totalPages }}</span>
       <button
@@ -38,7 +37,7 @@
         :disabled="currentPage === totalPages"
         class="py-2 px-4 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-500 hover:text-gray-700"
       >
-        Next
+        Trang sau
       </button>
     </div>
   </div>
@@ -53,7 +52,7 @@ export default {
     },
     pageSize: {
       type: Number,
-      default: 5, // Kích thước trang mặc định
+      default: 5,
     },
   },
   data() {
@@ -98,4 +97,8 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+td {
+  vertical-align: top;
+}
+</style>

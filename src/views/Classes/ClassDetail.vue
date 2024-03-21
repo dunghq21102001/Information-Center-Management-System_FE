@@ -3,10 +3,10 @@
     <div class="w-full">
       <div class="w-full flex items-center justify-between">
         <span class="text-[28px] font-bold block text-gray-700">
-          Class Detail
+          Chi tiết lớp học
         </span>
         <button class="btn-primary px-3 py-1" @click="isShowEnrollment = true">
-          Enrollment
+          Ghi danh
         </button>
       </div>
 

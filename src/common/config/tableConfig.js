@@ -131,10 +131,32 @@ export default class tableConfig {
             { text: "Họ tên", value: "fullName", sortable: true },
             { text: "Email", value: "email", sortable: true },
             { text: "Điện thoại", value: "phone", sortable: true },
-            // { text: "Địa chỉ", value: "address", sortable: true },
+            { text: "Ngày kiểm tra", value: "testDate", sortable: true },
             // { text: "Khu vực", value: "location", sortable: true },
             { text: "Thi đầu vào", value: "isTested", sortable: true, width: 150 },
-            { text: "Trạng thái", value: "statusAdviseRequest", sortable: true },
+            // { text: "Trạng thái", value: "statusAdviseRequest", sortable: true },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static orderListTable() {
+        return [
+            { text: "Mã đơn hàng", value: "id", sortable: true },
+            // { text: "Tên người dùng", value: "userAccountName", sortable: true },
+            { text: "Ngày đặt hàng", value: "orderDate", sortable: true },
+            { text: "Tổng tiền", value: "totalAmount", sortable: true },
+            { text: "Trạng thái", value: "paymentStatus", sortable: true },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static orderTable() {
+        return [
+            { text: "Mã đơn hàng", value: "orderId", sortable: true },
+            { text: "Tên người dùng", value: "userAccountName", sortable: true },
+            { text: "Tổng tiền", value: "totalPrice", sortable: true },
+            { text: "Ngày đặt hàng", value: "orderDate", sortable: true },
+            { text: "Trạng thái", value: "statusPayment", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }
@@ -142,9 +164,10 @@ export default class tableConfig {
     static equipmentTable() {
         return [
             { text: "Tên", value: "name", sortable: true },
-            { text: "Mã", value: "code", sortable: true },
+            // { text: "Mã", value: "code", sortable: true },
             { text: "Giá", value: "price", sortable: true },
-            { text: "Hạn bảo hành", value: "warrantyDate", sortable: true },
+            { text: "Ngày mua", value: "purchaseDate", sortable: true },
+            { text: "Hạn bảo hành", value: "warrantyPeriod", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }

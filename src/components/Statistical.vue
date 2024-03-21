@@ -1,7 +1,10 @@
 <template>
   <div class="w-full grid grid-cols-12 gap-3">
     <!-- 1 -->
-    <div @click="goToRoute('users')" class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
+    <div
+      @click="goToRoute('users')"
+      class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
+    >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>{{ usersData.length }}</span>
         <span>Người dùng</span>
@@ -13,7 +16,9 @@
       />
     </div>
     <!-- 2 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
+    <div
+      class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
+    >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>340.201.000 VND</span>
         <span>Doanh thu</span>
@@ -25,7 +30,9 @@
       />
     </div>
     <!-- 3 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
+    <div
+      class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
+    >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
         <span>401</span>
         <span>Học sinh</span>
@@ -37,9 +44,11 @@
       />
     </div>
     <!-- 4 -->
-    <div class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box">
+    <div
+      class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
+    >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>241</span>
+        <span>{{ courseData.length }}</span>
         <span>Khoá học</span>
       </div>
       <v-icon
@@ -52,7 +61,7 @@
 </template>
 <script>
 import { useSystemStore } from "../stores/system";
-import API_EQUIPMENT from "../API/API_EQUIPMENT";
+import API_COURSE from "../API/API_COURSE";
 import API_USER from "../API/API_USER";
 export default {
   setup() {
@@ -65,7 +74,12 @@ export default {
     return {
       usersData: [],
       equipmentData: [],
+      courseData: [],
     };
+  },
+  created() {
+    this.fetchUsersList();
+    this.fetchCourses()
   },
   methods: {
     goToRoute(pathName) {
@@ -80,10 +94,15 @@ export default {
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
-    fetchEquipmentList() {},
-  },
-  created() {
-    this.fetchUsersList();
+    fetchCourses() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.courseData = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
   },
 };
 </script>
