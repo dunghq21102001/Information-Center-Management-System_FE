@@ -10,7 +10,7 @@ export default class menu {
             {
                 id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
                     { name: 'Contracts', url: 'contract' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Parent']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             // {
             //     id: 3, name: 'Payroll', icon: 'la-money-check-alt-solid', subTab: [
@@ -143,15 +143,26 @@ export default class menu {
 
 
 
-    static userProfileMenu() {
+    static parentProfileMenu() {
         return [
-            { name: 'General information', index: 1 },
-            { name: 'Security', index: 2 },
-            { name: 'Children', index: 3 },
-            { name: 'Installment', index: 4 },
-            { name: 'Requests', index: 5 },
-            { name: 'Contracts', index: 6 },
-            { name: 'Schedules', index: 7 },
+            { name: 'Thông tin chung', index: 1 },
+            { name: 'Bảo mật', index: 2 },
+            { name: 'Danh sách trẻ', index: 3 },
+            { name: 'Bảng trả góp', index: 4 },
+            { name: 'Các yêu cầu', index: 5 },
+            // { name: 'Lịch', index: 6 },
+            // { name: 'Schedules', index: 7 },
+        ]
+    }
+
+    static staffProfileMenu() {
+        return [
+            { name: 'Thông tin chung', index: 1 },
+            { name: 'Bảo mật', index: 2 },
+            // { name: 'Danh sách trẻ', index: 3 },
+            // { name: 'Bảng trả góp', index: 4 },
+            { name: 'Các yêu cầu', index: 5 },
+            // { name: 'Lịch', index: 6 },
         ]
     }
 

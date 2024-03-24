@@ -1,9 +1,9 @@
 <template>
   <div class="w-full">
-    <p class="page-sub-title">General information</p>
+    <p class="page-sub-title">Thông tin chung</p>
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="userName">User Name</label>
+        <label for="userName">Tên đăng nhập</label>
         <input
           id="userName"
           type="text"
@@ -12,7 +12,7 @@
         />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="fullName">Full Name</label>
+        <label for="fullName">Họ và tên</label>
         <input
           id="fillName"
           type="text"
@@ -25,11 +25,11 @@
         <input id="email" type="email" class="i-cus" v-model="data.email" />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="phone">Phone Number</label>
+        <label for="phone">Số điện thoại</label>
         <input id="phone" type="text" class="i-cus" v-model="data.phone" />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="birth">Date of Birth</label>
+        <label for="birth">Sinh nhật</label>
         <input
           id="birth"
           type="datetime-local"
@@ -38,7 +38,7 @@
         />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="gender">Gender</label>
+        <label for="gender">Giới tính</label>
         <div class="flex items-center mt-[11px]">
           <div class="flex items-center mr-4">
             <input
@@ -59,11 +59,11 @@
         </div>
       </div>
       <div class="col-span-12 flex flex-col items-start">
-        <label for="fullName">Address</label>
+        <label for="fullName">Địa chỉ</label>
         <input type="text" class="i-cus" v-model="data.address" />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="bankName">Bank Name</label>
+        <label for="bankName">Ngân hàng</label>
         <input
           id="bankName"
           type="text"
@@ -72,7 +72,7 @@
         />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="bankAccName">Bank Account Name</label>
+        <label for="bankAccName">Tên tài khoản</label>
         <input
           id="bankAccName"
           type="text"
@@ -81,7 +81,7 @@
         />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="bankNumber">Bank Number</label>
+        <label for="bankNumber">Số tài khoản</label>
         <input
           id="bankNumber"
           type="text"
@@ -90,7 +90,7 @@
         />
       </div>
       <div class="col-span-12 md:col-span-6 flex flex-col items-start">
-        <label for="sts">Status</label>
+        <label for="sts">Trạng thái</label>
         <input
           id="sts"
           type="text"
@@ -102,7 +102,7 @@
     </div>
     <div class="w-full flex items-center justify-end mt-5">
       <button class="btn-primary px-3 py-1 rounded-lg" @click="updateAccount">
-        Save
+        Lưu
       </button>
     </div>
   </div>
@@ -157,12 +157,19 @@ export default {
     },
     updateAccount() {
       if (
+        this.data.address == null ||
         this.data.address.trim() == "" ||
+        this.data.email == null ||
         this.data.email.trim() == "" ||
+        this.data.fullName == null ||
         this.data.fullName.trim() == "" ||
+        this.data.genderType == null ||
         this.data.genderType == "" ||
+        this.data.phone == null ||
         this.data.phone.trim() == "" ||
+        this.data.userName == null ||
         this.data.userName.trim() == "" ||
+        this.data.dateOfBirth == null ||
         this.data.dateOfBirth.trim() == ""
       ) {
         return swal.error(
@@ -176,6 +183,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success(res.data);
+          this.resetDataUserClient();
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
@@ -185,6 +193,21 @@ export default {
     isValidPhoneNumber(phoneNumber) {
       const phoneRegex = /^\d{10}$/;
       return phoneRegex.test(phoneNumber);
+    },
+    resetDataUserClient() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.userById(this.authStore.getAuth?.id)
+        .then((res) => {
+          localStorage.removeItem("userData");
+          this.authStore.setAuth(res.data);
+          const userData = JSON.stringify(res.data);
+          localStorage.setItem("userData", userData);
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((er) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error("Có lỗi xảy ra, vui lòng thử lại!");
+        });
     },
   },
 };

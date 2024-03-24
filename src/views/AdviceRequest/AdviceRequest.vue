@@ -11,6 +11,7 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
+        :is-receive-advice-request="true"
         is-add="advice-create"
         excel="advice-request-data"
         csv="advice-request-data"
@@ -18,6 +19,7 @@
         @reload-action="reloadList"
         @update-action="updateAdvice"
         @delete-action="deleteAdvice"
+        @get-advice-request="getAdviceRequest"
       />
     </div>
   </div>
@@ -72,9 +74,35 @@ export default {
           this.fetchAdvices();
         })
         .catch((err) => {
-          swal.error(err?.response?.data)
+          swal.error(err?.response?.data);
           this.systemStore.setChangeLoading(false);
         });
+    },
+    getAdviceRequest(item) {
+      item["userId"] = this.authStore.getAuth?.id;
+      item["statusAdviseRequest"] = 2;
+      this.systemStore.setChangeLoading(true);
+      API_USER.putAdviceRequest(item)
+        .then((res) => {
+          swal.success("Bạn đã nhận phiếu đăng ký tư vấn này thành công");
+          this.systemStore.setChangeLoading(false);
+          this.fetchAdvices()
+        })
+        .catch((err) => {
+          swal.success(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchEnum() {
+      this.systemStore.setChangeLoading(true)
+      API_USER.enumAdviceRequest()
+      .then(res => {
+        this.enum = res.data
+        this.systemStore.setChangeLoading(false)
+      })
+      .catch(err => {
+        this.systemStore.setChangeLoading(false)
+      })
     },
     reloadList() {
       this.fetchAdvices();

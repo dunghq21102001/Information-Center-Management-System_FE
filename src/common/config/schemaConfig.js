@@ -38,8 +38,8 @@ export default class schemaConfig {
             { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Điện thoại', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Thi đầu vào', field: 'tested', value: 'False', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: testData },
-            { title: 'Khu vực', field: 'location', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: locations },
-            { title: 'Địa chỉ', field: 'address', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Khu vực', field: 'location', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: locations },
+            { title: 'Địa chỉ', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
 
         ]
     }

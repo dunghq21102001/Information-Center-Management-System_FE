@@ -115,7 +115,7 @@ export default class tableConfig {
             // { text: "Description", value: "description", sortable: true },
             { text: "Chi tiết", value: "detail", width: 90 },
             { text: "Hành động", value: "operation" }
-        ]   
+        ]
     }
 
     static categoryEquipmentTable() {
@@ -141,7 +141,7 @@ export default class tableConfig {
 
     static orderListTable() {
         return [
-            { text: "Mã đơn hàng", value: "id", sortable: true },
+            { text: "Mã đơn hàng", value: "orderNumber", sortable: true },
             // { text: "Tên người dùng", value: "userAccountName", sortable: true },
             { text: "Ngày đặt hàng", value: "orderDate", sortable: true },
             { text: "Tổng tiền", value: "totalAmount", sortable: true },

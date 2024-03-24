@@ -1,23 +1,23 @@
 <template>
   <div class="w-full">
-    <p class="page-sub-title">Security</p>
+    <p class="page-sub-title">Bảo mật</p>
     <div class="grid grid-cols-12 gap-3">
       <div class="col-span-12 flex flex-col items-start">
-        <label for="curPass">Current Password</label>
+        <label for="curPass">Mật khẩu hiện tại</label>
         <input id="curPass" type="password" class="i-cus" v-model="curPass" />
       </div>
       <div class="col-span-12 flex flex-col items-start">
-        <label for="newP">New Password</label>
+        <label for="newP">Mật khẩu mới</label>
         <input id="newP" type="password" class="i-cus" v-model="pass1" />
       </div>
       <div class="col-span-12 flex flex-col items-start">
-        <label for="newPAgain">New Password Again</label>
+        <label for="newPAgain">Nhập lại mật khẩu mới</label>
         <input id="newPAgain" type="password" class="i-cus" v-model="pass2" />
       </div>
     </div>
     <div class="w-full flex items-center justify-end mt-5">
       <button class="btn-primary px-3 py-1 rounded-lg" @click="changePass">
-        Save
+        Lưu
       </button>
     </div>
   </div>

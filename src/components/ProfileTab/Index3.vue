@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <p class="page-sub-title">Children</p>
+    <p class="page-sub-title">Danh sách trẻ</p>
     <!-- <div class="grid grid-cols-12 gap-4">
             <div v-for="item in listCourse" class="col-span-12 md:col-span-4">
                 <CourseCard :item="item" />
@@ -11,17 +11,21 @@
         </div> -->
 
     <div class="w-full">
-      <div class="grid gap-3 grid-cols-12">
-        <div class="col-span-12 md:col-span-6 lg:col-span-12 rounded-lg">
-          <div
-            class="w-full h-[200px] overflow-hidden flex items-center justify-center"
-          >
-            <img src="" class="object-cover w-full" alt="" />
-          </div>
-          <span class="block text-center">child 1</span>
-          <span class="block text-center">12 years old</span>
-          <span class="block text-center">child 1</span>
+      <div class="grid gap-4 grid-cols-12 mt-5">
+        <div
+          v-for="child in childrenData"
+          class="col-span-12 md:col-span-6 lg:col-span-4 rounded-lg overflow-hidden hover:shadow-2xl cursor-pointer"
+        >
+          <ChildrenCard
+            :child="child"
+            @handle-edit="handleEdit"
+            @handle-get-detail="handleGetDetail"
+          />
         </div>
+      </div>
+
+      <div class="w-full mt-5 h-[500px]" v-show="isShowUniqueData">
+        đây là data khi vô detail
       </div>
     </div>
   </div>
@@ -29,39 +33,71 @@
 <script>
 import CourseCard from "../CourseCard.vue";
 import Pagination from "../Pagination.vue";
+import ChildrenCard from "../../components/ChildrenCard.vue";
 export default {
   props: {},
   components: {
     CourseCard,
     Pagination,
+    ChildrenCard,
   },
   data() {
     return {
-      listCourse: [
+      childrenData: [
         {
-          name: "Webflow 101 crash course",
-          img: "https://quicklearn.pk/assets/img/courses/2.jpg",
-          lesson: 25,
+          id: 1,
+          name: "Nguyen Thi Tran Anh Van A",
+          image:
+            "https://ataxavi.vn/wp-content/uploads/2023/07/f637b0052729d9502ff03abe390fe051.jpg",
+          age: 12,
         },
         {
-          name: "Web Development Course in Karachi",
-          img: "https://axcoreacademy.com/wp-content/uploads/2020/01/SKhsnA.png",
-          lesson: 72,
+          id: 2,
+          name: "Nguyen Thi C",
+          image:
+            "https://ataxavi.vn/wp-content/uploads/2023/07/9ddcc1a2bffbd09d55a52a0d9e880266.jpg",
+          age: 10,
         },
         {
-          name: "Web Course training",
-          img: "https://img.freepik.com/premium-vector/online-presentation-concept-illustration_516005-71.jpg",
-          lesson: 38,
+          id: 3,
+          name: "Nguyen Thi D",
+          image:
+            "https://ataxavi.vn/wp-content/uploads/2023/07/f637b0052729d9502ff03abe390fe051.jpg",
+          age: 14,
         },
         {
-          name: "Page 7 | Course Website Images - Free Download on Freepik",
-          img: "https://img.freepik.com/free-vector/online-courses-programs-isometric-landing-page-equipment-distant-education-internet-studying_107791-3441.jpg?size=626&ext=jpg&ga=GA1.1.1880011253.1699401600&semt=ais",
-          lesson: 10,
+          id: 4,
+          name: "Nguyen Thanh E",
+          image:
+            "https://i.pinimg.com/736x/ca/5a/cc/ca5acc025626d8ee7a17fcca3cfc0b08.jpg",
+          age: 14,
         },
       ],
+      isShowUniqueData: false,
     };
   },
-  created() {},
-  methods: {},
+  created() {
+    this.fetchChildren();
+  },
+  methods: {
+    fetchChildren() {},
+    handleEdit(child) {
+      console.log(child);
+    },
+    handleGetDetail(child) {
+      this.isShowUniqueData = true;
+      this.$nextTick(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      });
+    },
+  },
 };
 </script>
+<style scoped>
+.br-cus {
+  border: 1px solid rgb(213, 213, 213);
+}
+</style>

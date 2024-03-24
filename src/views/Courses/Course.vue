@@ -26,6 +26,20 @@
         @show-form="goToOrder"
       />
     </div>
+
+    <div
+      v-if="isShowParentList"
+      class="bg-l"
+      @click.self="isShowParentList = false"
+    >
+      <div class="w-[90%] md:w-[60%] lg:w-[40%] bg-white min-h-screen px-3">
+        <FormList
+          :data-list="listParent"
+          title="Danh sách phụ huynh"
+          @handle-submit-list="submitOrder"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -35,9 +49,12 @@ import API_COURSE from "../../API/API_COURSE.js";
 import API_ORDER from "../../API/API_ORDER";
 import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
+import API_USER from "../../API/API_USER";
+import FormList from "../../components/FormList.vue";
 export default {
   components: {
     NormalTable,
+    FormList,
   },
   setup() {
     const systemStore = useSystemStore();
@@ -48,11 +65,15 @@ export default {
       header: tableConfig.courseTable(),
       data: [],
       enum: [],
+      isShowParentList: false,
+      listParent: [],
+      coursesSelected: [],
     };
   },
   created() {
     this.fetchCourses();
     this.fetchEnum();
+    this.getParentList();
   },
   methods: {
     fetchCourses() {
@@ -127,6 +148,32 @@ export default {
         console.error("Error uploading files:", error);
       }
     },
+    submitOrder(item) {
+      let selectedList = [];
+      item.map((i) => {
+        if (i?.select == true) selectedList.push(i?.id);
+        return i;
+      });
+
+      if (selectedList.length == 0)
+        return swal.error("Phải chọn phụ huynh để tiến hành tạo đơn hàng");
+      if (selectedList.length > 1)
+        return swal.error("Chỉ có thể chọn tối đa 1 phụ huynh");
+
+      this.systemStore.setChangeLoading(true);
+      API_ORDER.postOrder({
+        parentId: selectedList[0],
+        listCourseId: this.coursesSelected,
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Tạo đơn hàng thành công!");
+          this.$router.push({ name: "order-list", params: {} });
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     fetchEnum() {
       this.systemStore.setChangeLoading(true);
       API_COURSE.getEnum()
@@ -145,23 +192,20 @@ export default {
       this.fetchCourses();
     },
     goToOrder(item) {
-      // this.systemStore.setCourseData(item)
-      // this.$router.push({ name: "order", params: {} });
-      console.log(item);
+      this.isShowParentList = true;
       let finalData = [];
       item.map((i) => {
         finalData.push(i?.id);
         return i;
       });
-
+      this.coursesSelected = finalData;
+    },
+    getParentList() {
       this.systemStore.setChangeLoading(true);
-      API_ORDER.postOrder({
-        listCourseId: finalData,
-      })
+      API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a54")
         .then((res) => {
+          this.listParent = res.data;
           this.systemStore.setChangeLoading(false);
-          swal.success("Tạo đơn hàng thành công!");
-          this.$router.push({ name: "order-list", params: {} });
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
@@ -187,3 +231,17 @@ export default {
   },
 };
 </script>
+<style scoped>
+.bg-l {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 60;
+}
+</style>

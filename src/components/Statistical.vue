@@ -45,6 +45,7 @@
     </div>
     <!-- 4 -->
     <div
+    @click="goToRoute('courses')"
       class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
     >
       <div class="flex flex-col items-start xl:items-center text-[18px]">

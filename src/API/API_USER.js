@@ -63,8 +63,16 @@ export default class API_USER {
         return axios.put(`${API_BASE.BASE_URL}/AdviseRequest`, data)
     }
 
+    static getListTestDate(date) {
+        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/GetTestDate/${date}`)
+    }
+
     static deleteAdviceRequest(id) {
         return axios.delete(`${API_BASE.BASE_URL}/AdviseRequest?id=${id}`)
+    }
+
+    static enumAdviceRequest() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/StatusAdviseRequest`)
     }
 
     static getChildrenByParentId(id) {

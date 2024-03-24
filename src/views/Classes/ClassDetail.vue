@@ -41,7 +41,7 @@
           </div>
           <FormList
             :data-list="childrenData"
-            title="Add children to class"
+            title="Ghi danh học sinh vào lớp"
             @handle-submit-list="enrollmentChildren"
           />
         </div>

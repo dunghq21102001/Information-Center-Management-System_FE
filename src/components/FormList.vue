@@ -3,7 +3,7 @@
     <span class="text-[24px] font-bold text-gray-700 block">{{ title }}</span>
     <input
       type="text"
-      placeholder="Search..."
+      placeholder="Tìm kiếm..."
       class="i-cus"
       v-model="searchValue"
       @input="handleSearch"
@@ -26,13 +26,14 @@
     </div>
     <div class="w-full flex items-center justify-end">
       <button @click="submit" class="btn-primary mt-5 px-3 py-1 rounded-md">
-        Save
+        Lưu
       </button>
     </div>
   </div>
 </template>
 <script>
 import { useSystemStore } from "../stores/System.js";
+import { ref, watch } from "vue";
 export default {
   props: {
     title: String,
@@ -41,14 +42,29 @@ export default {
       default: [],
     },
   },
-  setup() {
+  setup(props) {
+    // Tạo biến reactive cho dataProp
+    const dataProp = ref(props.dataList);
+
+    // Watch sự thay đổi của prop 'data' và cập nhật dataProp
+    watch(
+      () => props.dataList,
+      (newValue) => {
+        dataProp.value = newValue;
+      }
+    );
+
     const systemStore = useSystemStore();
-    return { systemStore };
+
+    return {
+      dataProp,
+      systemStore,
+    };
   },
   data() {
     return {
       isConvertToSelect: false,
-      dataProp: this.dataList,
+      // dataProp: this.dataList,
       dataBackup: [],
       searchValue: "",
     };

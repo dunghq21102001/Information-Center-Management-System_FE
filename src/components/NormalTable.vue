@@ -21,7 +21,7 @@
         </select>
         <input
           v-model="searchQuery"
-          placeholder="search . . ."
+          placeholder="Tìm kiếm . . ."
           class="w-full lg:w-[400px] bor-no-l px-3 outline-none h-[40px]"
           type="text"
         />
@@ -251,7 +251,7 @@
                 : 'border-red-500 text-red-500'
             "
           >
-            {{ item?.isTested == true ? "Đã test" : "Chưa test" }}
+            {{ item?.isTested == true ? "Đã thi" : "Chưa thi" }}
           </span>
         </template>
         <template #item-operation="item">
@@ -295,6 +295,18 @@
                 name="md-payment-round"
                 :scale="1.5"
                 fill="#3398db"
+              />
+            </button>
+            <button
+              class="mr-4"
+              v-tooltip="'Nhận tư vấn người dùng'"
+              v-if="isReceiveAdviceRequestProp"
+            >
+              <v-icon
+                @click="getAdviceRequest(item)"
+                name="bi-hand-index"
+                :scale="1.5"
+                fill="#0871ba"
               />
             </button>
             <button
@@ -460,14 +472,14 @@
         </template>
         <template #item-isTested="item">
           <span
-            class="block border-[1px] border-solid px-2 py-1 rounded-md text-center"
+            class="block border-[1px] border-solid px-1 py-1 rounded-md text-center"
             :class="
               item.isTested == true
                 ? 'border-green-600 text-green-600'
                 : 'border-red-500 text-red-500'
             "
           >
-            {{ item?.isTested == true ? "Đã test" : "Chưa test" }}
+            {{ item?.isTested == true ? "Đã thi" : "Chưa thi" }}
           </span>
         </template>
         <template #item-dateOfBirth="item">
@@ -559,6 +571,18 @@
                 v-if="isPaymentProp"
                 :scale="1.5"
                 fill="#3398db"
+              />
+            </button>
+            <button
+              class="mr-4"
+              v-tooltip="'Nhận tư vấn người dùng'"
+              v-if="isReceiveAdviceRequestProp"
+            >
+              <v-icon
+                @click="getAdviceRequest(item)"
+                name="bi-hand-index"
+                :scale="1.5"
+                fill="#0871ba"
               />
             </button>
             <button
@@ -717,6 +741,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isReceiveAdviceRequest: {
+      type: Boolean,
+      default: false,
+    },
     isExpand: {
       type: Boolean,
       default: false,
@@ -796,6 +824,7 @@ export default {
       isAddByListProp: this.isAddByList,
       dataListProp: this.dataList,
       isPaymentProp: this.isPayment,
+      isReceiveAdviceRequestProp: this.isReceiveAdviceRequest,
 
       fieldsExport: {},
       dataExport: [],
@@ -903,6 +932,9 @@ export default {
     },
     goToSyllabus(url) {
       window.open(url, "_blank");
+    },
+    getAdviceRequest(item) {
+      this.$emit("getAdviceRequest", item);
     },
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);

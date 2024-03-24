@@ -19,7 +19,7 @@ export default class API_ORDER {
     }
 
     static momoReturn() {
-        
+        return
     }
 
     static putOrder(data) {
@@ -28,5 +28,17 @@ export default class API_ORDER {
 
     static deleteOrder(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
+    }
+
+    static getOrderDetailByOrderId(id) {
+        return axios.get(`${API_BASE.BASE_URL}/OrderDetail/GetOrderDetailByOrderId/${id}`)
+    }
+
+    static putOrderDetail(data) {
+        return axios.put(`${API_BASE.BASE_URL}/OrderDetail`, data)
+    }
+
+    static enumOrderType() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/PayType`)
     }
 }

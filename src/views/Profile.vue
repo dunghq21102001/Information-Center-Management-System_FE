@@ -4,7 +4,8 @@
       <div class="w-[150px] h-[150px] overflow-hidden rounded-full">
         <img
           :src="
-            authStore.getAuth?.avatar != null
+            authStore.getAuth?.avatar != null &&
+            authStore.getAuth?.avatar != 'string'
               ? authStore.getAuth.avatar
               : 'https://static.vecteezy.com/system/resources/previews/004/819/327/non_2x/male-avatar-profile-icon-of-smiling-caucasian-man-vector.jpg'
           "
@@ -13,13 +14,17 @@
         />
       </div>
       <div class="flex flex-col mb-1 ml-3">
-        <span class="text-black text-[26px]">{{ authStore.getAuth?.username }}</span>
-        <span class="text-gray-400 text-[16px]">{{ authStore.getAuth?.roleName }}</span>
+        <span class="text-black text-[26px]">{{
+          authStore.getAuth?.userName
+        }}</span>
+        <span class="text-gray-400 text-[16px]">{{
+          authStore.getAuth?.roleName
+        }}</span>
       </div>
     </div>
 
     <!-- body -->
-    <div class="w-full px-5 flex items-start mt-5">
+    <div class="w-full flex items-start mt-5">
       <div class="lg:w-[20%]">
         <ul class="w-full">
           <li
@@ -59,13 +64,27 @@ export default {
   data() {
     return {
       currentIndexTab: 1,
-      listTab: menu.userProfileMenu(),
+      listTab: [],
     };
   },
-  created() {},
+  created() {
+    this.genListTab();
+  },
+  watch: {
+    "authStore.getAuth": function (newData, oldData) {
+      this.genListTab();
+    },
+  },
   methods: {
     changeTab(index) {
       this.currentIndexTab = index;
+    },
+    genListTab() {
+      if (this.authStore.getAuth?.roleName == "Parent") {
+        this.listTab = menu.parentProfileMenu();
+      } else {
+        this.listTab = menu.staffProfileMenu();
+      }
     },
   },
 };

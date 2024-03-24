@@ -62,14 +62,16 @@
     </div>
 
     <!-- advice request -->
-    <div class="adr-cus h-[900px] relative hidden md:block">
+    <div
+      class="adr-cus h-[900px] relative hidden md:block rounded-2xl overflow-hidden"
+    >
       <div
-        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-10"
+        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-[150px]"
       >
         <input
           type="text"
           class="input-ad"
-          placeholder="Fullname"
+          placeholder="Họ và tên"
           v-model="adviceRequest.fullName"
         />
         <input
@@ -81,29 +83,30 @@
         <input
           type="text"
           class="input-ad"
-          placeholder="Phone"
+          placeholder="Số điện thoại"
           v-model="adviceRequest.phone"
         />
         <input
           type="text"
           class="input-ad"
-          placeholder="Address"
+          placeholder="Địa chỉ"
           v-model="adviceRequest.address"
         />
         <input
-          type="datetime-local"
+          v-tooltip="'Chọn ngày để thi đầu vào'"
+          type="date"
           class="input-ad"
-          v-model="adviceRequest.testDate"
+          @change="getListTime"
         />
         <select name="" id="" class="input-ad" v-model="adviceRequest.location">
-          <option value="" disabled>Select location</option>
+          <option value="" disabled>Khu vực</option>
           <option :value="l?.name" v-for="l in locations">
             {{ l?.name }}
           </option>
         </select>
 
         <div @click="postAdviceRequest" id="breathing-button">
-          Register now to receive consultation
+          Đăng ký tư vấn
         </div>
       </div>
     </div>
@@ -179,6 +182,7 @@ export default {
   },
   data() {
     return {
+      listTime: [],
       statistics: [
         { total: "40+", des: "Cơ sở trên toàn quốc" },
         {
@@ -220,31 +224,64 @@ export default {
         this.adviceRequest.address.trim() == ""
       ) {
         return swal.error("Bạn phải điền tất cả thông tin để đăng ký tư vấn");
-      } else {
-        this.systemStore.setChangeLoading(true);
-        API_USER.postAdviceRequest(this.adviceRequest)
-          .then((res) => {
-            swal.success(
-              "Bạn đã đăng ký tư vấn thành công! Vui lòng chờ đợi chúng tôi liên lạc qua email hoặc số điện thoại",
-              3000
-            );
-            this.systemStore.setChangeLoading(false);
-            this.adviceRequest = {
-              fullName: "",
-              email: "",
-              phone: "",
-              address: "",
-              location: "",
-            };
-          })
-          .catch((err) => {
-            swal.error(err.response?.data);
-            this.systemStore.setChangeLoading(false);
-          });
       }
+      if (
+        this.adviceRequest.fullName.includes("@") ||
+        this.adviceRequest.fullName.includes("@gmail") ||
+        this.adviceRequest.fullName.includes("@email") ||
+        this.adviceRequest.fullName.includes("gmail") ||
+        this.adviceRequest.fullName.includes("email")
+      )
+        return swal.error(
+          "Họ và tên không được chứa kí tự tương tự email",
+          3000
+        );
+      this.systemStore.setChangeLoading(true);
+      API_USER.postAdviceRequest(this.adviceRequest)
+        .then((res) => {
+          swal.success(
+            "Bạn đã đăng ký tư vấn thành công! Vui lòng chờ đợi chúng tôi liên lạc qua email hoặc số điện thoại",
+            3000
+          );
+          this.systemStore.setChangeLoading(false);
+          this.adviceRequest = {
+            fullName: "",
+            email: "",
+            phone: "",
+            address: "",
+            location: "",
+          };
+        })
+        .catch((err) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
     },
     selectBlog(item) {
       this.$emit("selectBlog", item);
+    },
+    getListTime(e) {
+      const date = new Date(e.target.value).toLocaleDateString();
+      this.adviceRequest.testDate = date;
+      const fData = date.toString().replaceAll("/", "-");
+      API_USER.getListTestDate(fData)
+        .then((res) => {
+          let tmpData = res.data;
+          let fData = [];
+          tmpData.forEach((item) => {
+            const startTime = new Date(item.startTime);
+            const endTime = new Date(item.endTime);
+            item.startTime = startTime.toLocaleTimeString();
+            item.endTime = endTime.toLocaleTimeString();
+            fData.push({
+              startTime: item.startTime,
+              endTime: item.endTime,
+            });
+          });
+
+          console.log(fData);
+        })
+        .catch((err) => {});
     },
     fetchLocation() {
       this.systemStore.setChangeLoading(true);
@@ -313,7 +350,7 @@ export default {
   background: #3cc8b4;
   color: #fff;
   -webkit-font-smoothing: antialiased;
-  border-radius: 2px;
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
 }

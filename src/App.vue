@@ -8,7 +8,7 @@
       :class="
         curRoute == 'welcome' || curRoute == 'login'
           ? 'w-full'
-          : 'w-full lg:w-[80%] float-right pt-24 bg-[#f9f9f9]'
+          : 'w-full lg:w-[80%] float-right pt-8 main-bg'
       "
     >
       <div
@@ -115,7 +115,7 @@ export default {
   mounted() {
     const thisVue = this;
     thisVue.connection.on("ReceiveMessage", function (u, message) {
-      console.log('go here');
+      console.log("go here");
       thisVue.fetchNoti();
     });
   },
@@ -163,5 +163,12 @@ export default {
 
 .settingbar-leave-to {
   right: -300px;
+}
+
+.main-bg {
+  background-image: url("./assets/images/main-bg.png");
+  background-repeat: repeat;
+  background-size: contain;
+  min-height: 90vh;
 }
 </style>

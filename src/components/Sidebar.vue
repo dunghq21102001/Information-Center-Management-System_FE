@@ -1,11 +1,12 @@
 <template>
   <div
+    class="bg-c"
     :class="`hidden z-[60] bg-white lg:block ${
       systemStore.getExpandSideBar ? 'w-[20%]' : 'w-[50px]'
     } px-3 duration-500 h-screen fixed top-0 left-0 border-cus overflow-y-scroll hide-scrollbar`"
   >
     <div class="w-[70%] mx-auto" v-show="systemStore.getExpandSideBar">
-      <img src="../assets/images/logo.png" alt="logo" />
+      <img src="../assets/images/logo-nobg.png" alt="logo" />
     </div>
     <div
       v-if="
@@ -34,7 +35,7 @@
       <ul class="w-full">
         <li
           v-for="item in listMenu"
-          class="tab-item my-2 px-2 py-1 rounded-lg w-full"
+          class="tab-item my-2 px-2 py-1 rounded-lg w-full "
           :class="item.isHidden ? 'hidden' : 'block'"
         >
           <div
@@ -217,8 +218,21 @@ export default {
       )
       0 100%;
   background-repeat: no-repeat;
-  background-color: white;
+  /* background-color: white; */
   background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
   background-attachment: local, local, scroll, scroll;
+}
+
+.bg-c {
+  /* background-image: url("https://i.pinimg.com/736x/c6/31/e1/c631e10a45dd593a2c6dda143f577d38.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover; */
+  background: rgb(148, 187, 233, 1);
+  background: linear-gradient(
+    250deg,
+    rgba(148, 187, 233, 1) 0%,
+    rgba(238, 174, 202, 1) 100%
+  );
 }
 </style>

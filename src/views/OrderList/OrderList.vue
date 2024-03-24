@@ -62,16 +62,21 @@ export default {
       this.fetchOrder();
     },
     handlePayment(item) {
-      this.systemStore.setChangeLoading(true);
-      API_ORDER.postPayment(item?.id)
-        .then((res) => {
-          this.systemStore.setChangeLoading(false);
-          window.open(res.data, "_blank");
-        })
-        .catch((err) => {
-          swal.error(err.response?.data);
-          this.systemStore.setChangeLoading(false);
-        });
+      this.$router.push({
+        name: "order-detail-list",
+        params: { id: item?.id },
+      });
+
+      // this.systemStore.setChangeLoading(true);
+      // API_ORDER.postPayment(item?.id)
+      //   .then((res) => {
+      //     this.systemStore.setChangeLoading(false);
+      //     window.open(res.data, "_blank");
+      //   })
+      //   .catch((err) => {
+      //     swal.error(err.response?.data);
+      //     this.systemStore.setChangeLoading(false);
+      //   });
     },
   },
 };

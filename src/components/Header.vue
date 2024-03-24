@@ -1,12 +1,16 @@
 <template>
   <Transition>
     <div
+      class="relative"
       v-if="curRoute != 'welcome'"
       :class="`${
         systemStore.getExpandSideBar ? 'w-full ld:w-[80%]' : 'w-full'
       } fixed bg-white top-0 left-0 right-0 duration-500 float-right h-[65px] z-40 border-cus flex justify-between items-center px-5`"
     >
-      <div>
+      <div class="absolute top-0 left-0 right-0 bottom-0">
+        <CloudAnimation />
+      </div>
+      <div class="z-10">
         <div class="lg:hidden">
           <v-icon
             @click="isShowMobileMenu = !isShowMobileMenu"
@@ -66,7 +70,7 @@
 
         <div
           v-show="isShowMobileMenu"
-          class="fixed top-0 left-0 min-h-screen w-full bg-fog-cus-for-mobile"
+          class="fixed top-0 left-0 min-h-screen w-full bg-fog-cus-for-mobile z-20"
           @click.self="hiddenMobileMenu"
         >
           <Transition name="mobile">
@@ -87,9 +91,11 @@ import MobileMenu from "./MobileMenu.vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../stores/Auth";
 import func from "../common/func";
+import CloudAnimation from "./CloudAnimation.vue";
 export default {
   components: {
     MobileMenu,
+    CloudAnimation,
   },
   setup() {
     const systemStore = useSystemStore();
