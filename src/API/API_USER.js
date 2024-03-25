@@ -43,6 +43,10 @@ export default class API_USER {
         return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrensByStaffId`)
     }
 
+    static getChildrenByParent(id) {
+        return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrenByParentId/${id}`)
+    }
+
     static postChildren(data) {
         return axios.post(`${API_BASE.BASE_URL}/Children`, data)
     }
@@ -73,10 +77,6 @@ export default class API_USER {
 
     static enumAdviceRequest() {
         return axios.get(`${API_BASE.BASE_URL}/Enum/StatusAdviseRequest`)
-    }
-
-    static getChildrenByParentId(id) {
-        return
     }
 
     static getClassesByChildrenId(id) {

@@ -18,7 +18,7 @@ export default class schemaConfig {
             { title: 'Birthday', field: 'birthDay', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Special Skill', field: 'specialSkill', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
             // { title: 'Gender', field: 'genderType', value: '', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: genderData },
-            { title: 'Avatar', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Avatar', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
         ]
     }
 

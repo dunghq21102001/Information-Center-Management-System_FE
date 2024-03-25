@@ -1,8 +1,8 @@
 <template>
   <div class="book">
     <div>
-      <p class="block text-center font-bold w-[95%]">{{ child?.name }}</p>
-      <span class="block text-center">{{ child?.age }} tuổi</span>
+      <p class="block text-center font-bold w-[95%]">{{ child?.fullName }}</p>
+      <span class="block text-center">{{ getAge(child?.birthDay) }} tuổi</span>
       <div
         class="w-full flex flex-col items-center justify-center flex-wrap mt-2"
       >
@@ -19,9 +19,9 @@
     </div>
     <div class="cover">
       <div
-        class="w-full h-[200px] overflow-hidden flex items-center justify-center"
+        class="w-full h-[200px] overflow-hidden flex items-center justify-center bg-white"
       >
-        <img :src="child?.image" class="object-cover w-full" alt="" />
+        <img :src="child?.avatar" class="object-cover w-full" alt="" />
       </div>
     </div>
   </div>
@@ -31,12 +31,20 @@ export default {
   props: {
     child: Object,
   },
+  computed: {
+   
+  },
   methods: {
     handleEdit(child) {
       this.$emit("handleEdit", child);
     },
     handleGetDetail(child) {
       this.$emit("handleGetDetail", child);
+    },
+    getAge(date) {
+      const curYear = new Date().getFullYear();
+      const d = new Date(date).getFullYear();
+      return curYear - d;
     },
   },
 };

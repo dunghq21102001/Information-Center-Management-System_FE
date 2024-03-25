@@ -116,6 +116,11 @@
             {{ convertDate(item?.warrantyDate) }}
           </span>
         </template>
+        <template #item-startTime="item">
+          <span class="block">
+            {{ convertDate(item?.startTime) }}
+          </span>
+        </template>
         <template #item-registerDate="item">
           <span class="block">
             {{ convertDate(item?.registerDate) }}
@@ -366,6 +371,11 @@
         <template #item-warrantyDate="item">
           <span class="block">
             {{ convertDate(item?.warrantyDate) }}
+          </span>
+        </template>
+        <template #item-startTime="item">
+          <span class="block">
+            {{ convertDate(item?.startTime) }}
           </span>
         </template>
         <template #item-registerDate="item">
@@ -912,22 +922,32 @@ export default {
       this.selectedParentItemOfDataList = item;
     },
     resetPassword(item) {
-      this.systemStore.setChangeLoading(true);
-      const data = {
-        id: item?.id,
-        newPasswordHash: "User@123",
-      };
-      API_USER.resetPassword(data)
-        .then((res) => {
-          this.systemStore.setChangeLoading(false);
-          swal.success("Đặt lại mật khẩu thành công");
-        })
-        .catch((err) => {
-          swal.error("Có lỗi xảy ra! Vui lòng thử lại");
-          this.systemStore.setChangeLoading(false);
+      swal
+        .confirm(
+          "Bạn có chắc chắn muốn đặt lại mật khẩu của người dùng này không? Mật khẩu mới sẽ là User@123"
+        )
+        .then((result) => {
+          if (result.value) {
+            this.systemStore.setChangeLoading(true);
+            const data = {
+              id: item?.id,
+              newPasswordHash: "User@123",
+            };
+            API_USER.resetPassword(data)
+              .then((res) => {
+                this.systemStore.setChangeLoading(false);
+                swal.success("Đặt lại mật khẩu thành công");
+              })
+              .catch((err) => {
+                swal.error("Có lỗi xảy ra! Vui lòng thử lại");
+                this.systemStore.setChangeLoading(false);
+              });
+          }
         });
     },
     handlePayment(item) {
+      if (item?.paymentStatus == "Paid")
+        return swal.info("Đơn hàng này đã được thanh toán!", 3000);
       this.$emit("paymentAction", item);
     },
     goToSyllabus(url) {

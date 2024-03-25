@@ -129,9 +129,9 @@ export default class tableConfig {
     static adviceRequestTable() {
         return [
             { text: "Họ tên", value: "fullName", sortable: true },
-            { text: "Email", value: "email", sortable: true },
+            // { text: "Email", value: "email", sortable: true },
             { text: "Điện thoại", value: "phone", sortable: true },
-            { text: "Ngày kiểm tra", value: "testDate", sortable: true },
+            { text: "Ngày hẹn", value: "startTime", sortable: true },
             // { text: "Khu vực", value: "location", sortable: true },
             { text: "Thi đầu vào", value: "isTested", sortable: true, width: 150 },
             // { text: "Trạng thái", value: "statusAdviseRequest", sortable: true },

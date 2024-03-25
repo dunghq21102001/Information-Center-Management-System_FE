@@ -34,7 +34,15 @@
 import CourseCard from "../CourseCard.vue";
 import Pagination from "../Pagination.vue";
 import ChildrenCard from "../../components/ChildrenCard.vue";
+import API_USER from "../../API/API_USER";
+import { useSystemStore } from "../../stores/system";
+import { useAuthStore } from "../../stores/Auth";
 export default {
+  setup() {
+    const systemStore = useSystemStore();
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
+  },
   props: {},
   components: {
     CourseCard,
@@ -43,36 +51,7 @@ export default {
   },
   data() {
     return {
-      childrenData: [
-        {
-          id: 1,
-          name: "Nguyen Thi Tran Anh Van A",
-          image:
-            "https://ataxavi.vn/wp-content/uploads/2023/07/f637b0052729d9502ff03abe390fe051.jpg",
-          age: 12,
-        },
-        {
-          id: 2,
-          name: "Nguyen Thi C",
-          image:
-            "https://ataxavi.vn/wp-content/uploads/2023/07/9ddcc1a2bffbd09d55a52a0d9e880266.jpg",
-          age: 10,
-        },
-        {
-          id: 3,
-          name: "Nguyen Thi D",
-          image:
-            "https://ataxavi.vn/wp-content/uploads/2023/07/f637b0052729d9502ff03abe390fe051.jpg",
-          age: 14,
-        },
-        {
-          id: 4,
-          name: "Nguyen Thanh E",
-          image:
-            "https://i.pinimg.com/736x/ca/5a/cc/ca5acc025626d8ee7a17fcca3cfc0b08.jpg",
-          age: 14,
-        },
-      ],
+      childrenData: [],
       isShowUniqueData: false,
     };
   },
@@ -80,7 +59,17 @@ export default {
     this.fetchChildren();
   },
   methods: {
-    fetchChildren() {},
+    fetchChildren() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.getChildrenByParent(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.childrenData = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     handleEdit(child) {
       console.log(child);
     },

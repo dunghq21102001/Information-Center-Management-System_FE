@@ -134,7 +134,7 @@ export default {
         );
 
         // Chuyển đổi URL blob thành Blob
-        const response = await fetch(data.image);
+        const response = await fetch(data.avatar);
         const blob = await response.blob();
 
         // Tải lên ảnh avatar lên Firestore
@@ -143,7 +143,7 @@ export default {
             return getDownloadURL(snapshot.ref);
           })
           .then((downloadURL) => {
-            data.image = downloadURL;
+            data.avatar = downloadURL;
             API_USER.postChildren(data)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);

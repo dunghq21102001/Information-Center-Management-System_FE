@@ -66,7 +66,7 @@
       class="adr-cus h-[900px] relative hidden md:block rounded-2xl overflow-hidden"
     >
       <div
-        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-[150px]"
+        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-[100px]"
       >
         <input
           type="text"
@@ -92,21 +92,62 @@
           placeholder="Địa chỉ"
           v-model="adviceRequest.address"
         />
-        <input
-          v-tooltip="'Chọn ngày để thi đầu vào'"
-          type="date"
-          class="input-ad"
-          @change="getListTime"
-        />
         <select name="" id="" class="input-ad" v-model="adviceRequest.location">
-          <option value="" disabled>Khu vực</option>
-          <option :value="l?.name" v-for="l in locations">
+          <option value="" disabled>Chọn khu vực của trung tâm gần bạn</option>
+          <option :value="l?.id" v-for="l in locations">
             {{ l?.name }}
           </option>
         </select>
+        <div class="w-full flex items-start justify-between">
+          <div
+            class="w-[38%] flex flex-col items-start justify-between h-[110px]"
+          >
+            <input
+              v-tooltip="
+                'Chọn ngày để thi đầu vào, tại khoảng thời gian mà bạn đăng ký dưới đây, bạn cần có mặt tại khu vực mà bạn đã đăng ký'
+              "
+              type="date"
+              class="input-ad"
+              @change="getListTime"
+            />
+            <div
+              class="bg-white rounded-xl px-2 w-full py-1"
+              v-if="selectedHour.id != ''"
+            >
+              Đã chọn khung giờ: <br />
+              {{ selectedHour.startTime }} - {{ selectedHour.endTime }}
+            </div>
+          </div>
+          <div
+            class="w-[60%] grid gap-3 grid-cols-12 max-h-[110px] overflow-y-scroll bg-white rounded-2xl hide-scrollbar py-2"
+          >
+            <div
+              v-for="slot in slots"
+              class="flex relative items-center justify-center col-span-12 hover:bg-gray-300 py-2 px-1"
+              :class="[
+                selectedHour.startTime == slot?.startTime
+                  ? 'bg-primary text-white hover:bg-primary'
+                  : '',
+                slot?.total >= 5
+                  ? 'cursor-not-allowed bg-red-500 text-white hover:bg-red-500'
+                  : 'cursor-pointer',
+              ]"
+              @click="selectHour(slot)"
+            >
+              {{ slot?.startTime }} - {{ slot?.endTime }}
+              <div
+                v-show="adviceRequest.testDate == ''"
+                class="absolute top-0 left-0 right-0 bottom-0 bg-black/0 cursor-not-allowed"
+                v-tooltip="
+                  'Bạn phải chọn ngày ở bên trái sau đó mới chọn mốc thời gian'
+                "
+              ></div>
+            </div>
+          </div>
+        </div>
 
         <div @click="postAdviceRequest" id="breathing-button">
-          Đăng ký tư vấn
+          Đăng ký tư vấn chi tiết
         </div>
       </div>
     </div>
@@ -172,7 +213,9 @@ import API_COURSE from "../../API/API_COURSE";
 import API_LOCATION from "../../API/API_LOCATION";
 import API_USER from "../../API/API_USER";
 import { useSystemStore } from "../../stores/system";
+import API_SLOT from "../../API/API_SLOT";
 import swal from "../../common/swal";
+import dayjs from "dayjs";
 import axios from "axios";
 export default {
   components: {},
@@ -196,6 +239,7 @@ export default {
         { total: "98%", des: "Tỷ lệ học viên có việc làm sau khi tốt nghiệp" },
       ],
       locations: [],
+      slots: [],
       blogs: [],
       courses: [],
       adviceRequest: {
@@ -206,14 +250,43 @@ export default {
         testDate: "",
         location: "",
       },
+      selectedHour: {
+        id: "",
+        startTime: "",
+        endTime: "",
+      },
     };
   },
   created() {
     this.fetchBlog();
     this.fetchLocation();
     this.fetchCourse();
+    this.fetchSlots();
   },
   methods: {
+    fetchSlots() {
+      this.systemStore.setChangeLoading(true);
+      API_SLOT.getSlots()
+        .then((res) => {
+          let fData = [];
+          fData = res.data.filter((item) => {
+            if (item?.slotType == 2) return item;
+          });
+
+          fData.sort((a, b) => {
+            const timeA = new Date("1970-01-01T" + a.startTime);
+            const timeB = new Date("1970-01-01T" + b.startTime);
+            return timeA - timeB;
+          });
+
+          fData.forEach((element) => {
+            element["total"] = 0;
+          });
+          this.slots = fData;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     postAdviceRequest() {
       if (
         this.adviceRequest.fullName.trim() == "" ||
@@ -221,27 +294,52 @@ export default {
         this.adviceRequest.location == "" ||
         this.adviceRequest.phone.trim() == "" ||
         this.adviceRequest.testDate.trim() == "" ||
-        this.adviceRequest.address.trim() == ""
+        this.adviceRequest.address.trim() == "" ||
+        this.selectedHour.id == ""
       ) {
         return swal.error("Bạn phải điền tất cả thông tin để đăng ký tư vấn");
       }
+
       if (
         this.adviceRequest.fullName.includes("@") ||
         this.adviceRequest.fullName.includes("@gmail") ||
         this.adviceRequest.fullName.includes("@email") ||
         this.adviceRequest.fullName.includes("gmail") ||
         this.adviceRequest.fullName.includes("email")
-      )
+      ) {
         return swal.error(
           "Họ và tên không được chứa kí tự tương tự email",
           3000
         );
+      }
+
       this.systemStore.setChangeLoading(true);
-      API_USER.postAdviceRequest(this.adviceRequest)
+
+      const formattedDate = dayjs(
+        this.adviceRequest.testDate,
+        "M/D/YYYY"
+      ).format("YYYY-MM-DD");
+
+      const startTime = formattedDate + "T" + this.selectedHour.startTime;
+      const endTime = formattedDate + "T" + this.selectedHour.endTime;
+
+      API_USER.postAdviceRequest({
+        userId: null,
+        fullName: this.adviceRequest.fullName,
+        email: this.adviceRequest.email,
+        phone: this.adviceRequest.phone,
+        address: this.adviceRequest.address,
+        locationId: this.adviceRequest.location,
+        testDate: formattedDate,
+        slotId: this.selectedHour.id,
+        startTime: startTime,
+        endTime: endTime,
+        isTested: false,
+      })
         .then((res) => {
           swal.success(
             "Bạn đã đăng ký tư vấn thành công! Vui lòng chờ đợi chúng tôi liên lạc qua email hoặc số điện thoại",
-            3000
+            3500
           );
           this.systemStore.setChangeLoading(false);
           this.adviceRequest = {
@@ -249,7 +347,14 @@ export default {
             email: "",
             phone: "",
             address: "",
+            testDate: "",
             location: "",
+          };
+
+          this.selectedHour = {
+            id: "",
+            startTime: "",
+            endTime: "",
           };
         })
         .catch((err) => {
@@ -257,31 +362,53 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+
     selectBlog(item) {
       this.$emit("selectBlog", item);
     },
     getListTime(e) {
+      this.resetTotal();
+      // this.systemStore.setChangeLoading(true);
       const date = new Date(e.target.value).toLocaleDateString();
       this.adviceRequest.testDate = date;
       const fData = date.toString().replaceAll("/", "-");
       API_USER.getListTestDate(fData)
         .then((res) => {
-          let tmpData = res.data;
-          let fData = [];
-          tmpData.forEach((item) => {
-            const startTime = new Date(item.startTime);
-            const endTime = new Date(item.endTime);
-            item.startTime = startTime.toLocaleTimeString();
-            item.endTime = endTime.toLocaleTimeString();
-            fData.push({
-              startTime: item.startTime,
-              endTime: item.endTime,
+          res.data.forEach((item) => {
+            const startTime = new Date(item.startTime).toLocaleTimeString(
+              "en-US",
+              { hour12: false }
+            );
+            this.slots.forEach((hour) => {
+              if (startTime === hour.startTime) {
+                hour.total++;
+              }
             });
           });
 
-          console.log(fData);
+          // this.systemStore.setChangeLoading(false);
         })
-        .catch((err) => {});
+        .catch((err) => {
+          // this.systemStore.setChangeLoading(false);
+        });
+    },
+    resetTotal() {
+      this.slots.forEach((item) => {
+        item["total"] = 0;
+        return item;
+      });
+    },
+    selectHour(slot) {
+      if (this.adviceRequest.testDate == "") return;
+      if (slot?.total >= 5)
+        return swal.error(
+          "Lịch này đã đủ số người đăng ký, vui lòng chọn thời gian khác",
+          3000
+        );
+
+      this.selectedHour.id = slot?.id;
+      this.selectedHour.startTime = slot?.startTime;
+      this.selectedHour.endTime = slot?.endTime;
     },
     fetchLocation() {
       this.systemStore.setChangeLoading(true);
