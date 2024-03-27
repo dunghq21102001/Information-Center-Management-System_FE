@@ -3,14 +3,19 @@
     <span v-if="lesson != null" class="font-bold text-[24px] block mb-3">
       Bộ câu hỏi của bài {{ lesson?.name }}
     </span>
-    <input type="text" />
+    <input
+      type="text"
+      placeholder="Tìm kiếm theo tên câu hỏi"
+      class="in-cus"
+      v-model="searchQuery"
+    />
     <div class="w-full flex items-start justify-between">
       <div
         class="flex flex-col items-start"
         :class="examData == null ? 'w-full' : 'w-[80%]'"
       >
         <div
-          class="w-full pr-2 flex items-start justify-between mb-2 flex-wrap flex-col lg:flex-row"
+          class="w-full flex items-start justify-between mb-2 flex-wrap flex-col lg:flex-row"
           v-for="(item, i) in paginatedData"
           :key="i"
         >
@@ -82,15 +87,15 @@
     <div class="flex justify-between items-center mt-4">
       <button
         @click="previousPage"
-        :disabled="currentPage === 1"
+        :disabled="isOnlyOnePage || currentPage === 1"
         class="py-2 px-4 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-500 hover:text-gray-700"
       >
         Trang trước
       </button>
-      <span>{{ currentPage }} / {{ totalPages }}</span>
+      <span>{{ currentPage }} / {{ filteredTotalPages }}</span>
       <button
         @click="nextPage"
-        :disabled="currentPage === totalPages"
+        :disabled="isOnlyOnePage || currentPage === filteredTotalPages"
         class="py-2 px-4 border border-gray-300 rounded-md bg-white text-sm font-medium text-gray-500 hover:text-gray-700"
       >
         Trang sau
@@ -237,27 +242,52 @@ export default {
         rightAnswer: "",
         level: 0,
       },
+      searchQuery: "",
     };
   },
   computed: {
     paginatedData() {
       const startIndex = (this.currentPage - 1) * this.pageSize;
-      const endIndex = Math.min(startIndex + this.pageSize, this.data.length);
-      return this.data.slice(startIndex, endIndex);
+      const endIndex = Math.min(
+        startIndex + this.pageSize,
+        this.filteredData.length
+      );
+      return this.filteredData.slice(startIndex, endIndex);
     },
     headers() {
-      return Object.keys(this.data[0] || {});
+      return Object.keys(this.filteredData[0] || {});
+    },
+    filteredData() {
+      if (!this.searchQuery) {
+        return this.data;
+      } else {
+        return this.data.filter((item) =>
+          item.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+    },
+    filteredTotalPages() {
+      return Math.ceil(this.filteredData.length / this.pageSize);
+    },
+    isOnlyOnePage() {
+      return this.filteredTotalPages === 1;
     },
   },
   watch: {
     data() {
       this.calculateTotalPages();
     },
+    searchQuery() {
+      this.resetPagination();
+    },
   },
   mounted() {
     this.calculateTotalPages();
   },
   methods: {
+    resetPagination() {
+      this.currentPage = 1;
+    },
     calculateTotalPages() {
       this.totalPages = Math.ceil(this.data.length / this.pageSize);
     },
@@ -311,6 +341,7 @@ export default {
             API_QUESTION.deleteQuestion(item?.id)
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
+                this.currentPage = 1;
                 swal.success("Xoá thành công!");
                 this.$emit("reload", true);
               })
@@ -355,5 +386,13 @@ export default {
   border-bottom: 2px solid rgb(212, 212, 212);
   padding: 10px 8px;
   width: 100%;
+}
+
+.in-cus {
+  border: 1px solid rgb(213, 213, 213);
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: 100%;
+  margin: 10px 0;
 }
 </style>

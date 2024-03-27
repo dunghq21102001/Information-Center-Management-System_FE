@@ -100,8 +100,10 @@
               <span class="block">
                 Điểm của bạn:
                 {{
-                  (rightAnswerByChildren.length * 100) /
-                  allAnswerByChildren.length
+                  (
+                    (rightAnswerByChildren.length * 100) /
+                    allAnswerByChildren.length
+                  ).toFixed(0)
                 }}
                 / 100
                 <br />
@@ -150,7 +152,9 @@
                   />
                   <label
                     :class="
-                    item?.answer1 == item?.rightAnswer && item?.answer1 == item?.childrenAnswer && isShowResult
+                      item?.answer1 == item?.rightAnswer &&
+                      item?.answer1 == item?.childrenAnswer &&
+                      isShowResult
                         ? 'font-bold text-green-500'
                         : ''
                     "
@@ -168,7 +172,9 @@
                   />
                   <label
                     :class="
-                    item?.answer2 == item?.rightAnswer && item?.answer2 == item?.childrenAnswer && isShowResult
+                      item?.answer2 == item?.rightAnswer &&
+                      item?.answer2 == item?.childrenAnswer &&
+                      isShowResult
                         ? 'font-bold text-green-500'
                         : ''
                     "
@@ -186,7 +192,9 @@
                   />
                   <label
                     :class="
-                    item?.answer3 == item?.rightAnswer && item?.answer3 == item?.childrenAnswer && isShowResult
+                      item?.answer3 == item?.rightAnswer &&
+                      item?.answer3 == item?.childrenAnswer &&
+                      isShowResult
                         ? 'font-bold text-green-500'
                         : ''
                     "
@@ -204,7 +212,9 @@
                   />
                   <label
                     :class="
-                    item?.answer4 == item?.rightAnswer && item?.answer4 == item?.childrenAnswer && isShowResult
+                      item?.answer4 == item?.rightAnswer &&
+                      item?.answer4 == item?.childrenAnswer &&
+                      isShowResult
                         ? 'font-bold text-green-500'
                         : ''
                     "
@@ -233,7 +243,9 @@ import CourseCard from "../CourseCard.vue";
 import Pagination from "../Pagination.vue";
 import ChildrenCard from "../../components/ChildrenCard.vue";
 import API_USER from "../../API/API_USER";
+import API_EXAM from "../../API/API_EXAM";
 import API_QUESTION from "../../API/API_QUESTION";
+import API_CHILDRENANSWER from "../../API/API_CHILDRENANSWER";
 import { useSystemStore } from "../../stores/system";
 import { useAuthStore } from "../../stores/Auth";
 import TableWithPagin from "../../components/TableWithPagin.vue";
@@ -314,6 +326,20 @@ export default {
       });
     },
     handleCreateTest() {
+      this.systemStore.setChangeLoading(true);
+      API_EXAM.postExam({
+        courseId: "6b2b4dde-1b0a-4719-0f01-08dc4dcdf6ad",
+        testName: "Bài đầu vào",
+        testDate: new Date().toISOString(),
+        testDuration: 30,
+        testType: 1,
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
       this.getQuestions();
       this.isShowTest = true;
       this.second = 60;
@@ -338,8 +364,9 @@ export default {
         if (this.intervalId) clearInterval(this.intervalId);
         return swal.error("Bạn đã nộp bài rồi!");
       }
-      swal.success('Bạn đã nộp bài thành công')
+      swal.success("Bạn đã nộp bài thành công");
       let tmpArr = [];
+      let fData = [];
       this.questionList.map((item) => {
         if (item?.childrenAnswer == item?.rightAnswer) {
           tmpArr.push(item);
@@ -351,6 +378,19 @@ export default {
       this.allAnswerByChildren = this.questionList;
       this.isShowResult = true;
       if (this.intervalId) clearInterval(this.intervalId);
+
+      // this.questionList.map((i) => {
+      //      fData.push({
+      //     childrenProfileId: this.childrenDetail?.id,
+      //     examId: null,
+      //     questionId: i?.id,
+      //     answer: i?.childrenAnswer,
+      //     childrenScore: 0,
+      //   });
+      // });
+
+      // this.systemStore.setChangeLoading(true);
+      // API_CHILDRENANSWER.postChildrenAnswer()
     },
     cancelAll() {
       this.isShowTest = false;
