@@ -12,7 +12,7 @@ export default class API_QUESTION {
     }
 
     static getQuestionsOrCreateQuiz(data) {
-        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateExam`, data)
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateTest`, data)
     }
 
     static postQuestion(data) {

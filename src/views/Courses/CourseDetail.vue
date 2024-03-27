@@ -354,7 +354,7 @@
                     (rightAnswerByChildren.length * 100) /
                     allAnswerByChildren.length
                   }}
-                  <br>
+                  <br />
                   <span class="font-bold">{{
                     (rightAnswerByChildren.length * 100) /
                       allAnswerByChildren.length >=
@@ -378,7 +378,7 @@
                   <!-- <span class="block">Độ khó: {{ item?.level }}</span> -->
                 </div>
                 <div
-                  class="br-cus w-full lg:w-[79%] lg:mt-0 px-2 flex items-start flex-col"
+                  class="br-cus w-full lg:w-[79%] mt-5 lg:mt-0 px-2 flex items-start flex-col"
                 >
                   <p class="mb-3">{{ item?.title }}</p>
                   <p>
@@ -435,15 +435,6 @@
       </div>
     </div>
 
-    <!-- show result -->
-    <!-- <div class="fog-c" v-if="isShowResult" @click.self="isShowResult = false">
-      <div
-        class="w-[95%] md:w-[50%] lg:w-[40%] bg-white rounded-2xl p-6 max-h-[90vh] overflow-hidden"
-      >
-        Kết quả kiểm tra của bạn là: {{ rightAnswerByChildren.length }} /
-        {{ allAnswerByChildren.length }}
-      </div>
-    </div> -->
   </div>
 </template>
 <script>
@@ -529,6 +520,7 @@ export default {
         {
           lessonId: item?.id,
           totalQuestion: null,
+          type: 1
         },
       ])
         .then((res) => {
@@ -624,6 +616,7 @@ export default {
       let finalData = [];
       finalData = this.questionsCreate.map((item) => {
         item["lessionId"] = this.currentLessonSelected?.id;
+        item["type"] = 1;
         return item;
       });
 

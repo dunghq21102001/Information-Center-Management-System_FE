@@ -209,7 +209,7 @@ export default {
             this.isUpdateInfoOrder = true;
           }
           if (res.data[0]?.installmentTerm != null)
-            this.termNumber = res.data?.installmentTerm;
+            this.termNumber = res.data[0]?.installmentTerm;
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);

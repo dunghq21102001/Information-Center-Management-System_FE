@@ -8,7 +8,7 @@
             :key="index"
             class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            {{ header }}
+            {{ reNameHeader(header) }}
           </th>
         </tr>
       </thead>
@@ -18,7 +18,8 @@
             v-for="(value, key) in item"
             :key="key"
             class="px-4 py-2 max-w-[300px]"
-          >{{ value }}
+          >
+            {{ value }}
           </td>
         </tr>
       </tbody>
@@ -92,6 +93,26 @@ export default {
       if (this.currentPage > 1) {
         this.currentPage--;
       }
+    },
+    reNameHeader(header) {
+      let fHeader = header;
+      switch (fHeader) {
+        case "name":
+          fHeader = "Tên";
+          break;
+        case "date":
+          fHeader = "Ngày";
+          break;
+          case "score":
+          fHeader = "Điểm số";
+          break;
+
+        default:
+          fHeader = header;
+          break;
+      }
+
+      return fHeader
     },
   },
 };

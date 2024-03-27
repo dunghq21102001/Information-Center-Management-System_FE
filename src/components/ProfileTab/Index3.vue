@@ -23,9 +23,207 @@
           />
         </div>
       </div>
+      <div class="line" v-show="isShowUniqueData"></div>
+      <div class="w-full mt-5" v-show="isShowUniqueData">
+        <span class="text-[24px]">Chi tiết về trẻ</span>
+        <div class="table mt-5">
+          <div class="row">
+            <div class="cell font-bold">Họ và tên</div>
+            <div class="cell">{{ childrenDetail?.fullName }}</div>
+          </div>
+          <div class="row">
+            <div class="cell font-bold">Giới tính</div>
+            <div class="cell">{{ childrenDetail?.genderType }}</div>
+          </div>
+          <div class="row">
+            <div class="cell font-bold">Tuổi</div>
+            <div class="cell">{{ getAge(childrenDetail?.birthDay) }}</div>
+          </div>
+          <div class="row">
+            <div class="cell font-bold">Sinh nhật</div>
+            <div class="cell">
+              {{ convertDateTmp(childrenDetail?.birthDay) }}
+            </div>
+          </div>
+        </div>
 
-      <div class="w-full mt-5 h-[500px]" v-show="isShowUniqueData">
-        đây là data khi vô detail
+        <!-- list quiz -->
+        <div class="w-full mt-10">
+          <div class="flex w-full items-center justify-between flex-wrap">
+            <span class="text-[20px]">Các bài kiểm tra đã làm</span>
+            <button @click="handleCreateTest" class="btn-primary px-2 py-1">
+              Thực hiện bài kiểm tra đầu vào
+            </button>
+          </div>
+          <div class="w-full mt-10">
+            <TableWithPagin :pageSize="5" :data="fData" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fog-q" v-if="isShowTest">
+      <div
+        class="w-[95%] md:w-[90%] lg:w-[80%] bg-white rounded-2xl relative p-6 max-h-[90vh] overflow-y-scroll hide-scrollbar"
+      >
+        <v-icon
+          class="sticky top-0 left-[98%] cursor-pointer"
+          @click="cancelAll"
+          name="io-close-outline"
+          scale="1.5"
+        />
+        <div class="flex items-start flex-row-reverse mt-10">
+          <div class="w-[20%] sticky top-10 left-[90%]">
+            <div class="gap-2 grid grid-cols-12">
+              <div
+                class="col-span-3 lg:col-span-2 br-c h-[50px] flex flex-col overflow-hidden"
+                v-for="(ic, index) in questionList"
+                :class="[
+                  ic?.childrenAnswer == null ? 'border-init' : 'border-select',
+                ]"
+              >
+                <span class="text-center py-[2px] block bg-gray-300">{{
+                  index + 1
+                }}</span>
+                <div class="bg-white"></div>
+              </div>
+            </div>
+            <span class="mt-5 block"
+              >Thời gian: {{ initTime - 1 }} phút {{ second }} giây</span
+            >
+            <div class="w-full" v-if="isShowResult">
+              <span class="block">
+                Số câu đúng:
+                {{ rightAnswerByChildren.length }} /
+                {{ allAnswerByChildren.length }}
+              </span>
+              <span class="block">
+                Điểm của bạn:
+                {{
+                  (rightAnswerByChildren.length * 100) /
+                  allAnswerByChildren.length
+                }}
+                / 100
+                <br />
+                <span
+                  class="font-bold"
+                  :class="
+                    (rightAnswerByChildren.length * 100) /
+                      allAnswerByChildren.length >=
+                    50
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  "
+                  >{{
+                    (rightAnswerByChildren.length * 100) /
+                      allAnswerByChildren.length >=
+                    50
+                      ? "Passed"
+                      : "Not passed"
+                  }}</span
+                >
+              </span>
+            </div>
+          </div>
+          <div class="w-[80%] flex flex-col items-start">
+            <div
+              class="w-full pr-2 flex items-start justify-between mb-2 flex-wrap flex-col lg:flex-row"
+              v-for="(item, i) in questionList"
+              :key="i"
+            >
+              <div class="br-cus w-full lg:w-[20%] px-2">
+                <span class="block text-[18px] font-bold"
+                  >Câu hỏi {{ i + 1 }}</span
+                >
+                <!-- <span class="block">Độ khó: {{ item?.level }}</span> -->
+              </div>
+              <div
+                class="br-cus w-full lg:w-[79%] lg:mt-0 mt-5 px-2 flex items-start flex-col"
+              >
+                <p class="mb-3">{{ item?.title }}</p>
+                <p>
+                  <input
+                    v-model="item.childrenAnswer"
+                    type="radio"
+                    :id="item?.answer1"
+                    :value="item?.answer1"
+                  />
+                  <label
+                    :class="
+                    item?.answer1 == item?.rightAnswer && item?.answer1 == item?.childrenAnswer && isShowResult
+                        ? 'font-bold text-green-500'
+                        : ''
+                    "
+                    :for="item?.answer1"
+                  >
+                    A. {{ item?.answer1 }}</label
+                  >
+                </p>
+                <p>
+                  <input
+                    v-model="item.childrenAnswer"
+                    type="radio"
+                    :id="item?.answer2"
+                    :value="item?.answer2"
+                  />
+                  <label
+                    :class="
+                    item?.answer2 == item?.rightAnswer && item?.answer2 == item?.childrenAnswer && isShowResult
+                        ? 'font-bold text-green-500'
+                        : ''
+                    "
+                    :for="item?.answer2"
+                  >
+                    B. {{ item?.answer2 }}</label
+                  >
+                </p>
+                <p>
+                  <input
+                    v-model="item.childrenAnswer"
+                    type="radio"
+                    :id="item?.answer3"
+                    :value="item?.answer3"
+                  />
+                  <label
+                    :class="
+                    item?.answer3 == item?.rightAnswer && item?.answer3 == item?.childrenAnswer && isShowResult
+                        ? 'font-bold text-green-500'
+                        : ''
+                    "
+                    :for="item?.answer3"
+                  >
+                    C. {{ item?.answer3 }}</label
+                  >
+                </p>
+                <p>
+                  <input
+                    v-model="item.childrenAnswer"
+                    type="radio"
+                    :id="item?.answer4"
+                    :value="item?.answer4"
+                  />
+                  <label
+                    :class="
+                    item?.answer4 == item?.rightAnswer && item?.answer4 == item?.childrenAnswer && isShowResult
+                        ? 'font-bold text-green-500'
+                        : ''
+                    "
+                    :for="item?.answer4"
+                  >
+                    D. {{ item?.answer4 }}</label
+                  >
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- submit btn -->
+        <div class="w-[90%] mx-auto flex items-center justify-end">
+          <button @click="submitExam" class="btn-primary px-3 py-1">
+            Nộp bài
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -35,8 +233,12 @@ import CourseCard from "../CourseCard.vue";
 import Pagination from "../Pagination.vue";
 import ChildrenCard from "../../components/ChildrenCard.vue";
 import API_USER from "../../API/API_USER";
+import API_QUESTION from "../../API/API_QUESTION";
 import { useSystemStore } from "../../stores/system";
 import { useAuthStore } from "../../stores/Auth";
+import TableWithPagin from "../../components/TableWithPagin.vue";
+import dayjs from "dayjs";
+import swal from "../../common/swal";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -48,11 +250,25 @@ export default {
     CourseCard,
     Pagination,
     ChildrenCard,
+    TableWithPagin,
   },
   data() {
     return {
       childrenData: [],
       isShowUniqueData: false,
+      childrenDetail: null,
+      fData: [
+        { name: "Bài kiểm tra 15p", date: "20/3/2024", score: "9" },
+        { name: "Bài kiểm tra 45p", date: "26/3/2024", score: "5" },
+      ],
+      isShowTest: false,
+      isShowResult: false,
+      rightAnswerByChildren: [],
+      allAnswerByChildren: [],
+      questionList: [],
+      initTime: 30,
+      second: 60,
+      intervalId: null,
     };
   },
   created() {
@@ -70,11 +286,26 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    getAge(date) {
+      const curYear = new Date().getFullYear();
+      const d = new Date(date).getFullYear();
+      return curYear - d;
+    },
+    convertDateTmp(date) {
+      return dayjs(date).format("DD/MM/YYYY");
+    },
     handleEdit(child) {
       console.log(child);
     },
     handleGetDetail(child) {
       this.isShowUniqueData = true;
+      this.systemStore.setChangeLoading(true);
+      API_USER.getChildrenById(child?.id)
+        .then((res) => {
+          this.childrenDetail = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
       this.$nextTick(() => {
         window.scrollTo({
           top: document.documentElement.scrollHeight,
@@ -82,11 +313,140 @@ export default {
         });
       });
     },
+    handleCreateTest() {
+      this.getQuestions();
+      this.isShowTest = true;
+      this.second = 60;
+
+      this.intervalId = setInterval(() => {
+        if (this.second > 0) {
+          this.second--;
+        } else {
+          if (this.initTime > 0) {
+            this.initTime--;
+            this.second = 60;
+          } else {
+            this.submitExam();
+            clearInterval(this.intervalId);
+            return;
+          }
+        }
+      }, 1000);
+    },
+    submitExam() {
+      if (this.isShowResult == true) {
+        if (this.intervalId) clearInterval(this.intervalId);
+        return swal.error("Bạn đã nộp bài rồi!");
+      }
+      swal.success('Bạn đã nộp bài thành công')
+      let tmpArr = [];
+      this.questionList.map((item) => {
+        if (item?.childrenAnswer == item?.rightAnswer) {
+          tmpArr.push(item);
+        }
+        return item;
+      });
+
+      this.rightAnswerByChildren = tmpArr;
+      this.allAnswerByChildren = this.questionList;
+      this.isShowResult = true;
+      if (this.intervalId) clearInterval(this.intervalId);
+    },
+    cancelAll() {
+      this.isShowTest = false;
+      this.questionList = [];
+      this.allAnswerByChildren = [];
+      this.rightAnswerByChildren = [];
+      this.second = 60;
+      this.initTime = 30;
+      this.isShowResult = false;
+      if (this.intervalId) clearInterval(this.intervalId);
+    },
+
+    getQuestions() {
+      API_QUESTION.getQuestionsOrCreateQuiz([
+        {
+          lessonId: null,
+          totalQuestion: null,
+          type: 2,
+        },
+      ])
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.questionList = res.data[0]?.questions;
+        })
+        .catch((err) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
+    },
   },
 };
 </script>
 <style scoped>
 .br-cus {
   border: 1px solid rgb(213, 213, 213);
+}
+
+.table {
+  display: table;
+  border: 1px solid #ebebeb; /* Thêm viền cho các ô */
+  width: 100%; /* Đặt chiều rộng bằng 100% hoặc giá trị mong muốn */
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  border: 1px solid #ebebeb; /* Thêm viền cho các ô */
+  padding: 5px; /* Thêm padding nếu cần */
+}
+
+.line {
+  margin: 50px 0;
+  width: 100%;
+  height: 1px;
+  border-bottom: 1px dashed rgb(182, 182, 182);
+}
+
+.fog-q {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.i-cus {
+  outline: none;
+  border-bottom: 2px solid rgb(212, 212, 212);
+  padding: 10px 8px;
+  width: 100%;
+}
+
+.i-cus2 {
+  outline: none;
+  border-bottom: 2px solid rgb(212, 212, 212);
+  padding: 10px 8px;
+  width: 100%;
+}
+
+.br-c {
+  border-radius: 5px;
+}
+
+.border-init {
+  border: 2px solid rgb(209, 213, 219);
+}
+
+.border-select {
+  border: 2px solid rgb(40, 101, 194);
 }
 </style>

@@ -47,6 +47,10 @@ export default class API_USER {
         return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrenByParentId/${id}`)
     }
 
+    static getChildrenById(id) {
+        return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrenById/${id}`)
+    }
+
     static postChildren(data) {
         return axios.post(`${API_BASE.BASE_URL}/Children`, data)
     }
@@ -79,8 +83,10 @@ export default class API_USER {
         return axios.get(`${API_BASE.BASE_URL}/Enum/StatusAdviseRequest`)
     }
 
-    static getClassesByChildrenId(id) {
-        return
-    }
+    // static getClassesByChildrenId(id) {
+    //     return
+    // }
+
+  
 
 }

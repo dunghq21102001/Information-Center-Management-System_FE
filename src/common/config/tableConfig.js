@@ -126,6 +126,8 @@ export default class tableConfig {
         ]
     }
 
+    
+
     static adviceRequestTable() {
         return [
             { text: "Họ tên", value: "fullName", sortable: true },
@@ -142,7 +144,7 @@ export default class tableConfig {
     static orderListTable() {
         return [
             { text: "Mã đơn hàng", value: "orderNumber", sortable: true },
-            // { text: "Tên người dùng", value: "userAccountName", sortable: true },
+            { text: "Khách hàng", value: "fullName", sortable: true },
             { text: "Ngày đặt hàng", value: "orderDate", sortable: true },
             { text: "Tổng tiền", value: "totalAmount", sortable: true },
             { text: "Trạng thái", value: "paymentStatus", sortable: true },

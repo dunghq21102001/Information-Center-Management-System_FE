@@ -1,5 +1,14 @@
+import dayjs from "dayjs"
+
 export default class func {
     static convertDate(date) {
+        return dayjs(date).format("DD/MM/YYYY");
+    }
+
+
+
+
+    static convertDateOldVer(date) {
         let fDate = new Date(date)
         return fDate.toLocaleString()
     }

@@ -1,7 +1,7 @@
 <template>
   <div class="book">
     <div>
-      <p class="block text-center font-bold w-[95%]">{{ child?.fullName }}</p>
+      <p class="block text-center font-bold w-[95%]">{{ child?.fullName }} ({{ child?.genderType }})</p>
       <span class="block text-center">{{ getAge(child?.birthDay) }} tuổi</span>
       <div
         class="w-full flex flex-col items-center justify-center flex-wrap mt-2"

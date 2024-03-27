@@ -16,7 +16,8 @@ export default class schemaConfig {
         return [
             { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Birthday', field: 'birthDay', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
-            { title: 'Special Skill', field: 'specialSkill', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Special Skill', field: 'specialSkill', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Giới tính', field: 'genderType', value: 'Nam', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: ['Nam', 'Nữ'] },
             // { title: 'Gender', field: 'genderType', value: '', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: genderData },
             { title: 'Avatar', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
         ]
