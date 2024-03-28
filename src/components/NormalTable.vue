@@ -796,6 +796,10 @@ export default {
       default: false,
     },
     enumList: Array,
+    locationList: {
+      type: Array,
+      default: [],
+    },
     tpCategoryList: Array,
   },
   setup(props) {
@@ -989,7 +993,6 @@ export default {
             key !== "trainingPrograms" &&
             key != "blogTags" &&
             key != "userAccount" &&
-            key != "userId" &&
             key != "semesterCourses" &&
             key != "trainingProgramCategory" &&
             key != "trainingProgramCourses" &&
@@ -1008,7 +1011,10 @@ export default {
             key != "semesterId" &&
             key != "roomId" &&
             key != "categoryEquipmentId" &&
-            key != "code"
+            key != "code" &&
+            key != "staff" &&
+            key != "startTime" &&
+            key != "endTime"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -1036,12 +1042,12 @@ export default {
       this.$router.push({ name: this.isAddProp, params: {} });
     },
     separateUpperCase(text) {
-      // Kiểm tra xem text có chứa chữ cái hoa không
       if (/[A-Z]/.test(text)) {
-        // Nếu có, thực hiện tách các chữ hoa ra bằng khoảng trắng
-        return text.replace(/([A-Z])/g, " $1").trim();
+        return text
+          .replace(/([A-Z])/g, " $1")
+          .trim()
+          .replace(/\b\w/g, (firstChar) => firstChar.toUpperCase());
       } else {
-        // Nếu không, viết hoa chữ cái đầu tiên
         return text.charAt(0).toUpperCase() + text.slice(1);
       }
     },
@@ -1112,6 +1118,14 @@ export default {
           item["type"] = "date";
         } else if (item.field == "testDate") {
           item["type"] = "date";
+        } else if (item.field == "slotId") {
+          item["type"] = "select";
+          item["title"] = "Slot";
+          item["listData"] = this.enumList;
+        } else if (item.field == "locationId") {
+          item["type"] = "select";
+          item["title"] = "Location";
+          item["listData"] = this.locationList;
         } else item["type"] = "text";
 
         return item;

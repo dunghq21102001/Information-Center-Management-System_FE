@@ -33,6 +33,7 @@
             >0</span
           >
         </div>
+        <span class="block z-10 mx-2 font-bold">{{ authStore.getAuth?.userName }}</span>
         <div
           class="w-[50px] h-[50px] relative rounded-full flex items-center justify-center"
         >

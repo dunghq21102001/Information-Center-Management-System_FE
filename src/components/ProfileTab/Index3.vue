@@ -47,6 +47,32 @@
           </div>
         </div>
 
+        <!-- list course -->
+        <div class="w-full mt-10">
+          <div class="flex w-full items-center justify-between flex-wrap">
+            <span class="text-[20px]">Danh sách khoá học</span>
+            <!-- <button @click="handleCreateTest" class="btn-primary px-2 py-1">
+              Thực hiện bài kiểm tra đầu vào
+            </button> -->
+          </div>
+          <div class="w-full mt-10">
+            <TableWithPagin :pageSize="5" :data="coursesData" />
+          </div>
+        </div>
+
+        <!-- list class -->
+        <div class="w-full mt-10">
+          <div class="flex w-full items-center justify-between flex-wrap">
+            <span class="text-[20px]">Danh sách lớp</span>
+            <!-- <button @click="handleCreateTest" class="btn-primary px-2 py-1">
+              Thực hiện bài kiểm tra đầu vào
+            </button> -->
+          </div>
+          <div class="w-full mt-10">
+            <TableWithPagin :pageSize="5" :data="classesData" />
+          </div>
+        </div>
+
         <!-- list quiz -->
         <div class="w-full mt-10">
           <div class="flex w-full items-center justify-between flex-wrap">
@@ -56,7 +82,10 @@
             </button>
           </div>
           <div class="w-full mt-10">
-            <TableWithPagin :pageSize="5" :data="fData" />
+            <p class="w-full text-center font-bold text-gray-600">
+              Chưa thực hiện bài kiểm tra nào
+            </p>
+            <!-- <TableWithPagin :pageSize="5" :data="fData" /> -->
           </div>
         </div>
       </div>
@@ -126,6 +155,9 @@
                 >
               </span>
             </div>
+            <button @click="submitExam" class="btn-primary px-3 py-1 mt-3">
+              Nộp bài
+            </button>
           </div>
           <div class="w-[80%] flex flex-col items-start">
             <div
@@ -145,6 +177,7 @@
                 <p class="mb-3">{{ item?.title }}</p>
                 <p>
                   <input
+                    :disabled="isShowResult"
                     v-model="item.childrenAnswer"
                     type="radio"
                     :id="item?.answer1"
@@ -165,6 +198,7 @@
                 </p>
                 <p>
                   <input
+                    :disabled="isShowResult"
                     v-model="item.childrenAnswer"
                     type="radio"
                     :id="item?.answer2"
@@ -185,6 +219,7 @@
                 </p>
                 <p>
                   <input
+                    :disabled="isShowResult"
                     v-model="item.childrenAnswer"
                     type="radio"
                     :id="item?.answer3"
@@ -205,6 +240,7 @@
                 </p>
                 <p>
                   <input
+                    :disabled="isShowResult"
                     v-model="item.childrenAnswer"
                     type="radio"
                     :id="item?.answer4"
@@ -269,6 +305,7 @@ export default {
       childrenData: [],
       isShowUniqueData: false,
       childrenDetail: null,
+      examData: null,
       fData: [
         { name: "Bài kiểm tra 15p", date: "20/3/2024", score: "9" },
         { name: "Bài kiểm tra 45p", date: "26/3/2024", score: "5" },
@@ -281,6 +318,8 @@ export default {
       initTime: 30,
       second: 60,
       intervalId: null,
+      coursesData: [],
+      classesData: []
     };
   },
   created() {
@@ -316,6 +355,8 @@ export default {
         .then((res) => {
           this.childrenDetail = res.data;
           this.systemStore.setChangeLoading(false);
+          this.convertDataCourse();
+          this.convertDataClass()
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
       this.$nextTick(() => {
@@ -328,13 +369,14 @@ export default {
     handleCreateTest() {
       this.systemStore.setChangeLoading(true);
       API_EXAM.postExam({
-        courseId: "6b2b4dde-1b0a-4719-0f01-08dc4dcdf6ad",
+        courseId: null,
         testName: "Bài đầu vào",
         testDate: new Date().toISOString(),
         testDuration: 30,
         testType: 1,
       })
         .then((res) => {
+          this.examData = res.data;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
@@ -359,12 +401,29 @@ export default {
         }
       }, 1000);
     },
+    convertDataCourse() {
+      let fData = [];
+      this.childrenDetail?.courses.map((item) => {
+        fData.push({
+          courseCode: item.courseCode,
+        });
+      });
+      this.coursesData = fData;
+    },
+    convertDataClass() {
+      let fData = [];
+      this.childrenDetail?.classes.map((item) => {
+        fData.push({
+          classCode: item.classCode,
+        });
+      });
+      this.classesData = fData;
+    },
     submitExam() {
       if (this.isShowResult == true) {
         if (this.intervalId) clearInterval(this.intervalId);
         return swal.error("Bạn đã nộp bài rồi!");
       }
-      swal.success("Bạn đã nộp bài thành công");
       let tmpArr = [];
       let fData = [];
       this.questionList.map((item) => {
@@ -379,18 +438,29 @@ export default {
       this.isShowResult = true;
       if (this.intervalId) clearInterval(this.intervalId);
 
-      // this.questionList.map((i) => {
-      //      fData.push({
-      //     childrenProfileId: this.childrenDetail?.id,
-      //     examId: null,
-      //     questionId: i?.id,
-      //     answer: i?.childrenAnswer,
-      //     childrenScore: 0,
-      //   });
-      // });
+      this.questionList.map((i) => {
+        fData.push({
+          childrenProfileId: this.childrenDetail?.id,
+          examId: this.examData?.id,
+          questionId: i?.id,
+          answer: i?.childrenAnswer,
+          scorePerQuestion:
+            i?.childrenAnswer == i?.rightAnswer
+              ? Number.parseFloat((100 / this.questionList.length).toFixed(0))
+              : 0,
+        });
+      });
 
-      // this.systemStore.setChangeLoading(true);
-      // API_CHILDRENANSWER.postChildrenAnswer()
+      this.systemStore.setChangeLoading(true);
+      API_CHILDRENANSWER.postChildrenAnswer(fData)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Bạn đã nộp bài thành công");
+        })
+        .catch((err) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
     },
     cancelAll() {
       this.isShowTest = false;

@@ -114,6 +114,31 @@
       </div>
     </div>
 
+    <div class="w-[90%] mx-auto flex items-start justify-end mt-5">
+      <div class="flex flex-col w-full md:w-[40%] lg:w-[30%]">
+        <div class="mb-4" v-for="(item, index) in dataAfterUpdate" :key="index">
+          <div class="w-full flex items-center justify-between">
+            <span class="font-bold">Khoá học:</span>
+            <span class="block">
+              {{ item?.courseCode }}
+            </span>
+          </div>
+          <div class="w-full flex items-center justify-between">
+            <span class="font-bold">Số tháng:</span>
+            <span class="block">
+              {{ item?.month }}
+            </span>
+          </div>
+          <div class="w-full flex items-center justify-between">
+            <span class="font-bold">Tổng tiền:</span>
+            <span class="block">
+              {{ convertVND(item?.totalAmount) }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- children list -->
     <div v-if="isShowChildrenList" class="bg-l" @click.self="cancelList">
       <div class="w-[90%] md:w-[60%] lg:w-[40%] bg-white min-h-screen px-3">
@@ -186,6 +211,9 @@ export default {
       selectedCourse: "",
       selectedChildInCourse: "",
       isUpdateInfoOrder: false,
+      dataAfterUpdate: [
+   
+      ],
 
       // dành riêng cho form list
       dataBackup: [],
@@ -327,6 +355,7 @@ export default {
             "Cập nhật chi tiết đơn hàng thành công! Tiến hành thanh toán để hoàn thành đơn hàng",
             3500
           );
+          this.dataAfterUpdate = res.data;
           this.systemStore.setChangeLoading(false);
           this.isUpdateInfoOrder = true;
         })

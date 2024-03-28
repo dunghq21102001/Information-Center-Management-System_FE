@@ -320,6 +320,8 @@ export default {
         "M/D/YYYY"
       ).format("YYYY-MM-DD");
 
+      console.log(formattedDate);
+
       const startTime = formattedDate + "T" + this.selectedHour.startTime;
       const endTime = formattedDate + "T" + this.selectedHour.endTime;
 
@@ -369,7 +371,7 @@ export default {
     getListTime(e) {
       this.resetTotal();
       // this.systemStore.setChangeLoading(true);
-      const date = new Date(e.target.value).toLocaleDateString();
+      const date = new Date(e.target.value).toISOString();
       this.adviceRequest.testDate = date;
       const fData = date.toString().replaceAll("/", "-");
       API_USER.getListTestDate(fData)

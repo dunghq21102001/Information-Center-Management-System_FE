@@ -126,7 +126,7 @@ export default class tableConfig {
         ]
     }
 
-    
+
 
     static adviceRequestTable() {
         return [
@@ -136,7 +136,7 @@ export default class tableConfig {
             { text: "Ngày hẹn", value: "startTime", sortable: true },
             // { text: "Khu vực", value: "location", sortable: true },
             { text: "Thi đầu vào", value: "isTested", sortable: true, width: 150 },
-            // { text: "Trạng thái", value: "statusAdviseRequest", sortable: true },
+            { text: "Nhân viên", value: "staff.userName", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }

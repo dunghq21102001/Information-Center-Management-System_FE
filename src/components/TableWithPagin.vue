@@ -103,8 +103,15 @@ export default {
         case "date":
           fHeader = "Ngày";
           break;
-          case "score":
+        case "score":
           fHeader = "Điểm số";
+          break;
+
+        case "courseCode":
+          fHeader = "Mã khoá học";
+          break;
+        case "classCode":
+          fHeader = "Mã lớp";
           break;
 
         default:
@@ -112,7 +119,7 @@ export default {
           break;
       }
 
-      return fHeader
+      return fHeader;
     },
   },
 };

@@ -9,7 +9,14 @@
         :key="item.title"
         :class="`col-span-12 ${
           item.w == 1 ? 'md:col-span-6' : 'md:col-span-12'
-        } ${item.title == 'Id' || item.title == 'Location' ? 'hidden' : ''}`"
+        } ${
+          item.title == 'Id' ||
+          item.title == 'Location' ||
+          item.title == 'Status Advise Request' ||
+          item?.title == 'User Id'
+            ? 'hidden'
+            : ''
+        }`"
       >
         <label>{{ item.title }}</label>
         <input
@@ -69,6 +76,12 @@
                     slotProps?.option?.display ||
                     slotProps?.option?.name ||
                     slotProps?.option?.tagName
+                  }}
+
+                  {{
+                    slotProps?.option?.startTime
+                      ? `(Từ ${slotProps?.option?.startTime} - đến ${slotProps?.option?.endTime})`
+                      : null
                   }}
                 </div>
               </div>
@@ -242,7 +255,7 @@ export default {
             }
           } else if (item.field == "tags") {
             if (item.value.length == 0) {
-              item.error = true
+              item.error = true;
               this.isValid = false;
               item.errMes = "Bạn phải chọn ít nhất 1 nhãn cho blog";
             }
