@@ -57,7 +57,7 @@ export default {
   methods: {
     fetchSchedule() {
       this.systemStore.setChangeLoading(true);
-      API_SCHEDULE.getAutomaticalySchedule()
+      API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
         .then((res) => {
           this.scheduleData = res.data;
           this.systemStore.setChangeLoading(false);
