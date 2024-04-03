@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Đơn hàng</span>
+    <span class="text-[28px] font-bold block text-gray-700">Danh sách đơn hàng</span>
 
     <div class="w-[90%] mx-auto">
       <NormalTable

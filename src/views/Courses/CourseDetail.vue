@@ -235,7 +235,7 @@
                 />
               </div>
               <div class="w-full lg:w-[48%] flex flex-col items-start mb-4">
-                <label for="rightAnswer">Đáp án dúng</label>
+                <label for="rightAnswer">Đáp án đúng</label>
                 <input
                   type="text"
                   id="rightAnswer"

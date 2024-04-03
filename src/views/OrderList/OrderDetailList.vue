@@ -2,14 +2,14 @@
   <div class="w-full">
     <div class="w-full flex items-center justify-between">
       <span class="text-[28px] font-bold block text-gray-700">
-        Chi tiết đơn hàng
+        Đơn hàng
       </span>
       <button
         v-if="isUpdateInfoOrder == false"
         class="btn-primary px-3 py-1 mr-12"
         @click="handleUpdateInforOrder"
       >
-        Cập nhật thông tin chi tiết đơn hàng
+        Cập nhật thông tin đơn hàng
       </button>
       <button
         v-if="isUpdateInfoOrder == true"

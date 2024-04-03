@@ -13,7 +13,8 @@
           item.title == 'Id' ||
           item.title == 'Location' ||
           item.title == 'Status Advise Request' ||
-          item?.title == 'User Id'
+          item?.title == 'User Id' ||
+          item.title == 'parentCourse'
             ? 'hidden'
             : ''
         }`"

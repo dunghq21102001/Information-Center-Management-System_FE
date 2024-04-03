@@ -52,16 +52,16 @@ export default {
   methods: {
     fetchUsers() {
       this.systemStore.setChangeLoading(true);
-      if (this.authStore.getAuth?.roleName == "Staff") {
-        API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a54")
-          .then((res) => {
-            this.users = res.data;
-            this.systemStore.setChangeLoading(false);
-          })
-          .catch((err) => {
-            this.systemStore.setChangeLoading(false);
-          });
-      } else {
+      // if (this.authStore.getAuth?.roleName == "Staff") {
+      //   API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a54")
+      //     .then((res) => {
+      //       this.users = res.data;
+      //       this.systemStore.setChangeLoading(false);
+      //     })
+      //     .catch((err) => {
+      //       this.systemStore.setChangeLoading(false);
+      //     });
+      // } else {
         API_USER.users()
           .then((res) => {
             this.users = res.data;
@@ -70,7 +70,7 @@ export default {
           .catch((err) => {
             this.systemStore.setChangeLoading(false);
           });
-      }
+      // }
     },
     async updateUser(data) {
       if (func.isBlobURL(data?.avatar)) {

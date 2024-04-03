@@ -17,6 +17,7 @@ import API_COURSE from "../../API/API_COURSE";
 import { storage } from "../../common/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import swal from "../../common/swal";
+import func from "../../common/func";
 export default {
   components: {
     FormSchema,
@@ -48,6 +49,7 @@ export default {
     async handleAddCourse(data) {
       this.systemStore.setChangeLoading(true);
       data["parentCode"] = [];
+      if (data?.prerequisite == "null") data["prerequisite"] = null;
       try {
         // for image
         const currentTime = new Date();
@@ -64,7 +66,6 @@ export default {
         const arrayBuffer = await responseSyllabus.arrayBuffer();
         const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
 
-        // Upload both image and file asynchronously
         const [imageSnapshot, fileSnapshot] = await Promise.all([
           uploadBytes(storageRef, blobImage).then((snapshot) =>
             getDownloadURL(snapshot.ref)
@@ -74,11 +75,9 @@ export default {
           ),
         ]);
 
-        // Update data with the uploaded URLs
         data.image = imageSnapshot;
         data.syllabus = fileSnapshot;
 
-        // Call API after both uploads are successful
         await API_COURSE.postCourse(data)
           .then((res) => {
             this.systemStore.setChangeLoading(false);
@@ -109,7 +108,9 @@ export default {
       this.systemStore.setChangeLoading(true);
       API_COURSE.getCourses()
         .then((res) => {
-          this.courses = res.data;
+          let tmp = func.cloneArray(res.data);
+          tmp.unshift({ id: "null", name: "Không có" });
+          this.courses = tmp;
           this.fetchCount++;
           this.systemStore.setChangeLoading(false);
         })

@@ -49,6 +49,29 @@
           @reload="reload"
         />
       </div>
+
+      <!-- list btn -->
+      <div class="w-full mt-20">
+        <div class="w-full flex items-center justify-between">
+          <div class="w-full py-2 flex items-center justify-between">
+            <span class="text-primary text-[24px]">Các cài đặt khác</span>
+            <!-- <button
+              @click="isShowCreateQuestion = true"
+              class="btn-primary px-3 py-1 rounded-lg"
+            >
+              Thêm câu hỏi mới
+            </button> -->
+            <div></div>
+          </div>
+        </div>
+
+        <!-- list btn -->
+        <div class="w-full grid grid-cols-12 gap-3">
+        <div class="col-span-12 md:col-span-6 lg:col-span-4">
+        <button class="px-3 py-1 btn-primary" @click="createListSchedule">Tạo lịch cho lớp học</button>
+        </div>
+        </div>
+      </div>
     </div>
 
     <!-- create list question -->
@@ -117,7 +140,7 @@
                 />
               </div>
               <div class="w-full lg:w-[48%] flex flex-col items-start mb-4">
-                <label for="rightAnswer">Đáp án dúng</label>
+                <label for="rightAnswer">Đáp án đúng</label>
                 <input
                   type="text"
                   id="rightAnswer"
@@ -157,6 +180,7 @@ import SkeletonLoading from "../components/SkeletonLoading.vue";
 import { useSystemStore } from "../stores/system";
 import QuestionReview from "../components/QuestionReview.vue";
 import API_QUESTION from "../API/API_QUESTION";
+import API_SCHEDULE from "../API/API_SCHEDULE";
 import swal from "../common/swal";
 export default {
   setup() {
@@ -223,6 +247,16 @@ export default {
     reload() {
       this.getQuestions();
     },
+    createListSchedule() {
+      this.systemStore.setChangeLoading(true)
+      API_SCHEDULE.createAutomaticalySchedule()
+      .then(res => {
+        this.systemStore.setChangeLoading(false)
+      })
+      .catch(err => {
+        this.systemStore.setChangeLoading(false)
+      })
+    },
     addQuestion() {
       this.questionsCreate.push({
         title: "",
@@ -247,7 +281,7 @@ export default {
         .then((res) => {
           swal.success(res.data);
           this.cancelAll();
-          this.getQuestions()
+          this.getQuestions();
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
@@ -285,5 +319,19 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.i-cus {
+  outline: none;
+  border-bottom: 2px solid rgb(212, 212, 212);
+  padding: 10px 8px;
+  width: 100%;
+}
+
+.i-cus2 {
+  outline: none;
+  border-bottom: 2px solid rgb(212, 212, 212);
+  padding: 10px 8px;
+  width: 100%;
 }
 </style>

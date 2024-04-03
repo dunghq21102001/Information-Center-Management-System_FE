@@ -18,6 +18,7 @@
         :reload="true"
         :enum="true"
         :enum-list="enum"
+        :course-list="courses"
         @reload-action="reloadList"
         @update-action="updateCourse"
         @add-new-schema="handleAddChildCourse"
@@ -51,6 +52,10 @@ import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 import API_USER from "../../API/API_USER";
 import FormList from "../../components/FormList.vue";
+import func from "../../common/func";
+import { storage } from "../../common/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+
 export default {
   components: {
     NormalTable,
@@ -68,6 +73,7 @@ export default {
       isShowParentList: false,
       listParent: [],
       coursesSelected: [],
+      courses: [],
     };
   },
   created() {
@@ -81,6 +87,10 @@ export default {
       API_COURSE.getCourses()
         .then((res) => {
           this.data = res.data;
+          let tmp = func.cloneArray(res.data);
+          tmp.unshift({ id: 'null', name: "Không có" });
+          this.courses = tmp;
+
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
@@ -100,9 +110,9 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
-    async handleAddChildCourse(item) {
+    async handleAddChildCourse(data) {
       this.systemStore.setChangeLoading(true);
-      data["parentCode"] = [];
+      // data["parentCode"] = [];
       try {
         // for image
         const currentTime = new Date();

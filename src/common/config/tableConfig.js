@@ -177,7 +177,7 @@ export default class tableConfig {
     static classTable() {
         return [
             { text: "Mã lớp", value: "classCode", sortable: true },
-            // { text: "Học sinh dự kiến", value: "expectedNumber", sortable: true },
+            { text: "Môn học", value: "courseCode", sortable: true, width: 130 },
             { text: "Số học sinh", value: "actualNumber", sortable: true, width: 130 },
             // { text: "Học sinh tối đa", value: "maxNumber", sortable: true },
             { text: "Ngày bắt đầu", value: "startDate", sortable: true, width: 170 },

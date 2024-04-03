@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <!-- body calendar -->
+     
       <div class="w-full">
         <div class="line"></div>
         <div class="w-full flex items-start justify-between flex-wrap">
@@ -134,12 +134,26 @@
           </div>
         </div>
       </div>
+
+      <div class="w-full">
+      <table></table>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import API_SCHEDULE from "../../API/API_SCHEDULE";
+import { useAuthStore } from "../../stores/Auth";
+import { useSystemStore } from "../../stores/System";
+import Calendar from "primevue/calendar";
+
 export default {
+  setup() {
+    const systemStore = useSystemStore();
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
+  },
   props: {},
   data() {
     return {
@@ -201,15 +215,27 @@ export default {
             "https://ps.w.org/user-avatar-reloaded/assets/icon-256x256.png?rev=2540745",
         },
       ],
+      scheduleData: [],
     };
   },
-  created() {},
+  created() {
+    this.fetchSchedule();
+  },
   methods: {
     close() {
       this.isShowSelect = false;
     },
     changeUserSelected(item) {
       this.userSelected = item;
+    },
+    fetchSchedule() {
+      this.systemStore.setChangeLoading(true);
+      API_SCHEDULE.getAutomaticalySchedule()
+        .then((res) => {
+          this.scheduleData = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
   },
 };

@@ -29,7 +29,7 @@
       <p class="absolute bottom-[50px] left-[60px] text-[12px]">
         Code: {{ codeProp }}
       </p>
-      <img src="../../assets/images/certificate.png" alt="" class="w-full" />
+      <img src="../assets/images/certificate.png" alt="" class="w-full" />
     </div>
   </div>
 </template>

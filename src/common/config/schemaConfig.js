@@ -136,7 +136,7 @@ export default class schemaConfig {
         ]
     }
 
-    static classSchema(courses = []) {
+    static classSchema(courses = [], slots= [], dayInWeek= []) {
         return [
             { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Khoá học', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: courses },
@@ -145,7 +145,8 @@ export default class schemaConfig {
             { title: 'Ngày kết thúc', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Số trẻ tối đa', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Số trẻ dự kiến', field: 'expectedNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
-
+            { title: 'Thời gian bắt đầu', field: 'slotId', value: slots[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: slots },
+            { title: 'Thứ trong tuần', field: 'dayInWeek', value: dayInWeek[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: dayInWeek },
         ]
     }
 

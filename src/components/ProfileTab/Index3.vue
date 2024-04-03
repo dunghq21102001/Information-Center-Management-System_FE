@@ -130,25 +130,25 @@
                 Điểm của bạn:
                 {{
                   (
-                    (rightAnswerByChildren.length * 100) /
+                    (rightAnswerByChildren.length * 10) /
                     allAnswerByChildren.length
                   ).toFixed(0)
                 }}
-                / 100
+                / 10
                 <br />
                 <span
                   class="font-bold"
                   :class="
-                    (rightAnswerByChildren.length * 100) /
+                    (rightAnswerByChildren.length * 10) /
                       allAnswerByChildren.length >=
-                    50
+                    5
                       ? 'text-green-500'
                       : 'text-red-500'
                   "
                   >{{
-                    (rightAnswerByChildren.length * 100) /
+                    (rightAnswerByChildren.length * 10) /
                       allAnswerByChildren.length >=
-                    50
+                    5
                       ? "Passed"
                       : "Not passed"
                   }}</span
@@ -265,11 +265,11 @@
         </div>
 
         <!-- submit btn -->
-        <div class="w-[90%] mx-auto flex items-center justify-end">
+        <!-- <div class="w-[90%] mx-auto flex items-center justify-end">
           <button @click="submitExam" class="btn-primary px-3 py-1">
             Nộp bài
           </button>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -446,7 +446,7 @@ export default {
           answer: i?.childrenAnswer,
           scorePerQuestion:
             i?.childrenAnswer == i?.rightAnswer
-              ? Number.parseFloat((100 / this.questionList.length).toFixed(0))
+              ? Number.parseFloat((10 / this.questionList.length).toFixed(0))
               : 0,
         });
       });

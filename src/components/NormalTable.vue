@@ -131,6 +131,11 @@
             <div v-html="item?.content"></div>
           </div>
         </template>
+        <template #item-actualNumber="item">
+          <div class="overflow-hidden flex items-center">
+            <span>{{ item.actualNumber }} / {{ item.maxNumber }}</span>
+          </div>
+        </template>
         <template #item-status="item">
           <div
             v-if="item.status == 'Enable' || item.status == 'Disable'"
@@ -800,6 +805,10 @@ export default {
       type: Array,
       default: [],
     },
+    courseList: {
+      type: Array,
+      default: [],
+    },
     tpCategoryList: Array,
   },
   setup(props) {
@@ -903,7 +912,7 @@ export default {
     this.searchList = tmpSearchList;
     this.selectedField = tmpSearchList[0]?.value || "";
 
-    this.fetchCourses();
+    // this.fetchCourses();
   },
   methods: {
     convertToVND(price) {
@@ -1014,7 +1023,8 @@ export default {
             key != "code" &&
             key != "staff" &&
             key != "startTime" &&
-            key != "endTime"
+            key != "endTime" &&
+            key != "adviseRequests"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -1029,14 +1039,24 @@ export default {
         return swal.error("Khoá học đơn không thể tạo khoá học con!", 2500);
       this.isAddNew = true;
       this.addNewSchema = schemaConfig.courseSchema(
-        this.courses,
+        this.courseList,
         this.enumList
       );
 
-      this.addNewSchema["parentCourse"] = [item?.id];
+      this.addNewSchema.push({
+        title: "parentCourse",
+        field: "parentCourse",
+        value: item?.id,
+        type: "text",
+        focus: false,
+        error: false,
+        errMes: "Không được bỏ trống!",
+        w: 1,
+      });
+      // this.addNewSchema["parentCourse"] = [item?.id];
     },
-    handleAddNewSchema() {
-      this.$emit("addNewSchema", this.addNewSchema);
+    handleAddNewSchema(data) {
+      this.$emit("addNewSchema", data);
     },
     goToAddNew() {
       this.$router.push({ name: this.isAddProp, params: {} });

@@ -4,9 +4,17 @@
   </div>
 </template>
 <script>
+import API_SCHEDULE from "../../API/API_SCHEDULE";
 import Calendar from "../../components/Calendar.vue";
+import { useAuthStore } from "../../stores/Auth";
+import { useSystemStore } from "../../stores/system";
 
 export default {
+  setup() {
+    const authStore = useAuthStore();
+    const systemStore = useSystemStore();
+    return { authStore, systemStore };
+  },
   props: {},
   components: { Calendar },
   data() {
@@ -43,7 +51,19 @@ export default {
       ],
     };
   },
-  created() {},
-  methods: {},
+  created() {
+    this.fetchSchedule();
+  },
+  methods: {
+    fetchSchedule() {
+      this.systemStore.setChangeLoading(true);
+      API_SCHEDULE.getAutomaticalySchedule()
+        .then((res) => {
+          this.scheduleData = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+  },
 };
 </script>
