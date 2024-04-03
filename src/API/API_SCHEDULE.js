@@ -15,8 +15,8 @@ export default class API_SCHEDULE {
         return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
     }
 
-    static getAutomaticalySchedule() {
-        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetAutomaticalySchedule`)
+    static getAutomaticalySchedule(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetAutomaticalySchedule/${id}`)
     }
 
     static createAutomaticalySchedule() {
