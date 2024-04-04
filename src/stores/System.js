@@ -7,7 +7,8 @@ export const useSystemStore = defineStore('system', {
             color: '007d88',
             blur: 'd9eced'
         },
-        courseData: []
+        courseData: [],
+        orderAfterUpdate: []
     }),
     getters: {
         getExpandSideBar: state => {

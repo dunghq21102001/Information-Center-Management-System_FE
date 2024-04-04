@@ -1,10 +1,18 @@
 <template>
   <div class="w-full">
     <div class="mx-auto">
-      <span class="text-[28px] font-bold block text-gray-700">
-        Chi tiết khoá học
-      </span>
-
+      <div class="w-full flex flex-wrap items-center">
+        <span
+          @click="$router.push({ name: 'courses' })"
+          class="text-[28px] font-bold block text-gray-700 hv-t"
+        >
+          Danh sách khoá học
+        </span>
+        <v-icon scale="1.5" name="md-keyboardarrowright" />
+        <span class="text-[28px] font-bold block text-gray-700 hv-t">
+          Chi tiết khoá học
+        </span>
+      </div>
       <div
         class="flex items-start justify-between flex-col-reverse md:flex-row"
       >
@@ -44,10 +52,7 @@
               v-for="i in courseDetail?.courses"
             >
               <div class="w-[80%] overflow-hidden h-[150px]">
-                <img
-                  src="https://media.istockphoto.com/id/1366428092/photo/webinar-e-learning-skills-business-internet-technology-concepts-training-webinar-e-learning.webp?b=1&s=170667a&w=0&k=20&c=qjK4h0qt4W_NNG8TmboGw8RDRv8TNzEoFM_JEDZ1Ah0="
-                  alt="course image"
-                />
+                <img :src="i?.image" alt="course image" />
               </div>
               <span class="block mt-2">{{ i?.courseCode }}</span>
               <span class="block text-center">{{ i?.name }}</span>
@@ -434,7 +439,6 @@
         </div>
       </div>
     </div>
-
   </div>
 </template>
 <script>
@@ -520,7 +524,7 @@ export default {
         {
           lessonId: item?.id,
           totalQuestion: null,
-          type: 1
+          type: 1,
         },
       ])
         .then((res) => {

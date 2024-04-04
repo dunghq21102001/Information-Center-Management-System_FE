@@ -251,9 +251,11 @@ export default {
       this.systemStore.setChangeLoading(true)
       API_SCHEDULE.createAutomaticalySchedule()
       .then(res => {
+        swal.success(res.data)
         this.systemStore.setChangeLoading(false)
       })
       .catch(err => {
+        swal.error(err.response?.data)
         this.systemStore.setChangeLoading(false)
       })
     },

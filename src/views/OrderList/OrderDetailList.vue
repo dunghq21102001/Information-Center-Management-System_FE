@@ -1,22 +1,31 @@
 <template>
   <div class="w-full">
     <div class="w-full flex items-center justify-between">
-      <span class="text-[28px] font-bold block text-gray-700">
-        Đơn hàng
-      </span>
+      <div class="w-full flex flex-wrap items-center">
+        <span
+          @click="$router.push({ name: 'order-list' })"
+          class="text-[28px] font-bold block text-gray-700 hv-t"
+        >
+          Danh sách đơn hàng
+        </span>
+        <v-icon scale="1.5" name="md-keyboardarrowright" />
+        <span class="text-[28px] font-bold block text-gray-700 hv-t">
+          Đơn hàng
+        </span>
+      </div>
       <button
         v-if="isUpdateInfoOrder == false"
-        class="btn-primary px-3 py-1 mr-12"
+        class="btn-primary px-3 py-1 mr-12 w-[250px]"
         @click="handleUpdateInforOrder"
       >
-        Cập nhật thông tin đơn hàng
+        Cập nhật đơn hàng
       </button>
       <button
         v-if="isUpdateInfoOrder == true"
-        class="btn-primary px-3 py-1 mr-12"
+        class="btn-primary px-3 py-1 mr-12 w-[250px]"
         @click="handlePayment"
       >
-        Thanh toán ngay
+        Chi tiết đơn hàng
       </button>
     </div>
 
@@ -69,6 +78,7 @@
               </td>
               <td class="px-4 py-2 max-w-[300px]">
                 <select
+                  :disabled="isUpdateInfoOrder == true"
                   class="select-primary px-8 py-1"
                   name=""
                   id=""
@@ -81,11 +91,13 @@
               </td>
               <td v-show="payType == 2" class="px-4 py-2 max-w-[300px]">
                 <select
+                  :disabled="isUpdateInfoOrder == true"
                   class="select-primary px-2 py-1"
                   name=""
                   id=""
                   v-model="termNumber"
                 >
+                  <option :value="0">0 tháng</option>
                   <option :value="3">3 tháng</option>
                   <option :value="6">6 tháng</option>
                 </select>
@@ -114,7 +126,7 @@
       </div>
     </div>
 
-    <div class="w-[90%] mx-auto flex items-start justify-end mt-5">
+    <!-- <div class="w-[90%] mx-auto flex items-start justify-end mt-5">
       <div class="flex flex-col w-full md:w-[40%] lg:w-[30%]">
         <div class="mb-4" v-for="(item, index) in dataAfterUpdate" :key="index">
           <div class="w-full flex items-center justify-between">
@@ -134,6 +146,50 @@
             <span class="block">
               {{ convertVND(item?.totalAmount) }}
             </span>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <div v-show="payType == 2" class="w-[90%] mx-auto">
+      <div class="w-full md:w-[60%] lg:w-[40%]">
+        <span class="text-[20px] text-gray-600"
+          >Chọn phương thức thanh toán</span
+        >
+        <div class="w-full flex flex-col items-start">
+          <div
+            class="w-full flex items-center justify-between px-3 py-2 my-2"
+            :class="selectType == 'VNPAY' ? 'br-active' : 'b-c'"
+          >
+            <label for="vnpay" class="w-[80%] flex items-center">
+              <img class="w-[50px]" src="../../assets/images/vnpay_logo.png" />
+              <span class="block ml-2">Ví VNPay</span>
+            </label>
+            <input
+              value="VNPAY"
+              v-model="selectType"
+              id="vnpay"
+              type="radio"
+              class="w-[10%]"
+              :disabled="isUpdateInfoOrder == true"
+            />
+          </div>
+          <div
+            class="w-full flex items-center justify-between px-3 py-2"
+            :class="selectType == 'MOMO' ? 'br-active' : 'b-c'"
+          >
+            <label for="momo" class="w-[80%] flex items-center">
+              <img class="w-[50px]" src="../../assets/images/MoMo_Logo.png" />
+              <span class="block ml-2">Ví Momo</span>
+            </label>
+            <input
+              value="MOMO"
+              v-model="selectType"
+              id="momo"
+              type="radio"
+              class="w-[10%]"
+              :disabled="isUpdateInfoOrder == true"
+            />
           </div>
         </div>
       </div>
@@ -204,16 +260,15 @@ export default {
     return {
       data: [],
       payType: 1,
-      termNumber: 3,
+      termNumber: 0,
       enum: [],
       isShowChildrenList: false,
       listChildren: [],
       selectedCourse: "",
       selectedChildInCourse: "",
       isUpdateInfoOrder: false,
-      dataAfterUpdate: [
-   
-      ],
+      dataAfterUpdate: [],
+      selectType: "VNPAY",
 
       // dành riêng cho form list
       dataBackup: [],
@@ -238,6 +293,9 @@ export default {
           }
           if (res.data[0]?.installmentTerm != null)
             this.termNumber = res.data[0]?.installmentTerm;
+
+          if (res.data[0]?.eWalletMethod != null)
+            this.selectType = res.data[0]?.eWalletMethod;
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
@@ -262,7 +320,7 @@ export default {
     },
     handleDeleteChildrenInCourse(data) {
       if (this.isUpdateInfoOrder == true)
-        return swal.error("Đơn hàng không thể chỉnh sửa vì đã được cập nhật");
+        return swal.error("Không thể cập nhật lại trẻ!");
       swal
         .confirm(
           `Bạn có chắc chắn muốn xoá ${data?.children?.fullName} ra khỏi khoá học ${data?.courseCode} này không?`
@@ -312,16 +370,20 @@ export default {
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
     handlePayment() {
-      this.systemStore.setChangeLoading(true);
+      this.$router.push({
+        name: "view-order",
+        params: { id: this.$route.params.id },
+      });
+      // this.systemStore.setChangeLoading(true);
 
-      API_ORDER.postPayment(this.$route.params.id)
-        .then((res) => {
-          this.systemStore.setChangeLoading(false);
-          window.open(res.data, "_self");
-        })
-        .catch((err) => {
-          this.systemStore.setChangeLoading(false);
-        });
+      // API_ORDER.postPayment(this.$route.params.id)
+      //   .then((res) => {
+      //     this.systemStore.setChangeLoading(false);
+      //     window.open(res.data, "_self");
+      //   })
+      //   .catch((err) => {
+      //     this.systemStore.setChangeLoading(false);
+      //   });
     },
     handleUpdateInforOrder() {
       let isInvalidData = false;
@@ -345,6 +407,7 @@ export default {
           payType: this.payType,
           installmentTerm: this.termNumber,
           childrenProfildId: item?.children?.id,
+          eWalletMethod: this.selectType,
         });
       });
 
@@ -355,13 +418,26 @@ export default {
             "Cập nhật chi tiết đơn hàng thành công! Tiến hành thanh toán để hoàn thành đơn hàng",
             3500
           );
-          this.dataAfterUpdate = res.data;
+          // this.dataAfterUpdate = res.data;
           this.systemStore.setChangeLoading(false);
-          this.isUpdateInfoOrder = true;
+          this.$router.push({
+            name: "view-order",
+            params: { id: this.$route.params.id },
+          });
+          // this.isUpdateInfoOrder = true;
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
           swal.error(err.response?.data);
+          // swal.error("lỗi");
+          // swal.success(
+          //   "Cập nhật chi tiết đơn hàng thành công! Tiến hành thanh toán để hoàn thành đơn hàng",
+          //   3500
+          // );
+          // this.$router.push({
+          //   name: "view-order",
+          //   params: { id: this.$route.params.id },
+          // });
         });
     },
     getListChildrenByStaff() {
@@ -379,7 +455,7 @@ export default {
     },
     selectChildrenToAssign(item) {
       if (this.isUpdateInfoOrder == true)
-        return swal.error("Đơn hàng không thể chỉnh sửa vì đã được cập nhật");
+        return swal.error("Không thể cập nhật lại trẻ!");
       this.selectedCourse = item?.courseId;
       if (item?.children) this.selectedChildInCourse = item?.children;
       this.isShowChildrenList = true;
@@ -545,5 +621,15 @@ td {
 
 input.cb-cus {
   transform: scale(1.4);
+}
+
+.b-c {
+  border: 1px solid rgb(213, 213, 213);
+  border-radius: 10px;
+}
+
+.br-active {
+  border: 1px solid rgb(68, 134, 244);
+  border-radius: 10px;
 }
 </style>

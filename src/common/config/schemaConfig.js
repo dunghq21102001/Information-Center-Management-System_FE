@@ -1,14 +1,21 @@
 export default class schemaConfig {
-    static userSchema(genderData = [], roleData = []) {
+    static userSchema(genderData = [], roleData = [], jobType = []) {
         return [
             { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Tên đăng nhập', field: 'userName', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Giới tính', field: 'genderType', value: 'Nam', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: genderData },
             { title: 'Điện thoại', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Sinh nhật', field: 'dateOfBirth', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Vị trí', field: 'roleId', value: roleData[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: roleData },
-            { title: 'Địa chỉ', field: 'address', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Địa chỉ', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Ảnh đại diện', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Mã hợp đồng', field: 'contractCodeTmp', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Loại hợp đồng', field: 'configJobTypeIdTmp', value: jobType[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: jobType },
+            { title: 'Ngày bắt đầu', field: 'startDateTmp', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Ngày kết thúc', field: 'endDateTmp', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Công việc', field: 'jobTmp', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'File hợp đồng', field: 'fileTmp', value: '', type: 'file', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
         ]
     }
 
@@ -52,6 +59,18 @@ export default class schemaConfig {
             { title: 'Name', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Learning Age', field: 'learningAge', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Description', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+        ]
+    }
+
+    static contractSchema(jobType = []) {
+        return [
+            { title: 'Mã hợp đồng', field: 'contractCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Loại hợp đồng', field: 'configJobTypeId', value: jobType[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: jobType },
+            { title: 'Ngày bắt đầu', field: 'startDate', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Ngày kết thúc', field: 'endDate', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Công việc', field: 'job', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'File hợp đồng', field: 'file', value: '', type: 'file', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            // { title: 'Trạng thái hợp đồng', field: 'statusOfContract', value: '', type: 'file', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
         ]
     }
 
@@ -136,7 +155,7 @@ export default class schemaConfig {
         ]
     }
 
-    static classSchema(courses = [], slots= [], dayInWeek= []) {
+    static classSchema(courses = [], slots = [], dayInWeek = []) {
         return [
             { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Khoá học', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: courses },

@@ -2,10 +2,19 @@
   <div class="w-full">
     <div class="w-full">
       <div class="w-full flex items-center justify-between">
-        <span class="text-[28px] font-bold block text-gray-700">
-          Quản lý lớp học
-        </span>
-        <button class="btn-primary px-3 py-1" @click="isShowEnrollment = true">
+        <div class="w-full flex flex-wrap items-center">
+          <span
+            @click="$router.push({ name: 'classes' })"
+            class="text-[28px] font-bold block text-gray-700 hv-t"
+          >
+            Danh sách lớp
+          </span>
+          <v-icon scale="1.5" name="md-keyboardarrowright" />
+          <span class="text-[28px] font-bold block text-gray-700 hv-t">
+            Quản lý lớp
+          </span>
+        </div>
+        <button class="btn-primary px-3 py-1 w-[250px]" @click="isShowEnrollment = true">
           Thêm trẻ vào lớp
         </button>
       </div>
@@ -121,13 +130,14 @@ export default {
       console.log(item);
       let tmp = [];
       item.map((i) => {
-        if (i?.select == true) tmp.push(i?.id);
+        if (i?.select == true)
+          tmp.push({
+            classId: this.$route.params.id,
+            childrenProfileId: i?.id,
+          });
       });
       this.systemStore.setChangeLoading(true);
-      API_ENROLLMENT.postEnrollment({
-        classId: this.$route.params.id,
-        childrenProfileId: tmp[0],
-      })
+      API_ENROLLMENT.postEnrollment(tmp)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.getChildrenByClass(this.$route.params.id);
@@ -135,7 +145,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error("Có lỗi xảy ra! Vui lòng thử lại");
+          swal.error(err.response?.data, 4000);
         });
     },
     reloadList() {

@@ -59,7 +59,7 @@
           </download-excel>
         </div>
         <button
-          v-if="isBuyProp"
+          v-if="isBuyProp && authStore.getAuth?.roleName == 'Staff'"
           class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
           :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
           @click="showFormBuying"
@@ -724,6 +724,7 @@ import API_USER from "../API/API_USER";
 import API_COURSE from "../API/API_COURSE";
 import { useSystemStore } from "../stores/System";
 import schemaConfig from "../common/config/schemaConfig";
+import { useAuthStore } from "../stores/Auth";
 export default {
   components: {
     FormSchema,
@@ -824,10 +825,11 @@ export default {
     );
 
     const systemStore = useSystemStore();
-
+    const authStore = useAuthStore();
     return {
       dataProp,
       systemStore,
+      authStore,
     };
   },
   data() {

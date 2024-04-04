@@ -182,3 +182,11 @@ input::-ms-clear {
   -ms-user-select: none; /* IE 10 and IE 11 */
   user-select: none; /* Standard syntax */
 }
+
+.hv-t {
+  cursor: pointer;
+}
+
+.hv-t:hover {
+  text-decoration: underline;
+}

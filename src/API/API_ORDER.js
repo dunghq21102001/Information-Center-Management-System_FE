@@ -18,10 +18,6 @@ export default class API_ORDER {
         return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreatePayment/${orderId}`)
     }
 
-    static momoReturn() {
-        return
-    }
-
     static putOrder(data) {
         return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
     }
@@ -32,6 +28,10 @@ export default class API_ORDER {
 
     static getOrderDetailByOrderId(id) {
         return axios.get(`${API_BASE.BASE_URL}/OrderDetail/GetOrderDetailByOrderId/${id}`)
+    }
+
+    static getOrderDetailByOrderIdAftterUpdate(id) {
+        return axios.get(`${API_BASE.BASE_URL}/OrderDetail/GetOrderDetailByOrderIdAfterUpdate/${id}`)
     }
 
     static putOrderDetail(data) {

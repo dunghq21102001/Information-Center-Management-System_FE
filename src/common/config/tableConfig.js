@@ -190,7 +190,9 @@ export default class tableConfig {
 
     static childrenInClassTable() {
         return [
-            { text: "Họ tên", value: "nameChildren", sortable: true },
+            { text: "MSSV", value: "childrenCode", sortable: true },
+            { text: "Họ tên", value: "fullName", sortable: true },
+            { text: "Mã lớp", value: "code", sortable: true },
             // { text: "Hành động", value: "operation" }
         ]
     }

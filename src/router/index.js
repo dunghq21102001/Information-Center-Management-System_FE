@@ -84,6 +84,7 @@ import CreateRoom from '../views/Rooms/Add.vue'
 // order
 import OrderList from '../views/OrderList/OrderList.vue'
 import OrderDetailList from '../views/OrderList/OrderDetailList.vue'
+import ViewOrder from '../views/OrderList/ViewOrder.vue'
 
 // chat
 import Chat from '../views/Chat/Chat.vue'
@@ -469,6 +470,16 @@ const router = createRouter({
       path: '/order-list/:id',
       name: 'order-detail-list',
       component: OrderDetailList,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/view-order/:id',
+      name: 'view-order',
+      component: ViewOrder,
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin', 'Manager', 'Staff', 'Parent']

@@ -14,7 +14,13 @@
           item.title == 'Location' ||
           item.title == 'Status Advise Request' ||
           item?.title == 'User Id' ||
-          item.title == 'parentCourse'
+          item?.title == 'parentCourse' ||
+          (item?.field == 'contractCodeTmp' && isShowContract != true) ||
+          (item?.field == 'configJobTypeIdTmp' && isShowContract != true) ||
+          (item?.field == 'startDateTmp' && isShowContract != true) ||
+          (item?.field == 'endDateTmp' && isShowContract != true) ||
+          (item?.field == 'jobTmp' && isShowContract != true) ||
+          (item?.field == 'fileTmp' && isShowContract != true)
             ? 'hidden'
             : ''
         }`"
@@ -69,6 +75,7 @@
             :optionLabel="getDisplayField(item.listData)"
             placeholder="Select one"
             class="w-full py-[11px] pl-3"
+            @change="onChangeSelect"
           >
             <template #option="slotProps">
               <div class="w-full">
@@ -76,7 +83,8 @@
                   {{
                     slotProps?.option?.display ||
                     slotProps?.option?.name ||
-                    slotProps?.option?.tagName
+                    slotProps?.option?.tagName ||
+                    slotProps?.option?.jobType
                   }}
 
                   {{
@@ -179,7 +187,11 @@
     </div>
     <div class="w-[90%] mx-auto flex items-center justify-end">
       <!-- <button class="btn-cancel px-4 py-1 mr-3">Cancel</button> -->
-      <button class="btn-primary px-4 py-1" @click="submitForm">
+      <button
+        v-show="isHideAddBtn == false"
+        class="btn-primary px-4 py-1"
+        @click="submitForm"
+      >
         {{ btnProp }}
       </button>
     </div>
@@ -216,12 +228,18 @@ export default {
     pageTitle: String,
     schema: Array,
     btnName: String,
+    isHideAddBtn: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
       // schemaProp: this.schema,
       btnProp: this.btnName,
       isValid: true,
+      //  isHideAddBtnProp: this.isHideAddBtn
+      isShowContract: false,
     };
   },
   mounted() {
@@ -277,6 +295,11 @@ export default {
     isValidPhoneNumber(phoneNumber) {
       const phoneRegex = /^\d{10}$/;
       return phoneRegex.test(phoneNumber);
+    },
+    onChangeSelect(e) {
+      if (e.value == "d5fa55c7-315d-4634-9c73-08dbbc3f3a53")
+        this.isShowContract = true;
+      else this.isShowContract = false;
     },
     convertArrayToObject(formData) {
       return formData.reduce((acc, item) => {
@@ -360,6 +383,7 @@ export default {
       if (item[0]?.display) fieldName = "display";
       if (item[0]?.tagName) fieldName = "tagName";
       if (item[0]?.semesterName) fieldName = "semesterName";
+      if (item[0]?.jobType) fieldName = "jobType";
 
       return fieldName;
     },
@@ -368,6 +392,7 @@ export default {
       if (item[0]?.name) value = "id";
       if (item[0]?.display) value = "value";
       if (item[0]?.tagName) value = "id";
+      if (item[0]?.jobType) value = "id";
 
       return value;
     },
