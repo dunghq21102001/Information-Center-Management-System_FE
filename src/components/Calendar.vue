@@ -11,7 +11,7 @@
           create: isPermissionProp.create,
         }"
         class="vuecal--full-height-delete"
-        active-view="month"
+        active-view="week"
         events-on-month-view="short"
         @event-drag-create="showEventCreationDialog = true"
         :drag-to-create-event="isPermissionProp.create"
