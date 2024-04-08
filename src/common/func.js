@@ -2,6 +2,7 @@ import dayjs from "dayjs"
 
 export default class func {
     static convertDate(date) {
+        if (date == null) return ''
         return dayjs(date).format("DD/MM/YYYY");
     }
 

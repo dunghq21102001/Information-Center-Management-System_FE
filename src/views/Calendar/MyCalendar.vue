@@ -10,13 +10,108 @@
       v-if="scheduleFilter.length > 0"
       :events="scheduleFilter"
       :is-permission="isPermission"
+      @handle-click-event="handleClickEvent"
     />
 
     <!-- <Calendar :events="scheduleFilter" :is-permission="isPermission" /> -->
+    <div class="fog-a" v-if="isShowAttendance" @click.self="cancelAll">
+      <div
+        class="w-[90%] md:w-[80%] lg:w-[78%] bg-white rounded-xl hide-scrollbar max-h-[95vh] overflow-y-scroll px-4"
+      >
+        <div class="sticky top-0 bg-white z-20 pt-5">
+          <span class="block mb-5 font-bold text-[24px]">
+            Điểm danh lớp {{ selectedClass }} ngày {{ selectedDateClass }}
+          </span>
+
+          <div class="w-full flex items-center mb-3">
+            <div
+              class="font-bold br-c text-[20px] pl-2 text-white bg-[#6a90d9] w-[5%]"
+            >
+              STT
+            </div>
+            <div
+              class="font-bold br-c text-[20px] pl-2 text-white text-center bg-[#6a90d9] w-[20%]"
+            >
+              Ảnh
+            </div>
+            <div
+              class="font-bold br-c text-[20px] pl-2 text-white bg-[#6a90d9] w-[30%]"
+            >
+              Họ và tên
+            </div>
+            <div
+              class="font-bold br-c text-[20px] pl-2 text-white bg-[#6a90d9] w-[20%]"
+            >
+              Điểm danh
+            </div>
+            <div
+              class="font-bold br-c text-[20px] pl-2 text-white bg-[#6a90d9] w-[25%]"
+            >
+              Ghi chú
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex flex-col items-start">
+          <div
+            class="w-full flex items-start justify-between mb-3"
+            v-for="(item, index) in attendanceData"
+            :key="item.id"
+          >
+            <div class="w-[5%] pl-2">{{ index + 1 }}</div>
+            <div
+              class="w-[20%] md:h-[150px] lg:h-[200px] overflow-hidden flex items-center justify-center"
+            >
+              <img
+                :src="item.avatar"
+                class="object-cover max-w-[150px]"
+                alt=""
+              />
+            </div>
+            <div class="w-[30%] pl-2">{{ item?.childrenName }}</div>
+            <div class="w-[20%] pl-2 flex items-center">
+              <div class="flex items-center mr-4">
+                <input
+                  type="radio"
+                  :id="index + 'false'"
+                  :value="false"
+                  v-model="item.isAttendance"
+                />
+                <label :for="index + 'false'" class="ml-2">Không</label>
+              </div>
+              <div class="flex items-center">
+                <input
+                  type="radio"
+                  :id="index + 'true'"
+                  :value="true"
+                  v-model="item.isAttendance"
+                />
+                <label :for="index + 'true'" class="ml-2">Có</label>
+              </div>
+            </div>
+            <div class="w-[25%] pl-2">
+              <input
+                type="text"
+                v-model="item.note"
+                placeholder="Ghi chú..."
+                class="i-c"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex items-center justify-end mb-4">
+          <button class="btn-primary px-3 py-1" @click="checkAttendance">
+            Lưu điểm danh
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
+import API_ATTENDANCE from "../../API/API_ATTENDANCE";
 import API_SCHEDULE from "../../API/API_SCHEDULE";
+import func from "../../common/func";
+import swal from "../../common/swal";
 import Calendar from "../../components/Calendar.vue";
 import { useAuthStore } from "../../stores/Auth";
 import { useSystemStore } from "../../stores/System";
@@ -55,101 +150,10 @@ export default {
         },
       ],
       scheduleFilter: [],
-      dataTest: {
-        teacherId: "09058006-d093-4482-2bd9-08dc53f7a804",
-        classes: [
-          {
-            id: "a3b9999-545a-4c8c-94d5-08dc53c19e5d",
-            courseId: "35aaca0f-e35d-47b4-bd27-a0029c937fa6",
-            classCode: "JP201",
-            statusOfClass: "Pending",
-            totalDuration: 8,
-            schedules: [
-              {
-                id: "171f7238-690e-4f8d-d1b6-08dc53c19e61",
-                dayInWeek: "Wednesday",
-                startDate: "2024-04-19T00:00:00",
-                slot: {
-                  id: "d42e7c30-ffd4-4a09-ac73-1d175f89a200",
-                  name: "Slot3",
-                  startTime: "12:30:00",
-                  endTime: "14:45:00",
-                  slotType: "Course",
-                },
-                rooms: [
-                  {
-                    id: "71e59a17-8984-4150-8c1e-08dc53e39736",
-                    name: "NVH-281",
-                  },
-                ],
-              },
-              {
-                id: "bfbf3af2-023a-45f7-d1b7-08dc53c19e61",
-                dayInWeek: "Saturday",
-                startDate: "2024-04-19T00:00:00",
-                slot: {
-                  id: "d42e7c30-ffd4-4a09-ac73-1d175f89a200",
-                  name: "Slot3",
-                  startTime: "12:30:00",
-                  endTime: "14:45:00",
-                  slotType: "Course",
-                },
-                rooms: [
-                  {
-                    id: "71e59a17-8984-4150-8c1e-08dc53e39736",
-                    name: "NVH-281",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            id: "a3b84281-545a-4c8c-94d5-08dc53c19e5d",
-            courseId: "35aaca0f-e35d-47b4-bd27-a0029c937fa6",
-            classCode: "CN201",
-            statusOfClass: "Pending",
-            totalDuration: 12,
-            schedules: [
-              {
-                id: "171f7238-690e-4f8d-d1b6-08dc53c19e61",
-                dayInWeek: "Tuesday",
-                startDate: "2024-04-19T00:00:00",
-                slot: {
-                  id: "d42e7c30-ffd4-4a09-ac73-1d175f89a200",
-                  name: "Slot3",
-                  startTime: "12:30:00",
-                  endTime: "14:45:00",
-                  slotType: "Course",
-                },
-                rooms: [
-                  {
-                    id: "71e59a17-8984-4150-8c1e-08dc53e39736",
-                    name: "NVH-281",
-                  },
-                ],
-              },
-              {
-                id: "bfbf3af2-023a-45f7-d1b7-08dc53c19e61",
-                dayInWeek: "Friday",
-                startDate: "2024-04-19T00:00:00",
-                slot: {
-                  id: "d42e7c30-ffd4-4a09-ac73-1d175f89a200",
-                  name: "Slot3",
-                  startTime: "12:30:00",
-                  endTime: "14:45:00",
-                  slotType: "Course",
-                },
-                rooms: [
-                  {
-                    id: "71e59a17-8984-4150-8c1e-08dc53e39736",
-                    name: "NVH-281",
-                  },
-                ],
-              },
-            ],
-          },
-        ],
-      },
+      isShowAttendance: false,
+      selectedClass: null,
+      selectedDateClass: null,
+      attendanceData: [],
     };
   },
   created() {
@@ -269,6 +273,7 @@ export default {
               let defaultNum = null;
               let nextNum = null;
               let theNextDate = startDate;
+              let startIsFirstIndex = null;
               switch (item.dayInWeek) {
                 case "Tuesday":
                   defaultNum = 2;
@@ -298,6 +303,9 @@ export default {
                 default:
                   break;
               }
+
+              if (defaultNum == startDate.getDay())
+                return (startIsFirstIndex = true);
               do {
                 if (
                   theNextDate.getDay() == defaultNum ||
@@ -319,8 +327,14 @@ export default {
                     title: item.classCode,
                     content: `${item.rooms[0]?.name}`,
                     class: "type-3",
+                    scheduleId: startIsFirstIndex
+                      ? listSchedules[0]?.id
+                      : listSchedules[1]?.id,
+                    classId: item?.classId,
+                    date: finalDate,
                   });
                   theNextDate.setDate(theNextDate.getDate() + 1);
+                  startIsFirstIndex = !startIsFirstIndex;
                 }
                 // totalScheduleOfClassNow += 1;
                 theNextDate.setDate(theNextDate.getDate() + 1);
@@ -333,9 +347,87 @@ export default {
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
+    handleClickEvent(item) {
+      this.selectedDateClass = func.convertDate(item?.date);
+      this.selectedClass = item?.title;
+      this.isShowAttendance = true;
+      this.systemStore.setChangeLoading(true);
+      const finalDate = item?.date.replaceAll("/", "-");
+      API_ATTENDANCE.listAttendanceByClassIdAndDate(
+        item?.classId,
+        finalDate,
+        item?.scheduleId
+      )
+        .then((res) => {
+          let tmp = [];
+          tmp = res.data.map((item) => {
+            item["isAttendance"] =
+              item.statusAttendance == "Attend" ? true : false;
+            return item;
+          });
+          this.attendanceData = tmp;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    cancelAll() {
+      this.isShowAttendance = false;
+    },
     formatDate(date) {
       return dayjs(date).format("YYYY-M-D HH:mm");
+    },
+    checkAttendance() {
+      this.systemStore.setChangeLoading(true);
+      let fData = [];
+      this.attendanceData.map((item) => {
+        fData.push({
+          id: item?.id,
+          statusAttendance: item?.isAttendance == true ? 1 : 2,
+          note: item?.note,
+        });
+      });
+      API_ATTENDANCE.putAttendance(fData)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success(res.data);
+          this.cancelAll();
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
+        });
     },
   },
 };
 </script>
+<style scoped>
+.fog-a {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.i-c {
+  border: 1px solid rgb(194, 194, 194);
+  border-radius: 5px;
+  padding: 5px 10px;
+  width: 100%;
+}
+
+.i-c:focus {
+  outline: none;
+}
+
+.br-c {
+  border-right: 1px solid white;
+}
+</style>

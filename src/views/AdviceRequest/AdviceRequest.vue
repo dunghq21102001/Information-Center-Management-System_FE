@@ -12,6 +12,7 @@
         :is-update="true"
         :is-delete="true"
         :is-receive-advice-request="true"
+        :is-create-account="true"
         is-add="advice-create"
         excel="advice-request-data"
         csv="advice-request-data"
@@ -23,6 +24,7 @@
         @update-action="updateAdvice"
         @delete-action="deleteAdvice"
         @get-advice-request="getAdviceRequest"
+        @create-account="createAccount"
       />
     </div>
   </div>
@@ -118,6 +120,32 @@ export default {
         .catch((err) => {
           swal.success(err.response?.data);
           this.systemStore.setChangeLoading(false);
+        });
+    },
+    createAccount(item) {
+      console.log(item);
+      this.systemStore.setChangeLoading(true);
+      API_USER.postUser({
+        userName: item?.email,
+        passwordHash: "User@123",
+        fullName: item?.fullName,
+        genderType: "Nam",
+        email: item?.email,
+        phone: item?.phone,
+        address: item?.address,
+        dateOfBirth: "1999-01-01T00:00:00.827Z",
+        avatar:
+          "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg",
+        roleId: "d5fa55c7-315d-4634-9c73-08dbbc3f3a54",
+        createContractViewModel: null,
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Tạo tài khoản cho người dùng này thành công");
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
         });
     },
     fetchSlot() {

@@ -32,26 +32,26 @@ export default class menu {
             {
                 id: 4, name: 'Calendar', icon: 'bi-calendar-week', subTab: [
                     { name: 'My Calendar', url: 'my-calendar' },
-                    { name: 'User Calendar', url: 'user-calendar' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
+                    // { name: 'User Calendar', url: 'user-calendar' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Teacher']
             },
             {
                 id: 5, name: 'Rooms', icon: 'co-room', subTab: [
                     { name: 'Add Room', url: 'room-create' },
                     { name: 'Rooms', url: 'rooms' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             {
                 id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
                     { name: 'Add Class', url: 'class-create' },
                     { name: 'Classes', url: 'classes' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
                 id: 6, name: 'Attendance', icon: 'md-taskalt', subTab: [
                     { name: 'Today Attendance', url: 'today-attendance' },
                     { name: 'User Attendance', url: 'user-attendance' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
+                ], isShow: false, isActive: false, isHidden: false, roles: []
             },
             // {
             //     id: 71, name: 'Training Program', icon: 'gi-bookshelf', subTab: [
@@ -131,7 +131,7 @@ export default class menu {
             {
                 id: 11, name: 'Settings', icon: 'io-settings-sharp', subTab: [
                     { name: 'System', url: 'settings' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
         ]
 
@@ -148,8 +148,8 @@ export default class menu {
             { name: 'Thông tin chung', index: 1 },
             { name: 'Bảo mật', index: 2 },
             { name: 'Danh sách trẻ', index: 3 },
-            { name: 'Bảng trả góp', index: 4 },
-            { name: 'Các yêu cầu', index: 5 },
+            // { name: 'Bảng trả góp', index: 4 },
+            { name: 'Các yêu cầu', index: 4 },
             // { name: 'Lịch', index: 6 },
             // { name: 'Schedules', index: 7 },
         ]
@@ -161,7 +161,7 @@ export default class menu {
             { name: 'Bảo mật', index: 2 },
             // { name: 'Danh sách trẻ', index: 3 },
             // { name: 'Bảng trả góp', index: 4 },
-            { name: 'Các yêu cầu', index: 5 },
+            { name: 'Các yêu cầu', index: 4 },
             // { name: 'Lịch', index: 6 },
         ]
     }

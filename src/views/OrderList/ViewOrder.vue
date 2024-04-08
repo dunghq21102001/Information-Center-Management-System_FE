@@ -1,25 +1,32 @@
 <template>
   <div class="w-full">
-    <div class="w-full flex flex-wrap items-center">
-      <span
-        @click="$router.push({ name: 'order-list' })"
-        class="text-[28px] font-bold block text-gray-700 hv-t"
-      >
-        Danh sách đơn hàng
-      </span>
-      <v-icon scale="1.5" name="md-keyboardarrowright" />
-      <span
-        @click="
-          $router.push({ name: `order-detail-list`, params: { id: item?.id } })
-        "
-        class="text-[28px] font-bold block text-gray-700 hv-t"
-      >
-        Đơn hàng
-      </span>
-      <v-icon scale="1.5" name="md-keyboardarrowright" />
-      <span class="text-[28px] font-bold block text-gray-700 hv-t">
-        Chi tiết đơn hàng
-      </span>
+    <div class="w-full flex flex-col md:flex-row items-center justify-between">
+      <div class="flex flex-wrap items-center">
+        <span
+          @click="$router.push({ name: 'order-list' })"
+          class="text-[12px] md:text-[28px] font-bold block text-gray-700 hv-t"
+        >
+          Danh sách đơn hàng
+        </span>
+        <v-icon scale="1.5" name="md-keyboardarrowright" />
+        <span
+          @click="
+            $router.push({
+              name: `order-detail-list`,
+              params: { id: item?.id },
+            })
+          "
+          class="text-[12px] md:text-[28px] font-bold block text-gray-700 hv-t"
+        >
+          Đơn hàng
+        </span>
+        <v-icon scale="1.5" name="md-keyboardarrowright" />
+        <span class="text-[12px] md:text-[28px] font-bold block text-gray-700 hv-t">
+          Chi tiết đơn hàng
+        </span>
+      </div>
+
+      <button @click="createPayment" class="w-[200px] btn-primary px-2 py-1">Thanh toán</button>
     </div>
 
     <div class="w-[90%] mx-auto mt-5">
@@ -110,6 +117,45 @@
         </table>
       </div>
     </div>
+
+    <div
+      class="w-[90%] mx-auto flex items-start justify-between flex-col lg:flex-row mt-10"
+    >
+      <div class="w-full lg:w-[40%]">
+        <div class="block font-bold text-[18px] flex flex-wrap items-center">
+          Ngày đặt hàng:
+          <div class="text-[24px] font-bold text-gray-600"></div> &nbsp;
+          {{ convertDateOldVer(data?.creationDate) }}
+        </div>
+      </div>
+      <div class="w-full md:w-[58%] lg:w-[40%]">
+        <div class="w-full flex flex-col items-end">
+          <div
+            class="w-full flex items-start flex-col mb-2"
+            v-for="item in data?.paymentInformation"
+          >
+            <div class="w-full flex items-center justify-between">
+              <span class="font-bold">Khoá học</span>
+              <span>{{ item.courseCode }}</span>
+            </div>
+            <div class="w-full flex items-center justify-between">
+              <span class="font-bold">Thời gian trả góp</span>
+              <span>{{ item.month }}</span>
+            </div>
+            <div class="w-full flex items-center justify-between">
+              <span class="font-bold">Tiền mỗi tháng</span>
+              <span>{{ convertVND(item.amountPerMonth) }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="w-full flex items-center justify-between mt-5">
+          <span class="font-bold text-[20px] text-primary">Tổng tiền: </span>
+          <span class="font-bold text-[20px]">{{
+            convertVND(data?.total)
+          }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -181,18 +227,23 @@ export default {
     convertVND(price) {
       return func.convertVND(price);
     },
-    handlePayment() {
-      $router.push({ name: "view-order" });
-      // this.systemStore.setChangeLoading(true);
+    createPayment() {
+      this.systemStore.setChangeLoading(true);
 
-      // API_ORDER.postPayment(this.$route.params.id)
-      //   .then((res) => {
-      //     this.systemStore.setChangeLoading(false);
-      //     window.open(res.data, "_self");
-      //   })
-      //   .catch((err) => {
-      //     this.systemStore.setChangeLoading(false);
-      //   });
+      API_ORDER.postPayment(this.$route.params.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          window.open(res.data, "_self");
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    convertDate(date) {
+      return func.convertDate(date);
+    },
+    convertDateOldVer(date) {
+      return func.convertDateOldVer(date);
     },
     fetchEnum() {
       this.systemStore.setChangeLoading(true);

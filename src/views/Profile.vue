@@ -40,6 +40,7 @@
         <Index1 v-show="currentIndexTab == 1" />
         <Index2 v-show="currentIndexTab == 2" />
         <Index3 v-show="currentIndexTab == 3" />
+        <Index4 v-show="currentIndexTab == 4" />
       </div>
     </div>
   </div>
@@ -49,6 +50,7 @@ import menu from "../common/menu";
 import Index1 from "../components/ProfileTab/Index1.vue";
 import Index2 from "../components/ProfileTab/Index2.vue";
 import Index3 from "../components/ProfileTab/Index3.vue";
+import Index4 from "../components/ProfileTab/Index4.vue";
 import { useAuthStore } from "../stores/Auth";
 export default {
   props: {},
@@ -60,6 +62,7 @@ export default {
     Index1,
     Index2,
     Index3,
+    Index4,
   },
   data() {
     return {

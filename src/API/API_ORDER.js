@@ -15,7 +15,7 @@ export default class API_ORDER {
         return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateOrder`, data)
     }
     static postPayment(orderId) {
-        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreatePayment/${orderId}`)
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreatePayment?orderId=${orderId}`)
     }
 
     static putOrder(data) {

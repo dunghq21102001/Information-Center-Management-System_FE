@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="w-[90%] mx-auto mt-5">
+    <div class="w-[90%] mx-auto h-[550px]">
       <vue-cal
         locale="vi"
         :editable-events="{
@@ -17,6 +17,7 @@
         :drag-to-create-event="isPermissionProp.create"
         :on-event-create="onEventCreate"
         :events="eventsProp"
+        :on-event-click="handleClickEvent"
       />
     </div>
 
@@ -96,6 +97,9 @@ export default {
       this.deleteEventFunction = deleteEventFunction;
 
       return event;
+    },
+    handleClickEvent(data) {
+      this.$emit('handleClickEvent', data)
     },
     cancelEventCreation() {
       this.closeCreationDialog();

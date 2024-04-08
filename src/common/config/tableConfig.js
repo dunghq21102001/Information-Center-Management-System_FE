@@ -206,4 +206,14 @@ export default class tableConfig {
             // { text: "Hành động", value: "operation" }
         ]
     }
+
+    static requestTable() {
+        return [
+            { text: "Loại yêu cầu", value: "requestType", sortable: true },
+            { text: "Mô tả", value: "requestDescription", sortable: true },
+            { text: "Ngày nghỉ", value: "leaveDate", sortable: true },
+            { text: "Ngày dạy thay", value: "teachingDate", sortable: true },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
 }

@@ -215,6 +215,11 @@
             {{ convertDate(item?.testDate) }}
           </span>
         </template>
+        <template #item-leaveDate="item">
+          <span class="block">
+            {{ convertDate(item?.leaveDate) }}
+          </span>
+        </template>
         <template #item-purchaseDate="item">
           <span class="block">
             {{ convertDate(item?.purchaseDate) }}
@@ -276,6 +281,17 @@
                 :scale="1.5"
                 fill="#0871ba"
                 @click="showAddNewCourse(item)"
+              />
+            </button>
+            <button
+              v-tooltip="'Tạo tài khoản'"
+              v-if="isCreateAccount"
+            >
+              <v-icon
+                name="fa-user-plus"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="createAccount(item)"
               />
             </button>
             <button class="mr-4" v-tooltip="dataListTitle" v-if="isAddByList">
@@ -512,6 +528,11 @@
             {{ convertDate(item?.testDate) }}
           </span>
         </template>
+        <template #item-leaveDate="item">
+          <span class="block">
+            {{ convertDate(item?.leaveDate) }}
+          </span>
+        </template>
         <template #item-purchaseDate="item">
           <span class="block">
             {{ convertDate(item?.purchaseDate) }}
@@ -557,6 +578,17 @@
                 :scale="1.5"
                 fill="#0871ba"
                 @click="showAddNewCourse(item)"
+              />
+            </button>
+            <button
+              v-tooltip="'Tạo tài khoản'"
+              v-if="isCreateAccount"
+            >
+              <v-icon
+                name="fa-user-plus"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="createAccount(item)"
               />
             </button>
             <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
@@ -754,6 +786,10 @@ export default {
     isChangeStatus: Boolean,
     isAddSemester: Boolean,
     isPayment: {
+      type: Boolean,
+      default: false,
+    },
+    isCreateAccount: {
       type: Boolean,
       default: false,
     },
@@ -970,6 +1006,9 @@ export default {
     },
     getAdviceRequest(item) {
       this.$emit("getAdviceRequest", item);
+    },
+    createAccount(item) {
+      this.$emit('createAccount', item)
     },
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);

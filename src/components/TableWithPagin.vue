@@ -6,9 +6,19 @@
           <th
             v-for="(header, index) in headers"
             :key="index"
-            class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            :class="
+              header == 'courseId'
+                ? 'hidden'
+                : 'px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+            "
           >
             {{ reNameHeader(header) }}
+          </th>
+          <th
+            v-show="isShowAction"
+            class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+          >
+            Hành động
           </th>
         </tr>
       </thead>
@@ -17,9 +27,18 @@
           <td
             v-for="(value, key) in item"
             :key="key"
-            class="px-4 py-2 max-w-[300px]"
+            :class="key == 'courseId' ? 'hidden' : 'px-4 py-2 max-w-[300px]'"
           >
             {{ value }}
+          </td>
+          <td v-show="isShowAction" class="px-4 py-2">
+            <button
+              @click="handleViewSchedule(item)"
+              v-show="viewSchedule"
+              class="btn-primary px-2 py-1"
+            >
+              Xem lịch
+            </button>
           </td>
         </tr>
       </tbody>
@@ -54,6 +73,14 @@ export default {
     pageSize: {
       type: Number,
       default: 5,
+    },
+    viewSchedule: {
+      type: Boolean,
+      default: false,
+    },
+    isShowAction: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -106,7 +133,9 @@ export default {
         case "score":
           fHeader = "Điểm số";
           break;
-
+        case "examName":
+          fHeader = "Bài kiểm tra";
+          break;
         case "courseCode":
           fHeader = "Mã khoá học";
           break;
@@ -120,6 +149,9 @@ export default {
       }
 
       return fHeader;
+    },
+    handleViewSchedule(item) {
+      this.$emit("viewSchedule", item);
     },
   },
 };

@@ -177,32 +177,32 @@ export default {
       }
     },
     fetchRoles() {
-      if (this.authStore.getAuth?.roleName == "Staff") {
-        this.fetchCount++;
-        // this.rolesFetched = true;
-        // this.userSchema = schemaConfig.userSchema(
-        //   ["Nam", "Nữ"],
-        //   [
-        //     {
-        //       id: "d5fa55c7-315d-4634-9c73-08dbbc3f3a54",
-        //       name: "Parent",
-        //     },
-        //   ]
-        // );
-      } else {
-        this.systemStore.setChangeLoading(true);
-        API_ROLE.getRoles()
-          .then((res) => {
-            this.systemStore.setChangeLoading(false);
-            // this.rolesFetched = true;
-            this.fetchCount++;
-            this.roles = res.data;
-            // this.userSchema = schemaConfig.userSchema(["Nam", "Nữ"], res.data);
-          })
-          .catch((err) => {
-            this.systemStore.setChangeLoading(false);
-          });
-      }
+      // if (this.authStore.getAuth?.roleName == "Staff") {
+      //   this.fetchCount++;
+      //   this.rolesFetched = true;
+      //   this.userSchema = schemaConfig.userSchema(
+      //     ["Nam", "Nữ"],
+      //     [
+      //       {
+      //         id: "d5fa55c7-315d-4634-9c73-08dbbc3f3a54",
+      //         name: "Parent",
+      //       },
+      //     ]
+      //   );
+      // } else {
+      this.systemStore.setChangeLoading(true);
+      API_ROLE.getRoles()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          // this.rolesFetched = true;
+          this.fetchCount++;
+          this.roles = res.data;
+          // this.userSchema = schemaConfig.userSchema(["Nam", "Nữ"], res.data);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+      // }
     },
   },
 };

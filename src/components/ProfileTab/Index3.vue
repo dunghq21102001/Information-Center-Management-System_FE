@@ -56,7 +56,13 @@
             </button> -->
           </div>
           <div class="w-full mt-10">
-            <TableWithPagin :pageSize="5" :data="coursesData" />
+            <TableWithPagin
+              :pageSize="5"
+              :data="coursesData"
+              :is-show-action="true"
+              :view-schedule="true"
+              @view-schedule="viewSchedule"
+            />
           </div>
         </div>
 
@@ -82,10 +88,13 @@
             </button>
           </div>
           <div class="w-full mt-10">
-            <p class="w-full text-center font-bold text-gray-600">
+            <p
+              v-if="testOfChildrenData.length == 0"
+              class="w-full text-center font-bold text-gray-600"
+            >
               Chưa thực hiện bài kiểm tra nào
             </p>
-            <!-- <TableWithPagin :pageSize="5" :data="fData" /> -->
+            <TableWithPagin v-else :pageSize="5" :data="testOfChildrenData" />
           </div>
         </div>
       </div>
@@ -272,14 +281,28 @@
         </div> -->
       </div>
     </div>
+
+    <div
+      class="fog-attendance"
+      v-if="isShowViewSchedule"
+      @click.self="isShowViewSchedule = false"
+    >
+      <div
+        class="w-[95%] md:w-[90%] lg:w-[80%] bg-white overflow-y-scroll hide-scrollbar max-h-[90vh] p-10 rounded-xl"
+      >
+        <ChildrenAttendance :data="attendanceData" :children-data="childrenDetail"/>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import CourseCard from "../CourseCard.vue";
 import Pagination from "../Pagination.vue";
+import ChildrenAttendance from "../ChildrenAttendance.vue";
 import ChildrenCard from "../../components/ChildrenCard.vue";
 import API_USER from "../../API/API_USER";
 import API_EXAM from "../../API/API_EXAM";
+import API_ATTENDANCE from "../../API/API_ATTENDANCE";
 import API_QUESTION from "../../API/API_QUESTION";
 import API_CHILDRENANSWER from "../../API/API_CHILDRENANSWER";
 import { useSystemStore } from "../../stores/system";
@@ -299,6 +322,7 @@ export default {
     Pagination,
     ChildrenCard,
     TableWithPagin,
+    ChildrenAttendance,
   },
   data() {
     return {
@@ -319,7 +343,10 @@ export default {
       second: 60,
       intervalId: null,
       coursesData: [],
-      classesData: []
+      classesData: [],
+      testOfChildrenData: [],
+      isShowViewSchedule: false,
+      attendanceData: [],
     };
   },
   created() {
@@ -356,7 +383,8 @@ export default {
           this.childrenDetail = res.data;
           this.systemStore.setChangeLoading(false);
           this.convertDataCourse();
-          this.convertDataClass()
+          this.convertDataClass();
+          this.convertDataExam();
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
       this.$nextTick(() => {
@@ -405,6 +433,7 @@ export default {
       let fData = [];
       this.childrenDetail?.courses.map((item) => {
         fData.push({
+          courseId: item.courseId,
           courseCode: item.courseCode,
         });
       });
@@ -418,6 +447,15 @@ export default {
         });
       });
       this.classesData = fData;
+    },
+    convertDataExam() {
+      let fData = [];
+      this.childrenDetail?.exams.map((item) => {
+        fData.push({
+          examName: item.examName,
+        });
+      });
+      this.testOfChildrenData = fData;
     },
     submitExam() {
       if (this.isShowResult == true) {
@@ -490,6 +528,19 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    viewSchedule(item) {
+      this.systemStore.setChangeLoading(true);
+      API_ATTENDANCE.attendanceDetail(item?.courseId, this.childrenDetail?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.isShowViewSchedule = true;
+          this.attendanceData = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
+        });
+    },
   },
 };
 </script>
@@ -558,5 +609,18 @@ export default {
 
 .border-select {
   border: 2px solid rgb(40, 101, 194);
+}
+
+.fog-attendance {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

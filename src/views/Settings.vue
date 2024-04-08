@@ -251,7 +251,8 @@ export default {
       this.systemStore.setChangeLoading(true)
       API_SCHEDULE.createAutomaticalySchedule()
       .then(res => {
-        swal.success(res.data)
+        swal.success('Xếp lịch cho giáo viên thành công')
+        // swal.success(res.data)
         this.systemStore.setChangeLoading(false)
       })
       .catch(err => {
