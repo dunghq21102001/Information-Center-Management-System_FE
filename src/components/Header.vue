@@ -57,13 +57,13 @@
                 @click="goToRoute('profile')"
                 class="hover:bg-blur hover:text-primary cursor-pointer py-2 px-1"
               >
-                Profile
+                Hồ sơ
               </li>
               <li
                 @click="logout"
                 class="hover:bg-blur hover:text-primary cursor-pointer py-2 px-1"
               >
-                Logout
+                Đăng xuất
               </li>
             </ul>
           </div>

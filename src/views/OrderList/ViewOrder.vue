@@ -236,6 +236,7 @@ export default {
           window.open(res.data, "_self");
         })
         .catch((err) => {
+          swal.info(err.response.data)
           this.systemStore.setChangeLoading(false);
         });
     },

@@ -127,7 +127,7 @@ export default {
     },
     fetchCourse() {
       this.systemStore.setChangeLoading(true);
-      API_COURSE.getCourses()
+      API_COURSE.getSingleCourse()
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.courses = res.data;

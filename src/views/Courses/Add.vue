@@ -1,10 +1,29 @@
 <template>
   <div class="w-full">
+    <span class="text-[28px] font-bold block pl-6 text-gray-700">
+      Tạo khoá học
+    </span>
+    <div class="w-[90%] mx-auto mt-4">
+      <span class="block">Loại khoá học</span>
+      <select
+        class="select-primary mt-3 px-10 py-2"
+        v-model="courseTypeSelected"
+      >
+        <option :value="1">Khoá học đơn</option>
+        <option :value="2">Khoá học spec</option>
+      </select>
+    </div>
     <FormSchema
-      v-if="fetchCount == 2"
-      :schema="courseSchema"
+      v-if="fetchCount == 2 && courseTypeSelected == 2"
+      :schema="courseSpecSchema"
       btn-name="Tạo"
-      page-title="Tạo khoá học"
+      @form-submitted="handleAddCourse"
+    />
+
+    <FormSchema
+      v-if="fetchCount == 2 && courseTypeSelected == 1"
+      :schema="courseSingleSchema"
+      btn-name="Tạo"
       @form-submitted="handleAddCourse"
     />
   </div>
@@ -28,16 +47,25 @@ export default {
   },
   data() {
     return {
-      courseSchema: null,
+      courseSpecSchema: null,
+      courseSingleSchema: null,
       fetchCount: 0,
       courses: [],
       enum: [],
+      courseTypeSelected: 1,
     };
   },
   watch: {
     fetchCount() {
       if (this.fetchCount == 2) {
-        this.courseSchema = schemaConfig.courseSchema(this.courses, this.enum);
+        this.courseSingleSchema = schemaConfig.courseSingleSchema(
+          this.courses,
+          this.enum
+        );
+        this.courseSpecSchema = schemaConfig.courseSpecSchema(
+          this.courses,
+          this.enum
+        );
       }
     },
   },
@@ -47,6 +75,8 @@ export default {
   },
   methods: {
     async handleAddCourse(data) {
+      if (data.price) data["courseType"] = 1;
+      else data["courseType"] = 2;
       this.systemStore.setChangeLoading(true);
       data["parentCode"] = [];
       if (data?.prerequisite == "null") data["prerequisite"] = null;
@@ -78,7 +108,7 @@ export default {
         data.image = imageSnapshot;
         data.syllabus = fileSnapshot;
 
-        await API_COURSE.postCourse(data)
+        await API_COURSE.postCourseParent(data)
           .then((res) => {
             this.systemStore.setChangeLoading(false);
             swal.success(res.data);

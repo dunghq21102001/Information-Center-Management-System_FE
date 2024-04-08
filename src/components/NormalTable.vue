@@ -35,7 +35,20 @@
             scale="2"
           />
         </div>
-        <div v-if="excelProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
+        <div v-if="isImportData" class="h-[40px] mt-3 cursor-pointer mr-1">
+          <v-icon
+            v-tooltip="'Nhập dữ liệu từ tệp Excel'"
+            @click="handleImportData"
+            name="fa-file-import"
+            scale="2"
+            fill="#3398db"
+          />
+        </div>
+
+        <div
+          v-if="excelProp != '' && excelCustom == false"
+          class="h-[40px] mt-3 cursor-pointer mr-1"
+        >
           <download-excel
             v-tooltip="'Tải xuống Excel'"
             :data="dataProp"
@@ -45,6 +58,14 @@
           >
             <v-icon name="vi-file-type-excel" scale="2" />
           </download-excel>
+        </div>
+        <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
+          <v-icon
+            name="vi-file-type-excel"
+            class="cursor-pointer"
+            @click="handleClickExcelCustom"
+            scale="2"
+          />
         </div>
         <div v-if="csvProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
@@ -65,6 +86,18 @@
           @click="showFormBuying"
         >
           Mua ngay
+        </button>
+        <button
+          v-if="
+            isChangeStatusClasses &&
+            (authStore.getAuth?.roleName == 'Admin' ||
+              authStore.getAuth?.roleName == 'Manager')
+          "
+          class="btn-primary w-[120px] h-[40px] mt-3 mx-1"
+          :class="itemsSelected.length > 0 ? 'block' : 'hidden'"
+          @click="changeStatusOfClasses"
+        >
+          Đổi trạng thái
         </button>
         <button
           v-if="isChangeStatus && itemsSelected.length > 0"
@@ -283,10 +316,7 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
-            <button
-              v-tooltip="'Tạo tài khoản'"
-              v-if="isCreateAccount"
-            >
+            <button v-tooltip="'Tạo tài khoản'" v-if="isCreateAccount">
               <v-icon
                 name="fa-user-plus"
                 :scale="1.5"
@@ -310,6 +340,20 @@
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
+            <button
+              v-tooltip="'Xem danh sách trẻ'"
+              v-if="
+                item?.roleName == 'Parent' &&
+                authStore.getAuth?.roleName == 'Staff'
+              "
+            >
+              <v-icon
+                @click="viewChildrenListByParent(item)"
+                name="bi-list-ol"
                 :scale="1.5"
                 fill="#3398db"
               />
@@ -580,10 +624,7 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
-            <button
-              v-tooltip="'Tạo tài khoản'"
-              v-if="isCreateAccount"
-            >
+            <button v-tooltip="'Tạo tài khoản'" v-if="isCreateAccount">
               <v-icon
                 name="fa-user-plus"
                 :scale="1.5"
@@ -607,6 +648,20 @@
               <v-icon
                 @click="addChildren(item)"
                 name="md-childcare"
+                :scale="1.5"
+                fill="#3398db"
+              />
+            </button>
+            <button
+              v-tooltip="'Xem danh sách trẻ'"
+              v-if="
+                item?.roleName == 'Parent' &&
+                authStore.getAuth?.roleName == 'Staff'
+              "
+            >
+              <v-icon
+                @click="viewChildrenListByParent(item)"
+                name="bi-list-ol"
                 :scale="1.5"
                 fill="#3398db"
               />
@@ -779,6 +834,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isImportData: {
+      type: Boolean,
+      default: false,
+    },
     dataListTitle: String,
     isDelete: Boolean,
     isUpdate: Boolean,
@@ -786,6 +845,10 @@ export default {
     isChangeStatus: Boolean,
     isAddSemester: Boolean,
     isPayment: {
+      type: Boolean,
+      default: false,
+    },
+    isChangeStatusClasses: {
       type: Boolean,
       default: false,
     },
@@ -828,6 +891,10 @@ export default {
     excel: {
       type: String,
       default: "",
+    },
+    excelCustom: {
+      type: Boolean,
+      default: false,
     },
     csv: {
       type: String,
@@ -997,8 +1064,8 @@ export default {
         });
     },
     handlePayment(item) {
-      if (item?.paymentStatus == "Paid")
-        return swal.info("Đơn hàng này đã được thanh toán!", 3000);
+      // if (item?.paymentStatus == "Paid")
+      //   return swal.info("Đơn hàng này đã được thanh toán!", 3000);
       this.$emit("paymentAction", item);
     },
     goToSyllabus(url) {
@@ -1008,8 +1075,9 @@ export default {
       this.$emit("getAdviceRequest", item);
     },
     createAccount(item) {
-      this.$emit('createAccount', item)
+      this.$emit("createAccount", item);
     },
+    handleImportData() {},
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);
       this.itemsSelected = [];
@@ -1065,7 +1133,12 @@ export default {
             key != "staff" &&
             key != "startTime" &&
             key != "endTime" &&
-            key != "adviseRequests"
+            key != "adviseRequests" &&
+            key != "scheduleClassViews" &&
+            key != "statusOfClass" &&
+            key != "userId" &&
+            key != "level" &&
+            key != "prerequisite"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -1079,7 +1152,7 @@ export default {
       if (item?.courseType == "Single")
         return swal.error("Khoá học đơn không thể tạo khoá học con!", 2500);
       this.isAddNew = true;
-      this.addNewSchema = schemaConfig.courseSchema(
+      this.addNewSchema = schemaConfig.courseSingleSchema(
         this.courseList,
         this.enumList
       );
@@ -1099,8 +1172,17 @@ export default {
     handleAddNewSchema(data) {
       this.$emit("addNewSchema", data);
     },
+    handleClickExcelCustom() {
+      this.$emit("handleClickExcelCustom", true);
+    },
     goToAddNew() {
       this.$router.push({ name: this.isAddProp, params: {} });
+    },
+    changeStatusOfClasses() {
+      this.$emit("changeStatusOfClasses", this.itemsSelected);
+    },
+    viewChildrenListByParent(item) {
+      this.$emit("viewChildrenListByParent", item);
     },
     separateUpperCase(text) {
       if (/[A-Z]/.test(text)) {
@@ -1163,10 +1245,12 @@ export default {
           // else if (item.field == "courseType") {
           //   item["type"] = "select";
           //   item["listData"] = [];
-        } else if (item.field == "prerequisite") {
-          item["type"] = "select";
-          item["listData"] = this.courses;
-        } else if (item.field == "courseId") {
+        }
+        // else if (item.field == "prerequisite") {
+        //   item["type"] = "select";
+        //   item["listData"] = this.courseList;
+        // }
+        else if (item.field == "courseId") {
           item["title"] = "Course";
           item["type"] = "select";
           item["listData"] = this.courses;

@@ -30,4 +30,20 @@ export default class API_CLASS {
     static getEnum() {
         return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfRoom`)
     }
+
+    static getEnumClass() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfClass`)
+    }
+
+    static changeStatusClass(data) {
+        return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ChangeStatusClass`, data)
+    }
+
+    static changeTeacherForClass(data) {
+        return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ChangeTeacherForClass`, data)
+    }
+
+    static exportExcelListChildren(classId) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ExportExcelFile/${classId}`)
+    }
 }

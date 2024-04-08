@@ -257,6 +257,8 @@ export default {
               schedule["classId"] = cls.id;
               schedule.classCode = cls.classCode;
               schedule.totalDuration = cls.totalDuration;
+              schedule.teachingStartDate = cls.teachingStartDate;
+              schedule.teachingEndDate = cls.teachingEndDate;
               return schedule;
             });
             return cls;
@@ -267,7 +269,7 @@ export default {
           let currentId = null;
           listSchedules.map((item) => {
             if (currentId != item.classId) {
-              const startDate = new Date(item.startDate);
+              const startDate = new Date(item.teachingStartDate);
               let totalScheduleOfClassNow = 0;
               // => t3 + t6 (2 và 5)  => t4 + t7 (3 và 6)  => t5 + CN (4 và 0)
               let defaultNum = null;
@@ -304,41 +306,85 @@ export default {
                   break;
               }
 
+              let conditionLoop = null;
+              const endDate = new Date(item.teachingEndDate);
+              if (endDate.getFullYear() == 1)
+                conditionLoop = item.totalDuration;
+              else conditionLoop = endDate;
+
               if (defaultNum == startDate.getDay())
                 return (startIsFirstIndex = true);
-              do {
-                if (
-                  theNextDate.getDay() == defaultNum ||
-                  theNextDate.getDay() == nextNum
-                ) {
-                  totalScheduleOfClassNow += 1;
-                  let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
-                  let startTime = dayjs(
-                    `${finalDate} ${item.slot.startTime}`,
-                    "HH:mm:ss"
-                  ).format("HH:mm");
-                  let endTime = dayjs(
-                    `${finalDate} ${item.slot.endTime}`,
-                    "HH:mm:ss"
-                  ).format("HH:mm");
-                  finalData.push({
-                    start: `${finalDate} ${startTime}`,
-                    end: `${finalDate} ${endTime}`,
-                    title: item.classCode,
-                    content: `${item.rooms[0]?.name}`,
-                    class: "type-3",
-                    scheduleId: startIsFirstIndex
-                      ? listSchedules[0]?.id
-                      : listSchedules[1]?.id,
-                    classId: item?.classId,
-                    date: finalDate,
-                  });
+
+              if (typeof conditionLoop === "number") {
+                do {
+                  if (
+                    theNextDate.getDay() == defaultNum ||
+                    theNextDate.getDay() == nextNum
+                  ) {
+                    totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: startIsFirstIndex
+                        ? listSchedules[0]?.id
+                        : listSchedules[1]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  }
+                  // totalScheduleOfClassNow += 1;
                   theNextDate.setDate(theNextDate.getDate() + 1);
-                  startIsFirstIndex = !startIsFirstIndex;
-                }
-                // totalScheduleOfClassNow += 1;
-                theNextDate.setDate(theNextDate.getDate() + 1);
-              } while (totalScheduleOfClassNow < item.totalDuration);
+                } while (totalScheduleOfClassNow < item.totalDuration);
+              } else {
+                do {
+                  if (
+                    theNextDate.getDay() == defaultNum ||
+                    theNextDate.getDay() == nextNum
+                  ) {
+                    totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: startIsFirstIndex
+                        ? listSchedules[0]?.id
+                        : listSchedules[1]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  }
+                  // totalScheduleOfClassNow += 1;
+                  theNextDate.setDate(theNextDate.getDate() + 1);
+                } while (theNextDate.getTime() < conditionLoop.getTime());
+              }
+
               currentId = item.classId;
             }
           });

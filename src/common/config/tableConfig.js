@@ -105,10 +105,28 @@ export default class tableConfig {
             { text: "Mã", value: "courseCode", sortable: true },
             { text: "Tên", value: "name", sortable: true },
             // { text: "Giá", value: "price", sortable: true },
-            { text: "Loại", value: "courseType", sortable: true, width: 150 },
+            { text: "Loại", value: "courseType", sortable: true },
             // { text: "Image", value: "image", sortable: true },
             // { text: "Duration Total", value: "durationTotal", sortable: true },
             { text: "Syllabus", value: "syllabus", sortable: true },
+            // { text: "Discount", value: "discount", sortable: true },
+            // { text: "Level", value: "level", sortable: true },
+            // { text: "Entry Point", value: "entryPoint", sortable: true, width: 140 },
+            // { text: "Description", value: "description", sortable: true },
+            { text: "Chi tiết", value: "detail", width: 90 },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static courseChildTable() {
+        return [
+            { text: "Mã", value: "courseCode", sortable: true },
+            { text: "Tên", value: "name", sortable: true },
+            { text: "Giá", value: "price", sortable: true },
+            { text: "Loại", value: "courseType", sortable: true },
+            // { text: "Image", value: "image", sortable: true },
+            { text: "Tổng slot", value: "durationTotal", sortable: true },
+            // { text: "Syllabus", value: "syllabus", sortable: true },
             // { text: "Discount", value: "discount", sortable: true },
             // { text: "Level", value: "level", sortable: true },
             // { text: "Entry Point", value: "entryPoint", sortable: true, width: 140 },

@@ -88,7 +88,7 @@ export default {
         .then((res) => {
           this.data = res.data;
           let tmp = func.cloneArray(res.data);
-          tmp.unshift({ id: 'null', name: "Không có" });
+          tmp.unshift({ id: "null", name: "Không có" });
           this.courses = tmp;
 
           this.systemStore.setChangeLoading(false);
@@ -97,18 +97,126 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
-    updateCourse(data) {
-      this.systemStore.setChangeLoading(true);
-      API_ROOM.putRoom(data)
-        .then((res) => {
-          swal.success(res.data);
+    async updateCourse(data) {
+      if (data?.prerequisite == "null") data["prerequisite"] = null;
+      if (func.isBlobURL(data?.image) && func.isBlobURL(data?.syllabus)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "coursesImage/" + uniqueFileName);
+          const responseImage = await fetch(data.image);
+          const blobImage = await responseImage.blob();
+
+          const currentTime2 = new Date();
+          const uniqueFileName2 = "file_" + currentTime2.getTime();
+          const storageRef2 = ref(storage, "files/" + uniqueFileName2 + ".pdf");
+          const responseSyllabus = await fetch(data.syllabus);
+          const arrayBuffer = await responseSyllabus.arrayBuffer();
+          const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
+
+          const [imageSnapshot, fileSnapshot] = await Promise.all([
+            uploadBytes(storageRef, blobImage).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+            uploadBytes(storageRef2, fileBlob).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.image = imageSnapshot;
+          data.syllabus = fileSnapshot;
+
+          await API_COURSE.putCourseParent(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.fetchCourses();
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
           this.systemStore.setChangeLoading(false);
-          this.fetchCourses();
-        })
-        .catch((err) => {
-          swal.error("Cập nhật thất bại!");
+          console.error("Error uploading:", error);
+        }
+      } else if (func.isBlobURL(data?.syllabus)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime2 = new Date();
+          const uniqueFileName2 = "file_" + currentTime2.getTime();
+          const storageRef2 = ref(storage, "files/" + uniqueFileName2 + ".pdf");
+          const responseSyllabus = await fetch(data.syllabus);
+          const arrayBuffer = await responseSyllabus.arrayBuffer();
+          const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
+
+          const [fileSnapshot] = await Promise.all([
+            uploadBytes(storageRef2, fileBlob).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.syllabus = fileSnapshot;
+
+          await API_COURSE.putCourseParent(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.fetchCourses();
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
           this.systemStore.setChangeLoading(false);
-        });
+          console.error("Error uploading:", error);
+        }
+      } else if (func.isBlobURL(data?.image)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "coursesImage/" + uniqueFileName);
+          const responseImage = await fetch(data.image);
+          const blobImage = await responseImage.blob();
+
+          const [imageSnapshot] = await Promise.all([
+            uploadBytes(storageRef, blobImage).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.image = imageSnapshot;
+
+          await API_COURSE.putCourseParent(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.fetchCourses();
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_COURSE.putCourseParent(data)
+          .then((res) => {
+            this.systemStore.setChangeLoading(false);
+            swal.success(res.data);
+            this.fetchCourses();
+          })
+          .catch((err) => {
+            swal.error(err?.response?.data);
+            this.systemStore.setChangeLoading(false);
+          });
+      }
     },
     async handleAddChildCourse(data) {
       this.systemStore.setChangeLoading(true);

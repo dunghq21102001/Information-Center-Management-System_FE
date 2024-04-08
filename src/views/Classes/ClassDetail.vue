@@ -14,7 +14,7 @@
             Quản lý lớp
           </span>
         </div>
-        <button class="btn-primary px-3 py-1 w-[250px]" @click="isShowEnrollment = true">
+        <button class="btn-primary px-3 py-1 w-[250px]" @click="showEnrollment">
           Thêm trẻ vào lớp
         </button>
       </div>
@@ -27,11 +27,13 @@
         <NormalTable
           :data="childrenInClass"
           :header="header"
+          :excel-custom="true"
           :is-show-search="true"
           excel="children-in-class-data"
           csv="children-in-class-data"
           :reload="true"
           @reload-action="reloadList"
+          @handle-click-excel-custom="handleClickExcelCustom"
         />
       </div>
 
@@ -126,18 +128,29 @@ export default {
           .catch((err) => this.systemStore.setChangeLoading(false));
       }
     },
+    showEnrollment() {
+      if (this.authStore.getAuth?.roleName != "Staff")
+        return swal.info(
+          "Chỉ có nhân viên tư vấn mới có thể thực hiện hành động này!",
+          3000
+        );
+      this.isShowEnrollment = true;
+    },
     enrollmentChildren(item) {
       console.log(item);
       let tmp = [];
       item.map((i) => {
         if (i?.select == true)
-          tmp.push({
-            classId: this.$route.params.id,
-            childrenProfileId: i?.id,
-          });
+          tmp.push(
+            // classId: this.$route.params.id,
+            i?.id
+          );
       });
       this.systemStore.setChangeLoading(true);
-      API_ENROLLMENT.postEnrollment(tmp)
+      API_ENROLLMENT.postEnrollment({
+        classId: this.$route.params.id,
+        childrenProfileIds: tmp,
+      })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.getChildrenByClass(this.$route.params.id);
@@ -150,6 +163,34 @@ export default {
     },
     reloadList() {
       this.getChildrenByClass(this.$route.params.id);
+    },
+    handleClickExcelCustom() {
+      this.systemStore.setChangeLoading(true);
+      API_CLASS.exportExcelListChildren(this.$route.params.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          console.log(res.data);
+          // const url = window.URL.createObjectURL(new Blob([res.data]));
+          // const link = document.createElement("a");
+          // link.href = url;
+          // link.setAttribute("download", `Nhập điểm.xlsx`);
+          // document.body.appendChild(link);
+          // link.click();
+
+          const blob = new Blob([res.data], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          });
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.setAttribute("download", `children-in-class-data.xlsx`);
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
+        });
     },
   },
 };

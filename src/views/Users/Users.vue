@@ -20,7 +20,50 @@
         @delete-action="deleteUser"
         @update-status="updateStatusAccount"
         @add-children-action="addChildren"
+        @view-children-list-by-parent="viewChildrenListByParent"
       />
+    </div>
+
+    <div
+      class="fog-l"
+      v-if="isShowChildrenList"
+      @click.self="isShowChildrenList = false"
+    >
+      <div
+        class="w-[90%] md:w-[70%] lg:w-[40%] bg-white relative p-6 h-[100vh] overflow-y-scroll hide-scrollbar"
+      >
+        <span class="font-bold text-gray-600 text-[24px]"> Danh sách trẻ</span>
+        <span
+          v-if="childrenListByParent.length == 0"
+          class="text-[24px] block text-center mt-10"
+        >
+          Không có dữ liệu
+        </span>
+        <div class="w-full flex flex-col items-start">
+          <div
+            v-for="(item, index) in childrenListByParent"
+            :key="index"
+            class="w-full flex items-center justify-between bb pb-3"
+          >
+            <div class="w-[50%]">
+              <span class="block text-[18px]">
+                {{ index + 1 }}. {{ item?.fullName }} ({{
+                  getAge(item?.birthDay)
+                }}
+                tuổi)
+              </span>
+              <span>Sở thích: {{ item?.specialSkill }}</span>
+            </div>
+            <div class="w-[40%] flex justify-end">
+              <img
+                :src="item?.avatar"
+                class="w-[100px] h-[100px] object-cover"
+                alt=""
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,6 +90,8 @@ export default {
     return {
       header: tableConfig.userTable(),
       users: [],
+      childrenListByParent: [],
+      isShowChildrenList: false,
     };
   },
   methods: {
@@ -62,14 +107,14 @@ export default {
       //       this.systemStore.setChangeLoading(false);
       //     });
       // } else {
-        API_USER.users()
-          .then((res) => {
-            this.users = res.data;
-            this.systemStore.setChangeLoading(false);
-          })
-          .catch((err) => {
-            this.systemStore.setChangeLoading(false);
-          });
+      API_USER.users()
+        .then((res) => {
+          this.users = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
       // }
     },
     async updateUser(data) {
@@ -98,7 +143,7 @@ export default {
                   this.fetchUsers();
                 })
                 .catch((err) => {
-                  swal.error(err?.response?.data)
+                  swal.error(err?.response?.data);
                   this.systemStore.setChangeLoading(false);
                 });
             })
@@ -118,7 +163,7 @@ export default {
             this.fetchUsers();
           })
           .catch((err) => {
-            swal.error(err?.response?.data)
+            swal.error(err?.response?.data);
             this.systemStore.setChangeLoading(false);
           });
       }
@@ -128,10 +173,7 @@ export default {
       try {
         const currentTime = new Date();
         const uniqueFileName = "image_" + currentTime.getTime();
-        const storageRef = ref(
-          storage,
-          "avatars/" + uniqueFileName
-        );
+        const storageRef = ref(storage, "avatars/" + uniqueFileName);
 
         // Chuyển đổi URL blob thành Blob
         const response = await fetch(data.avatar);
@@ -148,7 +190,7 @@ export default {
               .then((res) => {
                 this.systemStore.setChangeLoading(false);
                 swal.success("Tạo mới trẻ thành công");
-                this.fetchUsers()
+                this.fetchUsers();
               })
               .catch((err) => {
                 this.systemStore.setChangeLoading(false);
@@ -162,24 +204,35 @@ export default {
         console.error("Error uploading avatar:", error);
       }
     },
-    deleteUser(item) {
-      swal
-        .confirm("Bạn có chắc chắn muốn xoá không?")
-        .then((result) => {
-          if (result.value) {
-            this.systemStore.setChangeLoading(true);
-            API_USER.deleteUser(item?.id)
-              .then((res) => {
-                this.systemStore.setChangeLoading(false);
-                swal.success("Xoá thành công!");
-                this.fetchUsers();
-              })
-              .catch((err) => {
-                this.systemStore.setChangeLoading(false);
-                swal.error(err.response?.data, 2500);
-              });
-          }
+    viewChildrenListByParent(item) {
+      this.isShowChildrenList = true;
+      this.systemStore.setChangeLoading(true);
+      API_USER.getChildrenByParent(item?.id)
+        .then((res) => {
+          this.childrenListByParent = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
         });
+    },
+    deleteUser(item) {
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_USER.deleteUser(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.fetchUsers();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error(err.response?.data, 2500);
+            });
+        }
+      });
     },
     updateStatusAccount(items) {
       let fData = [];
@@ -202,9 +255,32 @@ export default {
     reloadList(param) {
       this.fetchUsers();
     },
+    getAge(date) {
+      const curYear = new Date().getFullYear();
+      const d = new Date(date).getFullYear();
+      return curYear - d;
+    },
   },
   created() {
     this.fetchUsers();
   },
 };
 </script>
+<style scoped>
+.fog-l {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.bb {
+  border-bottom: 1px solid rgb(225, 225, 225);
+}
+</style>

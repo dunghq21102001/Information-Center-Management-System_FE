@@ -43,11 +43,20 @@
           >
             Khoá học con:
           </span>
-          <div
-            class="w-full gap-3 grid grid-cols-12"
-            v-if="courseDetail?.courses.length > 0"
-          >
-            <div
+          <div class="w-full" v-if="courseDetail?.courses.length > 0">
+            <NormalTable
+              :data="courseDetail?.courses"
+              :header="header"
+              :is-show-search="true"
+              :is-update="true"
+              :is-delete="true"
+              is-add="children-course-create"
+              excel="children-course-data"
+              csv="children-course-data"
+              @update-action="updateCourse"
+              @delete-action="deleteCourse"
+            />
+            <!-- <div
               class="col-span-12 md:col-span-6 flex items-center flex-col"
               v-for="i in courseDetail?.courses"
             >
@@ -57,7 +66,7 @@
               <span class="block mt-2">{{ i?.courseCode }}</span>
               <span class="block text-center">{{ i?.name }}</span>
               <span class="block">{{ convertVND(i?.price) }}</span>
-            </div>
+            </div> -->
           </div>
           <span class="my-2 text-[18px] font-bold mt-10 mb-4 block">
             Bài học:
@@ -146,7 +155,7 @@
         </div>
         <div class="w-full md:w-[30%] flex md:block flex-col">
           <div
-            class="overflow-hidden flex items-start justify-center w-full h-[400px] md:w-[200px] lg:w-[250px] md:h-[200px]"
+            class="overflow-hidden flex items-start justify-center w-full h-[400px] md:w-[200px] lg:w-[250px] md:h-[200px] lg:h-[250px]"
           >
             <img
               :src="
@@ -453,11 +462,14 @@ import QuestionReview from "../../components/QuestionReview.vue";
 import schemaConfig from "../../common/config/schemaConfig";
 import FormSchema from "../../components/FormSchema.vue";
 import MultiSelect from "primevue/multiselect";
+import NormalTable from "../../components/NormalTable.vue";
+import tableConfig from "../../common/config/tableConfig";
 export default {
   components: {
     QuestionReview,
     FormSchema,
     MultiSelect,
+    NormalTable,
   },
   setup() {
     const systemStore = useSystemStore();
@@ -465,6 +477,7 @@ export default {
   },
   data() {
     return {
+      header: tableConfig.courseChildTable(),
       courseDetail: null,
       questions: [],
       resources: [],
@@ -536,6 +549,144 @@ export default {
           }
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    async updateCourse(data) {
+      if (data?.prerequisite == "null") data["prerequisite"] = null;
+      if (func.isBlobURL(data?.image) && func.isBlobURL(data?.syllabus)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "coursesImage/" + uniqueFileName);
+          const responseImage = await fetch(data.image);
+          const blobImage = await responseImage.blob();
+
+          const currentTime2 = new Date();
+          const uniqueFileName2 = "file_" + currentTime2.getTime();
+          const storageRef2 = ref(storage, "files/" + uniqueFileName2 + ".pdf");
+          const responseSyllabus = await fetch(data.syllabus);
+          const arrayBuffer = await responseSyllabus.arrayBuffer();
+          const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
+
+          const [imageSnapshot, fileSnapshot] = await Promise.all([
+            uploadBytes(storageRef, blobImage).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+            uploadBytes(storageRef2, fileBlob).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.image = imageSnapshot;
+          data.syllabus = fileSnapshot;
+
+          await API_COURSE.putCourse(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.getCourseDetail(this.$route.params.id);
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else if (func.isBlobURL(data?.syllabus)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime2 = new Date();
+          const uniqueFileName2 = "file_" + currentTime2.getTime();
+          const storageRef2 = ref(storage, "files/" + uniqueFileName2 + ".pdf");
+          const responseSyllabus = await fetch(data.syllabus);
+          const arrayBuffer = await responseSyllabus.arrayBuffer();
+          const fileBlob = new Blob([arrayBuffer], { type: "application/pdf" });
+
+          const [fileSnapshot] = await Promise.all([
+            uploadBytes(storageRef2, fileBlob).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.syllabus = fileSnapshot;
+
+          await API_COURSE.putCourse(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.getCourseDetail(this.$route.params.id);
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else if (func.isBlobURL(data?.image)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "coursesImage/" + uniqueFileName);
+          const responseImage = await fetch(data.image);
+          const blobImage = await responseImage.blob();
+
+          const [imageSnapshot] = await Promise.all([
+            uploadBytes(storageRef, blobImage).then((snapshot) =>
+              getDownloadURL(snapshot.ref)
+            ),
+          ]);
+
+          data.image = imageSnapshot;
+
+          await API_COURSE.putCourse(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success(res.data);
+              this.getCourseDetail(this.$route.params.id);
+            })
+            .catch((err) => {
+              swal.error(err?.response?.data);
+              this.systemStore.setChangeLoading(false);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_COURSE.putCourse(data)
+          .then((res) => {
+            this.systemStore.setChangeLoading(false);
+            swal.success(res.data);
+            this.getCourseDetail(this.$route.params.id);
+          })
+          .catch((err) => {
+            swal.error(err?.response?.data);
+            this.systemStore.setChangeLoading(false);
+          });
+      }
+    },
+    deleteCourse(item) {
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_COURSE.deleteCourse(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.getCourseDetail(this.$route.params.id);
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+            });
+        }
+      });
     },
     reload() {
       this.systemStore.setChangeLoading(true);

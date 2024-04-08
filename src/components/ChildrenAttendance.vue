@@ -60,7 +60,16 @@
                 </div>
               </td>
               <td>
-                <div class="px-2 py-[5px] text-center">
+                <div
+                  class="px-2 py-[5px] text-center"
+                  :class="
+                    item?.attendanceStatus == 'Absent'
+                      ? 'text-red-500'
+                      : item?.attendanceStatus == 'Future'
+                      ? ''
+                      : 'text-green-500'
+                  "
+                >
                   {{ item?.attendanceStatus }}
                 </div>
               </td>

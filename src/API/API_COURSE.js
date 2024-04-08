@@ -7,6 +7,10 @@ export default class API_COURSE {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/Courses`)
     }
 
+    static getSingleCourse() {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CoursesSingle`)
+    }
+
     static getCourseById(id) {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetCourseById/${id}`)
     }
@@ -17,6 +21,14 @@ export default class API_COURSE {
 
     static putCourse(data) {
         return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
+    }
+
+    static postCourseParent(data) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CourseParent`, data)
+    }
+
+    static putCourseParent(data) {
+        return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CourseParent`, data)
     }
 
     static deleteCourse(id) {
