@@ -198,6 +198,22 @@ export default class schemaConfig {
         ]
     }
 
+    static courseChildrenSchema(courses = [], type = []) {
+        return [
+            { title: 'Mã', field: 'courseCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Tên khoá học', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Giá', field: 'price', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Tổng số slot', field: 'durationTotal', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            // { title: 'Điểm đầu vào', field: 'entryPoint', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Cấp độ', field: 'level', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            // { title: 'Môn tiên quyết', field: 'prerequisite', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: courses },
+            // { title: 'Loại khoá học', field: 'courseType', value: type[0]?.value, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: type },
+            // { title: 'Syllabus', field: 'syllabus', value: '', type: 'file', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Ảnh', field: 'image', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+        ]
+    }
+
     static courseSpecSchema(courses = [], type = []) {
         return [
             { title: 'Mã', field: 'courseCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },

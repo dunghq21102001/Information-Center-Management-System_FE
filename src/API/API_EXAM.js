@@ -22,4 +22,8 @@ export default class API_EXAM {
     static deleteExam(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static getEnumTestType() {
+        return axios.get(`${API_BASE.BASE_URL}/Enum/TestType`)
+    }
 }

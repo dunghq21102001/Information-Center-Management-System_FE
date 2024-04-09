@@ -223,6 +223,16 @@
             </span>
           </div>
         </template>
+        <template #item-file="item">
+          <div class="">
+            <span
+              @click="goToSyllabus(item.file)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Tệp
+            </span>
+          </div>
+        </template>
         <template #item-detail="item">
           <div class="">
             <span
@@ -453,6 +463,11 @@
             <div v-html="item?.content"></div>
           </div>
         </template>
+        <template #item-actualNumber="item">
+          <div class="overflow-hidden flex items-center">
+            <span>{{ item.actualNumber }} / {{ item.maxNumber }}</span>
+          </div>
+        </template>
         <template #item-status="item">
           <div
             class="border-[1px] border-solid text-center px-3 py-1 rounded-md"
@@ -517,6 +532,16 @@
               class="hover:underline text-blue-500 cursor-pointer"
             >
               Syllabus
+            </span>
+          </div>
+        </template>
+        <template #item-file="item">
+          <div class="">
+            <span
+              @click="goToSyllabus(item.file)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Tệp
             </span>
           </div>
         </template>
@@ -1152,7 +1177,7 @@ export default {
       if (item?.courseType == "Single")
         return swal.error("Khoá học đơn không thể tạo khoá học con!", 2500);
       this.isAddNew = true;
-      this.addNewSchema = schemaConfig.courseSingleSchema(
+      this.addNewSchema = schemaConfig.courseChildrenSchema(
         this.courseList,
         this.enumList
       );

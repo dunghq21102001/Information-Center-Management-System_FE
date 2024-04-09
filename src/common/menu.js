@@ -41,7 +41,7 @@ export default class menu {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
                     { name: 'Add Course', url: 'course-create' },
                     { name: 'Courses', url: 'courses' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
             },
             {
                 id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
@@ -65,12 +65,12 @@ export default class menu {
             //         { name: 'Training Program', url: 'training-program' },
             //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             // },
-            {
-                id: 76, name: 'Divisions', icon: 'md-imageaspectratio-sharp', subTab: [
-                    { name: 'Add Division', url: 'division-create' },
-                    { name: 'Divisions', url: 'divisions' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
-            },
+            // {
+            //     id: 76, name: 'Divisions', icon: 'md-imageaspectratio-sharp', subTab: [
+            //         { name: 'Add Division', url: 'division-create' },
+            //         { name: 'Divisions', url: 'divisions' },
+            //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+            // },
             {
                 id: 2145, name: 'Enrollment', icon: 'gi-archive-register', subTab: [
                     { name: 'Enrollment', url: 'enrollment' },
@@ -97,7 +97,7 @@ export default class menu {
             {
                 id: 7, name: 'Order', icon: 'bi-box-seam', subTab: [
                     { name: 'Order', url: 'order-list' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
             {
                 id: 1, name: 'Users', icon: 'hi-user-group', subTab: [

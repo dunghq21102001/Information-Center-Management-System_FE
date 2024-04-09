@@ -22,4 +22,8 @@ export default class API_CHILDRENANSWER {
     static deleteChildrenAnswer(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static childrenAnswerByChildrenAndExam(childrenId, examId) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ChildrenAnswers/${childrenId}/${examId}`)
+    }
 }

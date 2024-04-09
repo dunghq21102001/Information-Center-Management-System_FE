@@ -6,7 +6,6 @@
       btn-name="Tạo"
       @form-submitted="handleAddUser"
       page-title="Tạo người dùng"
-      @change-select="handleChangeSelect"
       :is-hide-add-btn="isHiddenBtn"
     />
     <FormSchema
@@ -148,6 +147,7 @@ export default {
                     this.$router.push({ name: "users" });
                   })
                   .catch((err) => {
+                    swal.error(err.response?.data)
                     this.systemStore.setChangeLoading(false);
                   });
               });

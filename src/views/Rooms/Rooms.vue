@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Rooms</span>
+    <span class="text-[28px] font-bold block text-gray-700">Phòng học</span>
 
     <div class="w-[90%] mx-auto">
       <NormalTable

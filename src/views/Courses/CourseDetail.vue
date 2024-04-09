@@ -50,7 +50,7 @@
               :is-show-search="true"
               :is-update="true"
               :is-delete="true"
-              is-add="children-course-create"
+              is-add=""
               excel="children-course-data"
               csv="children-course-data"
               @update-action="updateCourse"
@@ -131,12 +131,17 @@
             class="w-full md:w-[90%] grid grid-cols-12 gap-3 p-2 bg-[#f1f1f1]"
           >
             <div
-              class="flex col-span-12 lg:col-span-6 flex-col items-start bg-white rounded-lg p-3"
+              @click="gotoClass(child)"
+              class="flex col-span-12 lg:col-span-6 flex-col items-start bg-white rounded-lg p-3 cursor-pointer"
               v-for="child in courseDetail?.classes"
             >
               <span>
                 <span class="font-bold">Mã lớp: </span>
                 {{ child.classCode }}
+              </span>
+              <span>
+                <span class="font-bold">Môn học: </span>
+                {{ child.courseCode }}
               </span>
               <span>
                 <span class="font-bold">Tổng học sinh:</span>
@@ -323,11 +328,14 @@
                 v-model="selectedTestType"
                 class="select-primary w-full py-1"
               >
-                <option value="Đầu vào">Đầu vào</option>
-                <option value="15 phút">15 phút</option>
-                <option value="45 phút">45 phút</option>
-                <option value="Giữa kì">Giữa kì</option>
-                <option value="Cuối kì">Cuối kì</option>
+                <option
+                  v-for="(item, index) in enumTestType"
+                  :key="index"
+                  :value="item?.value"
+                  :class="item?.display == 'Entrance' ? 'hidden' : 'block'"
+                >
+                  {{ item?.display }}
+                </option>
               </select>
             </div>
           </div>
@@ -482,7 +490,7 @@ export default {
       questions: [],
       resources: [],
       selectedListLesson: [],
-      selectedTestType: "Đầu vào",
+      selectedTestType: "",
       questionsByLesson: [],
       currentLessonSelected: "",
       lessonSchema: schemaConfig.lessonSchema(),
@@ -506,10 +514,12 @@ export default {
       examTime: 60,
       rightAnswerByChildren: [],
       allAnswerByChildren: [],
+      enumTestType: [],
     };
   },
   created() {
     this.getCourseDetail(this.$route.params.id);
+    this.fetchEnum();
   },
   methods: {
     convertVND(price) {
@@ -688,6 +698,18 @@ export default {
         }
       });
     },
+    fetchEnum() {
+      this.systemStore.setChangeLoading(true);
+      API_EXAM.getEnumTestType()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.enumTestType = res.data;
+          this.selectedTestType = res.data[1].value;
+        })
+        .catch((er) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     reload() {
       this.systemStore.setChangeLoading(true);
       API_QUESTION.getQuestionsOrCreateQuiz([
@@ -753,6 +775,9 @@ export default {
           // this.cancelAll()
           swal.error("Tạo thất bại! Vui lòng thử lại");
         });
+    },
+    gotoClass(item) {
+      this.$router.push({ name: "class-detail", params: { id: item?.id } });
     },
     addQuestion() {
       this.questionsCreate.push({

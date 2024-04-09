@@ -73,9 +73,9 @@
             :options="item.listData"
             :optionValue="getDisplayValue(item.listData)"
             :optionLabel="getDisplayField(item.listData)"
-            placeholder="Select one"
+            placeholder="Chọn 1"
             class="w-full py-[11px] pl-3"
-            @change="onChangeSelect"
+            @change="(e) => onChangeSelect(e, item)"
           >
             <template #option="slotProps">
               <div class="w-full">
@@ -296,10 +296,12 @@ export default {
       const phoneRegex = /^\d{10}$/;
       return phoneRegex.test(phoneNumber);
     },
-    onChangeSelect(e) {
-      if (e.value == "d5fa55c7-315d-4634-9c73-08dbbc3f3a53")
-        this.isShowContract = true;
-      else this.isShowContract = false;
+    onChangeSelect(e, item) {
+      if (item?.field == "roleId") {
+        if (e.value == "d5fa55c7-315d-4634-9c73-08dbbc3f3a53")
+          this.isShowContract = true;
+        else this.isShowContract = false;
+      }
     },
     convertArrayToObject(formData) {
       return formData.reduce((acc, item) => {

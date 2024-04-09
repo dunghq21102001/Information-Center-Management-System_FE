@@ -74,6 +74,21 @@ export default class tableConfig {
         ]
     }
 
+    static contractTable() {
+        return [
+            { text: "Mã hợp đồng", value: "contractCode", sortable: true },
+            // { text: "Công việc", value: "job", sortable: true },
+            { text: "Ngày bắt đầu", value: "startDate", sortable: true },
+            { text: "Ngày kết thúc", value: "endDate", sortable: true },
+            { text: "Hợp đồng", value: "file", sortable: true },
+            { text: "Trạng thái", value: "statusOfContract", sortable: true },
+            // { text: "contractCode", value: "contractCode", sortable: true },
+            // { text: "Image", value: "image", sortable: true },
+            // { text: "Content", value: "content", sortable: true, width: 900 },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+
     static semesterTable() {
         return [
             { text: "Tên", value: "name", sortable: true },
@@ -131,7 +146,7 @@ export default class tableConfig {
             // { text: "Level", value: "level", sortable: true },
             // { text: "Entry Point", value: "entryPoint", sortable: true, width: 140 },
             // { text: "Description", value: "description", sortable: true },
-            { text: "Chi tiết", value: "detail", width: 90 },
+            // { text: "Chi tiết", value: "detail", width: 90 },
             { text: "Hành động", value: "operation" }
         ]
     }

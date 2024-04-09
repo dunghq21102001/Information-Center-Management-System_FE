@@ -94,7 +94,14 @@
             >
               Chưa thực hiện bài kiểm tra nào
             </p>
-            <TableWithPagin v-else :pageSize="5" :data="testOfChildrenData" />
+            <TableWithPagin
+              v-else
+              :pageSize="5"
+              :is-show-action="true"
+              :data="testOfChildrenData"
+              :view-exam="true"
+              @view-exam="viewExam"
+            />
           </div>
         </div>
       </div>
@@ -145,7 +152,7 @@
                 }}
                 / 10
                 <br />
-                <span
+                <!-- <span
                   class="font-bold"
                   :class="
                     (rightAnswerByChildren.length * 10) /
@@ -161,7 +168,7 @@
                       ? "Passed"
                       : "Not passed"
                   }}</span
-                >
+                > -->
               </span>
             </div>
             <button @click="submitExam" class="btn-primary px-3 py-1 mt-3">
@@ -290,7 +297,30 @@
       <div
         class="w-[95%] md:w-[90%] lg:w-[80%] bg-white overflow-y-scroll hide-scrollbar max-h-[90vh] p-10 rounded-xl"
       >
-        <ChildrenAttendance :data="attendanceData" :children-data="childrenDetail"/>
+        <ChildrenAttendance
+          :data="attendanceData"
+          :children-data="childrenDetail"
+        />
+      </div>
+    </div>
+
+    <div
+      class="fog-attendance"
+      v-if="isShowViewExam"
+      @click.self="isShowViewExam = false"
+    >
+      <div
+        class="w-[95%] md:w-[90%] lg:w-[80%] bg-white overflow-y-scroll hide-scrollbar max-h-[90vh] p-10 rounded-xl"
+      >
+        <QuestionReview
+          :lesson="null"
+          :data="listQuestionsReview"
+          :pageSize="5"
+          :is-edit="false"
+          :is-delete="false"
+          @reload="reload"
+          :total-score="totalScore"
+        />
       </div>
     </div>
   </div>
@@ -310,6 +340,7 @@ import { useAuthStore } from "../../stores/Auth";
 import TableWithPagin from "../../components/TableWithPagin.vue";
 import dayjs from "dayjs";
 import swal from "../../common/swal";
+import QuestionReview from "../QuestionReview.vue";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -323,6 +354,7 @@ export default {
     ChildrenCard,
     TableWithPagin,
     ChildrenAttendance,
+    QuestionReview,
   },
   data() {
     return {
@@ -347,6 +379,10 @@ export default {
       testOfChildrenData: [],
       isShowViewSchedule: false,
       attendanceData: [],
+      isShowViewExam: false,
+      listQuestionsReview: [],
+      totalScore: 0,
+      backupChildId: ''
     };
   },
   created() {
@@ -378,6 +414,7 @@ export default {
     handleGetDetail(child) {
       this.isShowUniqueData = true;
       this.systemStore.setChangeLoading(true);
+      this.backupChildId = child?.id
       API_USER.getChildrenById(child?.id)
         .then((res) => {
           this.childrenDetail = res.data;
@@ -393,6 +430,25 @@ export default {
           behavior: "smooth",
         });
       });
+    },
+    viewExam(item) {
+      this.systemStore.setChangeLoading(true);
+      API_CHILDRENANSWER.childrenAnswerByChildrenAndExam(
+        this.childrenDetail?.id,
+        item.examId
+      )
+        .then((res) => {
+          this.listQuestionsReview = res.data;
+          this.systemStore.setChangeLoading(false);
+          let score = 0;
+
+          res.data.map((item) => {
+            score = score + item?.scorePerQuestion;
+          });
+          this.isShowViewExam = true;
+          this.totalScore = score;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
     handleCreateTest() {
       this.systemStore.setChangeLoading(true);
@@ -452,6 +508,7 @@ export default {
       let fData = [];
       this.childrenDetail?.exams.map((item) => {
         fData.push({
+          examId: item.examId,
           examName: item.examName,
         });
       });
@@ -484,7 +541,7 @@ export default {
           answer: i?.childrenAnswer,
           scorePerQuestion:
             i?.childrenAnswer == i?.rightAnswer
-              ? Number.parseFloat((10 / this.questionList.length).toFixed(0))
+              ? Number.parseFloat((10 / this.questionList.length).toFixed(1))
               : 0,
         });
       });
@@ -494,6 +551,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success("Bạn đã nộp bài thành công");
+          this.handleGetDetail(this.backupChildId)
         })
         .catch((err) => {
           swal.error(err.response?.data);

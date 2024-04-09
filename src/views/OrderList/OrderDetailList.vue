@@ -151,7 +151,7 @@
       </div>
     </div> -->
 
-    <div v-show="payType == 2" class="w-[90%] mx-auto">
+    <div v-show="payType == 2" class="w-[90%] mx-auto mt-10">
       <div class="w-full md:w-[60%] lg:w-[40%]">
         <span class="text-[20px] text-gray-600"
           >Chọn phương thức thanh toán</span

@@ -1,8 +1,15 @@
 <template>
   <div class="w-full">
-    <span v-if="lesson != null" class="font-bold text-[24px] block mb-3">
-      Bộ câu hỏi của bài {{ lesson?.name }}
-    </span>
+    <div class="w-full flex items-center justify-between">
+      <span class="font-bold text-[24px] block mb-3">
+        {{
+          lesson != null
+            ? `Bộ câu hỏi của bài ${lesson?.name}`
+            : "Xem lại bài làm"
+        }}
+      </span>
+      <span class="font-bold text-[20px]">{{ totalScore }} điểm</span>
+    </div>
     <input
       type="text"
       placeholder="Tìm kiếm theo tên câu hỏi"
@@ -19,17 +26,21 @@
           v-for="(item, i) in paginatedData"
           :key="i"
         >
-          <div class="br-cus w-full lg:w-[20%] p-2">
+          <div class="br-cus w-full lg:w-[15%] p-2">
             <span class="block text-[18px] font-bold">Câu hỏi {{ i + 1 }}</span>
-            <span class="block">Độ khó: {{ item?.level }}</span>
+            <span v-if="item?.level" class="block"
+              >Độ khó: {{ item?.level }}</span
+            >
             <div class="w-full flex justify-start items-center">
               <button
+                v-if="isEdit"
                 @click="handleShowEdit(item)"
                 class="px-3 py-1 rounded-lg border-solid bg-green-500 text-white hover:text-green-500 hover:bg-white border-[1px] border-green-500 duration-150 mr-2"
               >
                 Sửa
               </button>
               <button
+                v-if="isDelete"
                 @click="deleteQuestion(item)"
                 class="px-3 py-1 rounded-lg border-solid bg-red-500 text-white hover:text-red-500 hover:bg-white border-[1px] border-red-500 duration-150 mr-2"
               >
@@ -38,42 +49,62 @@
             </div>
           </div>
           <div
-            class="br-cus w-full lg:w-[79%] mt-3 lg:mt-0 p-2 flex items-start flex-col"
+            class="br-cus w-full lg:w-[84%] mt-3 lg:mt-0 p-2 flex items-start flex-col"
           >
             <p class="mb-3">{{ item?.title }}</p>
             <p
-              :class="
-                item?.answer1 == item?.rightAnswer
+              :class="[
+                item?.answer1 == item?.rightAnswer &&
+                item?.answer1 == item?.answer
                   ? 'font-bold text-green-500'
-                  : ''
-              "
+                  : '',
+                item?.answer1 != item?.rightAnswer &&
+                item?.answer1 == item?.answer
+                  ? 'font-bold text-red-500'
+                  : '',
+              ]"
             >
               <span class="font-bold">A.</span> {{ item?.answer1 }}
             </p>
             <p
-              :class="
-                item?.answer2 == item?.rightAnswer
+              :class="[
+                item?.answer2 == item?.rightAnswer &&
+                item?.answer2 == item?.answer
                   ? 'font-bold text-green-500'
-                  : ''
-              "
+                  : '',
+                item?.answer2 != item?.rightAnswer &&
+                item?.answer2 == item?.answer
+                  ? 'font-bold text-red-500'
+                  : '',
+              ]"
             >
               <span class="font-bold">B.</span> {{ item?.answer2 }}
             </p>
             <p
-              :class="
-                item?.answer3 == item?.rightAnswer
+              :class="[
+                item?.answer3 == item?.rightAnswer &&
+                item?.answer3 == item?.answer
                   ? 'font-bold text-green-500'
-                  : ''
-              "
+                  : '',
+                item?.answer3 != item?.rightAnswer &&
+                item?.answer3 == item?.answer
+                  ? 'font-bold text-red-500'
+                  : '',
+              ]"
             >
               <span class="font-bold">C.</span> {{ item?.answer3 }}
             </p>
             <p
-              :class="
-                item?.answer4 == item?.rightAnswer
+              :class="[
+                item?.answer4 == item?.rightAnswer &&
+                item?.answer4 == item?.answer
                   ? 'font-bold text-green-500'
-                  : ''
-              "
+                  : '',
+                item?.answer4 != item?.rightAnswer &&
+                item?.answer4 == item?.answer
+                  ? 'font-bold text-red-500'
+                  : '',
+              ]"
             >
               <span class="font-bold">D.</span> {{ item?.answer4 }}
             </p>
@@ -214,7 +245,15 @@ export default {
       type: Number,
       default: 5,
     },
+    totalScore: {
+      type: Number,
+      default: 0,
+    },
     isEdit: {
+      type: Boolean,
+      default: false,
+    },
+    isReview: {
       type: Boolean,
       default: false,
     },

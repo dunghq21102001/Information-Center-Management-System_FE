@@ -7,7 +7,7 @@
             v-for="(header, index) in headers"
             :key="index"
             :class="
-              header == 'courseId'
+              header == 'courseId' || header == 'examId'
                 ? 'hidden'
                 : 'px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
             "
@@ -27,7 +27,11 @@
           <td
             v-for="(value, key) in item"
             :key="key"
-            :class="key == 'courseId' ? 'hidden' : 'px-4 py-2 max-w-[300px]'"
+            :class="
+              key == 'courseId' || key == 'examId'
+                ? 'hidden'
+                : 'px-4 py-2 max-w-[300px]'
+            "
           >
             {{ value }}
           </td>
@@ -38,6 +42,13 @@
               class="btn-primary px-2 py-1"
             >
               Xem lịch
+            </button>
+            <button
+            v-show="viewExam"
+              @click="handleViewExam(item)"
+              class="btn-primary px-2 py-1"
+            >
+              Xem lại
             </button>
           </td>
         </tr>
@@ -75,6 +86,10 @@ export default {
       default: 5,
     },
     viewSchedule: {
+      type: Boolean,
+      default: false,
+    },
+    viewExam: {
       type: Boolean,
       default: false,
     },
@@ -152,6 +167,9 @@ export default {
     },
     handleViewSchedule(item) {
       this.$emit("viewSchedule", item);
+    },
+    handleViewExam(item) {
+      this.$emit("viewExam", item);
     },
   },
 };
