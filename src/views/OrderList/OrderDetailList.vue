@@ -407,7 +407,7 @@ export default {
           payType: this.payType,
           installmentTerm: this.termNumber,
           childrenProfildId: item?.children?.id,
-          eWalletMethod: this.selectType,
+          eWalletMethod: this.payType == 1 ? null : this.selectType,
         });
       });
 

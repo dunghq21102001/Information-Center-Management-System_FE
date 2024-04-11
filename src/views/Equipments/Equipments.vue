@@ -29,6 +29,7 @@
         @reload-action="reloadData"
         csv="equipment-data"
         excel="equipment-data"
+        :cate-list="categoryData"
         @delete-action="deleteEquipment"
         @update-action="updateEquipment"
       />
@@ -70,12 +71,12 @@ export default {
       categoryData: [],
       equipmentData: [],
       header: tableConfig.equipmentTable(),
-      cateHeader: tableConfig.categoryEquipmentTable()
+      cateHeader: tableConfig.categoryEquipmentTable(),
     };
   },
   created() {
     this.fetchCategoryEquipment();
-    this.fetchEquipment()
+    this.fetchEquipment();
   },
   methods: {
     changeTab(t) {
@@ -112,11 +113,14 @@ export default {
           swal.success("Cập nhật thành công");
         })
         .catch((err) => {
-          this.systemStore.setChangeLoading(false)
-          swal.error(err.response?.data)
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
         });
     },
     updateEquipment(data) {
+      data["roomId"] = null;
+      data["status"] =
+        data.status == "Borrowed" ? 1 : data.status == "Returned" ? 2 : 3;
       this.systemStore.setChangeLoading(true);
       API_EQUIPMENT.putEquipments(data)
         .then((res) => {
@@ -125,50 +129,47 @@ export default {
           swal.success("Cập nhật thành công");
         })
         .catch((err) => {
-          this.systemStore.setChangeLoading(false)
-          swal.error(err.response?.data)
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
         });
     },
     deleteEquipment(item) {
-      swal
-        .confirm("Bạn có chắc chắn muốn xoá không?")
-        .then((result) => {
-          if (result.value) {
-            this.systemStore.setChangeLoading(true);
-            API_EQUIPMENT.deleteEquipment(item?.id)
-              .then((res) => {
-                this.systemStore.setChangeLoading(false);
-                swal.success("Xoá thành công!");
-                this.fetchEquipment();
-              })
-              .catch((err) => {
-                this.systemStore.setChangeLoading(false);
-                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
-              });
-          }
-        });
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_EQUIPMENT.deleteEquipment(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.fetchEquipment();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+            });
+        }
+      });
     },
     deleteCategory(item) {
-      swal
-        .confirm("Bạn có chắc chắn muốn xoá không?")
-        .then((result) => {
-          if (result.value) {
-            this.systemStore.setChangeLoading(true);
-            API_EQUIPMENT.deleteCategoryEquipment(item?.id)
-              .then((res) => {
-                this.systemStore.setChangeLoading(false);
-                swal.success("Xoá thành công!");
-                this.fetchCategoryEquipment();
-              })
-              .catch((err) => {
-                this.systemStore.setChangeLoading(false);
-                swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
-              });
-          }
-        });
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_EQUIPMENT.deleteCategoryEquipment(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.fetchCategoryEquipment();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+            });
+        }
+      });
     },
     reloadData(pa) {
       this.fetchCategoryEquipment();
+      this.fetchEquipment();
     },
   },
 };

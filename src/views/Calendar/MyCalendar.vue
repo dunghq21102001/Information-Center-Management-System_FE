@@ -1,11 +1,11 @@
 <template>
   <div class="w-full">
-    <span
+    <!-- <span
       v-if="scheduleFilter.length == 0"
       class="block w-full text-center font-bold text-gray-600 text-[24px]"
     >
       Bạn không có lịch dạy/học tính đến hiện tại
-    </span>
+    </span> -->
     <Calendar
       v-if="scheduleFilter.length > 0"
       :events="scheduleFilter"
@@ -59,7 +59,7 @@
           >
             <div class="w-[5%] pl-2">{{ index + 1 }}</div>
             <div
-              class="w-[20%] md:h-[150px] lg:h-[200px] overflow-hidden flex items-center justify-center"
+              class="w-[20%] md:h-[150px] lg:h-[200px] overflow-hidden flex items-start justify-center"
             >
               <img
                 :src="item.avatar"
@@ -161,91 +161,6 @@ export default {
     // this.fetchTest();
   },
   methods: {
-    fetchTest() {
-      let tmpData = [];
-      tmpData = this.dataTest.classes.map((cls) => {
-        cls.schedules.map((schedule) => {
-          schedule["classId"] = cls.id;
-          schedule.classCode = cls.classCode;
-          schedule.totalDuration = cls.totalDuration;
-          return schedule;
-        });
-        return cls;
-      });
-
-      const listSchedules = tmpData.flatMap((cls) => cls.schedules);
-      let finalData = [];
-      let currentId = null;
-      listSchedules.map((item) => {
-        if (currentId != item.classId) {
-          const startDate = new Date(item.startDate);
-          let totalScheduleOfClassNow = 0;
-          // => t3 + t6 (2 và 5)  => t4 + t7 (3 và 6)  => t5 + CN (4 và 0)
-          let defaultNum = null;
-          let nextNum = null;
-          let theNextDate = startDate;
-          switch (item.dayInWeek) {
-            case "Tuesday":
-              defaultNum = 2;
-              nextNum = 5;
-              break;
-            case "Wednesday":
-              defaultNum = 3;
-              nextNum = 6;
-              break;
-            case "Thursday":
-              defaultNum = 4;
-              nextNum = 0;
-              break;
-            case "Friday":
-              defaultNum = 5;
-              nextNum = 2;
-              break;
-            case "Saturday":
-              defaultNum = 6;
-              nextNum = 3;
-              break;
-            case "Sunday":
-              defaultNum = 0;
-              nextNum = 4;
-              break;
-
-            default:
-              break;
-          }
-          do {
-            if (
-              theNextDate.getDay() == defaultNum ||
-              theNextDate.getDay() == nextNum
-            ) {
-              totalScheduleOfClassNow += 1;
-              let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
-              let startTime = dayjs(
-                `${finalDate} ${item.slot.startTime}`,
-                "HH:mm:ss"
-              ).format("HH:mm");
-              let endTime = dayjs(
-                `${finalDate} ${item.slot.endTime}`,
-                "HH:mm:ss"
-              ).format("HH:mm");
-              finalData.push({
-                start: `${finalDate} ${startTime}`,
-                end: `${finalDate} ${endTime}`,
-                title: item.classCode,
-                content: `${item.rooms[0]?.name}`,
-                class: "type-3",
-              });
-              theNextDate.setDate(theNextDate.getDate() + 1);
-            }
-            // totalScheduleOfClassNow += 1;
-            theNextDate.setDate(theNextDate.getDate() + 1);
-          } while (totalScheduleOfClassNow < item.totalDuration);
-          currentId = item.classId;
-        }
-      });
-
-      this.scheduleFilter = finalData;
-    },
     fetchSchedule() {
       this.systemStore.setChangeLoading(true);
       API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
@@ -276,35 +191,38 @@ export default {
               let nextNum = null;
               let theNextDate = startDate;
               let startIsFirstIndex = null;
-              switch (item.dayInWeek) {
-                case "Tuesday":
-                  defaultNum = 2;
-                  nextNum = 5;
-                  break;
-                case "Wednesday":
-                  defaultNum = 3;
-                  nextNum = 6;
-                  break;
-                case "Thursday":
-                  defaultNum = 4;
-                  nextNum = 0;
-                  break;
-                case "Friday":
-                  defaultNum = 5;
-                  nextNum = 2;
-                  break;
-                case "Saturday":
-                  defaultNum = 6;
-                  nextNum = 3;
-                  break;
-                case "Sunday":
-                  defaultNum = 0;
-                  nextNum = 4;
-                  break;
 
-                default:
-                  break;
-              }
+              defaultNum = this.convertToNumber(listSchedules[0]?.dayInWeek);
+              nextNum = this.convertToNumber(listSchedules[1]?.dayInWeek);
+              // switch (item.dayInWeek) {
+              //   case "Tuesday":
+              //     defaultNum = 2;
+              //     nextNum = 5;
+              //     break;
+              //   case "Wednesday":
+              //     defaultNum = 3;
+              //     nextNum = 6;
+              //     break;
+              //   case "Thursday":
+              //     defaultNum = 4;
+              //     nextNum = 0;
+              //     break;
+              //   case "Friday":
+              //     defaultNum = 5;
+              //     nextNum = 2;
+              //     break;
+              //   case "Saturday":
+              //     defaultNum = 6;
+              //     nextNum = 3;
+              //     break;
+              //   case "Sunday":
+              //     defaultNum = 0;
+              //     nextNum = 4;
+              //     break;
+
+              //   default:
+              //     break;
+              // }
 
               let conditionLoop = null;
               const endDate = new Date(item.teachingEndDate);
@@ -312,8 +230,8 @@ export default {
                 conditionLoop = item.totalDuration;
               else conditionLoop = endDate;
 
-              if (defaultNum == startDate.getDay())
-                return (startIsFirstIndex = true);
+              if (defaultNum <= startDate.getDay()) startIsFirstIndex = true;
+              else startIsFirstIndex = false;
 
               if (typeof conditionLoop === "number") {
                 do {
@@ -423,6 +341,38 @@ export default {
     },
     formatDate(date) {
       return dayjs(date).format("YYYY-M-D HH:mm");
+    },
+    convertToNumber(data) {
+      // convert thứ thành số
+
+      let d = 0;
+      switch (data) {
+        case "Monday":
+          d = 1;
+          break;
+        case "Tuesday":
+          d = 2;
+          break;
+        case "Wednesday":
+          d = 3;
+          break;
+        case "Thursday":
+          d = 4;
+          break;
+        case "Friday":
+          d = 5;
+          break;
+        case "Saturday":
+          d = 6;
+          break;
+        case "Sunday":
+          d = 0;
+          break;
+        default:
+          break;
+      }
+
+      return d;
     },
     checkAttendance() {
       this.systemStore.setChangeLoading(true);

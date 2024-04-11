@@ -41,7 +41,7 @@
               v-show="viewSchedule"
               class="btn-primary px-2 py-1"
             >
-              Xem lịch
+              Tình trạng điểm danh
             </button>
             <button
             v-show="viewExam"

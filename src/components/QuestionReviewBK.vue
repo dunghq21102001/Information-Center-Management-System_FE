@@ -1,6 +1,6 @@
 <template>
     <div class="w-full">
-      <span class="font-bold text-[24px] block mb-3">
+      <span v-if="lesson != null" class="font-bold text-[24px] block mb-3">
         {{
           lesson != null
             ? `Bộ câu hỏi của bài ${lesson?.name}`

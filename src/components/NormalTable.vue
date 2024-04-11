@@ -36,12 +36,19 @@
           />
         </div>
         <div v-if="isImportData" class="h-[40px] mt-3 cursor-pointer mr-1">
-          <v-icon
-            v-tooltip="'Nhập dữ liệu từ tệp Excel'"
-            @click="handleImportData"
-            name="fa-file-import"
-            scale="2"
-            fill="#3398db"
+          <label class="cursor-pointer" for="import-data">
+            <v-icon
+              v-tooltip="'Nhập dữ liệu từ tệp Excel'"
+              name="fa-file-import"
+              scale="2"
+              fill="#3398db"
+            />
+          </label>
+          <input
+            class="hidden"
+            type="file"
+            id="import-data"
+            @change="handleImportFile"
           />
         </div>
 
@@ -657,6 +664,13 @@
                 @click="createAccount(item)"
               />
             </button>
+            <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
+              <v-icon
+                name="fc-ok"
+                :scale="1.5"
+                @click="handleApprove(item)"
+              />
+            </button>
             <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
               <v-icon
                 name="bi-plus-circle"
@@ -837,6 +851,7 @@ import API_COURSE from "../API/API_COURSE";
 import { useSystemStore } from "../stores/System";
 import schemaConfig from "../common/config/schemaConfig";
 import { useAuthStore } from "../stores/Auth";
+import * as XLSX from "xlsx";
 export default {
   components: {
     FormSchema,
@@ -889,6 +904,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isApprove: {
+      type: Boolean,
+      default: false,
+    },
     isMultiSelect: {
       type: Boolean,
       default: false,
@@ -935,6 +954,10 @@ export default {
       default: [],
     },
     courseList: {
+      type: Array,
+      default: [],
+    },
+    cateList: {
       type: Array,
       default: [],
     },
@@ -1102,7 +1125,9 @@ export default {
     createAccount(item) {
       this.$emit("createAccount", item);
     },
-    handleImportData() {},
+    handleImportData() {
+      this.$emit("importData", true);
+    },
     updateStatusAccount() {
       this.$emit("updateStatus", this.itemsSelected);
       this.itemsSelected = [];
@@ -1153,7 +1178,6 @@ export default {
             key != "lessons" &&
             key != "semesterId" &&
             key != "roomId" &&
-            key != "categoryEquipmentId" &&
             key != "code" &&
             key != "staff" &&
             key != "startTime" &&
@@ -1288,6 +1312,10 @@ export default {
           item["type"] = "date";
         } else if (item.field == "testDate") {
           item["type"] = "date";
+        } else if (item.field == "categoryEquipmentId") {
+          item["type"] = "select";
+          item["title"] = "Category";
+          item["listData"] = this.cateList;
         } else if (item.field == "slotId") {
           item["type"] = "select";
           item["title"] = "Slot";
@@ -1307,8 +1335,40 @@ export default {
     deleteAction(item) {
       this.$emit("deleteAction", item);
     },
+    handleApprove(item) {
+      this.$emit('approveAction', item)
+    },
     reloadAction() {
       this.$emit("reloadAction", true);
+    },
+    handleImportFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (
+        file.type !==
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      ) {
+        swal.error("Chỉ được phép nhập file Excel (.xlsx)");
+        return;
+      }
+
+      let finalData = {
+        file: file,
+        data: null,
+      };
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+        // console.log("Dữ liệu từ file Excel:", jsonData);
+        finalData.data = jsonData;
+      };
+      reader.readAsArrayBuffer(file);
+
+      this.$emit("importData", finalData);
     },
     handleUpdateSchema(data) {
       if (this.parentId != "" && this.parentId != null) {

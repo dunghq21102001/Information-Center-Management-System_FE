@@ -177,7 +177,7 @@
         </div>
       </div>
       <div class="w-full mt-5" v-if="questionsByLesson.length > 0">
-        <QuestionReview
+        <QuestionReviewBK
           :lesson="currentLessonSelected"
           :data="questionsByLesson"
           :pageSize="5"
@@ -466,7 +466,7 @@ import API_EXAM from "../../API/API_EXAM";
 import { useSystemStore } from "../../stores/System";
 import func from "../../common/func";
 import swal from "../../common/swal";
-import QuestionReview from "../../components/QuestionReview.vue";
+import QuestionReviewBK from "../../components/QuestionReviewBK.vue";
 import schemaConfig from "../../common/config/schemaConfig";
 import FormSchema from "../../components/FormSchema.vue";
 import MultiSelect from "primevue/multiselect";
@@ -474,7 +474,7 @@ import NormalTable from "../../components/NormalTable.vue";
 import tableConfig from "../../common/config/tableConfig";
 export default {
   components: {
-    QuestionReview,
+    QuestionReviewBK,
     FormSchema,
     MultiSelect,
     NormalTable,
@@ -723,7 +723,7 @@ export default {
           if (res.data[0]?.questions.length > 0) {
             this.questionsByLesson = res.data[0].questions;
           } else {
-            swal.info("Bài học này chưa lưu câu hỏi nào");
+            // swal.info("Bài học này chưa lưu câu hỏi nào");
             this.cancelAll();
           }
         })

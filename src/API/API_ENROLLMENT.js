@@ -23,4 +23,7 @@ export default class API_ENROLLMENT {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
 
+    static importExcel(file) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ImportExcelFile`, file)
+    }
 }

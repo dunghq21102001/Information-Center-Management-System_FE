@@ -30,7 +30,9 @@
       <div class="w-full mt-20">
         <div class="w-full flex items-center justify-between">
           <div class="w-full py-2 flex items-center justify-between">
-            <span class="text-primary text-[24px]">Bài kiểm tra đầu vào</span>
+            <span class="text-primary text-[24px]"
+              >Quản lý bộ câu hỏi đầu vào</span
+            >
             <button
               @click="isShowCreateQuestion = true"
               class="btn-primary px-3 py-1 rounded-lg"
@@ -41,7 +43,7 @@
         </div>
 
         <!-- question review -->
-        <QuestionReview
+        <QuestionReviewBK
           :data="questions"
           :pageSize="5"
           :is-edit="true"
@@ -67,9 +69,11 @@
 
         <!-- list btn -->
         <div class="w-full grid grid-cols-12 gap-3">
-        <div class="col-span-12 md:col-span-6 lg:col-span-4">
-        <button class="px-3 py-1 btn-primary" @click="createListSchedule">Tạo lịch cho lớp học</button>
-        </div>
+          <div class="col-span-12 md:col-span-6 lg:col-span-4">
+            <button class="px-3 py-1 btn-primary" @click="createListSchedule">
+              Tạo lịch cho lớp học
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -178,7 +182,7 @@
 <script>
 import SkeletonLoading from "../components/SkeletonLoading.vue";
 import { useSystemStore } from "../stores/system";
-import QuestionReview from "../components/QuestionReview.vue";
+import QuestionReviewBK from "../components/QuestionReviewBK.vue";
 import API_QUESTION from "../API/API_QUESTION";
 import API_SCHEDULE from "../API/API_SCHEDULE";
 import swal from "../common/swal";
@@ -187,7 +191,7 @@ export default {
     const systemStore = useSystemStore();
     return { systemStore };
   },
-  components: { SkeletonLoading, QuestionReview },
+  components: { SkeletonLoading, QuestionReviewBK },
   data() {
     return {
       currentTheme: "",
@@ -248,17 +252,17 @@ export default {
       this.getQuestions();
     },
     createListSchedule() {
-      this.systemStore.setChangeLoading(true)
+      this.systemStore.setChangeLoading(true);
       API_SCHEDULE.createAutomaticalySchedule()
-      .then(res => {
-        swal.success('Xếp lịch cho giáo viên thành công')
-        // swal.success(res.data)
-        this.systemStore.setChangeLoading(false)
-      })
-      .catch(err => {
-        swal.error(err.response?.data)
-        this.systemStore.setChangeLoading(false)
-      })
+        .then((res) => {
+          swal.success("Xếp lịch cho giáo viên thành công");
+          // swal.success(res.data)
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
     },
     addQuestion() {
       this.questionsCreate.push({

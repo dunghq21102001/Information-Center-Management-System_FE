@@ -19,21 +19,112 @@
         </button>
       </div>
 
-      <!-- <div class="w-full">
-      
-      </div> -->
+      <span
+        v-if="classDetail?.scheduleClassViews == null"
+        class="block text-[20px] font-bold mb-5 text-gray-600 mt-4"
+      >
+        Lớp hiện chưa có lịch học
+      </span>
+      <div
+        v-if="classDetail?.scheduleClassViews.length > 0"
+        class="w-full mt-5"
+      >
+        <span class="block text-[20px] font-bold mb-5">Lịch học của lớp</span>
 
+        <div
+          class="w-full flex items-center justify-between border-gray-600 border-solid border-[1px]"
+        >
+          <div class="w-[50%] py-2 br-r">
+            <p class="text-center br-b font-bold">
+              <v-icon name="bi-calendar-week" fill="#1fbc9c" size="1.5" />
+              &nbsp; Ngày học thứ nhất theo tuần
+            </p>
+            <div class="table mt-5">
+              <div class="row">
+                <div class="cell font-bold">Thứ</div>
+                <div class="cell">
+                  {{
+                    switchData(classDetail?.scheduleClassViews[0]?.dayInWeek)
+                  }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Thời gian</div>
+                <div class="cell">
+                  {{ getTime(classDetail?.scheduleClassViews[0]?.startTime) }} -
+                  {{ getTime(classDetail?.scheduleClassViews[0]?.endTime) }} ({{
+                    classDetail?.scheduleClassViews[0]?.slot
+                  }})
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Phòng học</div>
+                <div class="cell">
+                  {{ classDetail?.scheduleClassViews[0]?.roomName }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Giáo viên</div>
+                <div class="cell">
+                  {{ classDetail?.scheduleClassViews[0]?.teacherName }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="w-[50%] py-2">
+            <p class="text-center br-b font-bold">
+              <v-icon name="bi-calendar-week" fill="#1fbc9c" size="1.5" />
+              &nbsp; Ngày học thứ hai theo tuần
+            </p>
+            <div class="table mt-5">
+              <div class="row">
+                <div class="cell font-bold">Thứ</div>
+                <div class="cell">
+                  {{
+                    switchData(classDetail?.scheduleClassViews[1]?.dayInWeek)
+                  }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Thời gian</div>
+                <div class="cell">
+                  {{ getTime(classDetail?.scheduleClassViews[1]?.startTime) }} -
+                  {{ getTime(classDetail?.scheduleClassViews[1]?.endTime) }} ({{
+                    classDetail?.scheduleClassViews[1]?.slot
+                  }})
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Phòng học</div>
+                <div class="cell">
+                  {{ classDetail?.scheduleClassViews[1]?.roomName }}
+                </div>
+              </div>
+              <div class="row">
+                <div class="cell font-bold">Giáo viên</div>
+                <div class="cell">
+                  {{ classDetail?.scheduleClassViews[1]?.teacherName }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <span class="block text-[20px] font-bold mt-10">Danh sách học viên</span>
       <div class="w-[90%] mx-auto">
         <NormalTable
           :data="childrenInClass"
           :header="header"
           :excel-custom="true"
           :is-show-search="true"
+          :is-import-data="true"
           excel="children-in-class-data"
           csv="children-in-class-data"
           :reload="true"
           @reload-action="reloadList"
           @handle-click-excel-custom="handleClickExcelCustom"
+          @import-data="importData"
         />
       </div>
 
@@ -74,6 +165,7 @@ import tableConfig from "../../common/config/tableConfig.js";
 import NormalTable from "../../components/NormalTable.vue";
 import FormList from "../../components/FormList.vue";
 import swal from "../../common/swal.js";
+import dayjs from "dayjs";
 export default {
   components: { NormalTable, FormList },
   setup() {
@@ -137,7 +229,7 @@ export default {
       this.isShowEnrollment = true;
     },
     enrollmentChildren(item) {
-      console.log(item);
+      // console.log(item);
       let tmp = [];
       item.map((i) => {
         if (i?.select == true)
@@ -161,15 +253,63 @@ export default {
           swal.error(err.response?.data, 4000);
         });
     },
+    importData(data) {
+      this.systemStore.setChangeLoading(true);
+      const formData = new FormData();
+      formData.append("formFile", data.file);
+      API_ENROLLMENT.importExcel(formData)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.getChildrenByClass(this.$route.params.id);
+          // this.fetchDetail(this.$route.params.id);
+        })
+        .catch((er) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(er.response?.data);
+        });
+    },
+    switchData(data) {
+      let tmpData = "";
+      switch (data) {
+        case "Monday":
+          tmpData = "Thứ 2";
+          break;
+        case "Tuesday":
+          tmpData = "Thứ 3";
+          break;
+        case "Wednesday":
+          tmpData = "Thứ 4";
+          break;
+        case "Thursday":
+          tmpData = "Thứ 5";
+          break;
+        case "Friday":
+          tmpData = "Thứ 6";
+          break;
+        case "Saturday":
+          tmpData = "Thứ 7";
+          break;
+        case "Sunday":
+          tmpData = "Chủ nhật";
+          break;
+
+        default:
+          break;
+      }
+      return tmpData;
+    },
     reloadList() {
       this.getChildrenByClass(this.$route.params.id);
+    },
+    getTime(date) {
+      return dayjs(date).format("HH:mm");
     },
     handleClickExcelCustom() {
       this.systemStore.setChangeLoading(true);
       API_CLASS.exportExcelListChildren(this.$route.params.id)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          console.log(res.data);
+          // console.log(res.data);
           // const url = window.URL.createObjectURL(new Blob([res.data]));
           // const link = document.createElement("a");
           // link.href = url;
@@ -204,5 +344,30 @@ export default {
   right: 0;
   bottom: 0;
   z-index: 60;
+}
+
+.br-b {
+  border-bottom: 1px solid rgb(213, 213, 213);
+}
+
+.br-r {
+  border-right: 1px solid rgb(213, 213, 213);
+}
+
+.table {
+  display: table;
+  border-bottom: 1px solid #ebebeb;
+  border-top: 1px solid #ebebeb;
+  width: 100%; /* Đặt chiều rộng bằng 100% hoặc giá trị mong muốn */
+}
+
+.row {
+  display: table-row;
+}
+
+.cell {
+  display: table-cell;
+  border: 1px solid #ebebeb; 
+  padding: 5px; /* Thêm padding nếu cần */
 }
 </style>

@@ -9,7 +9,6 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
-        :is-import-data="true"
         :is-multi-select="true"
         :is-change-status-classes="true"
         is-add="class-create"

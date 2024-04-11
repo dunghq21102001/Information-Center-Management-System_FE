@@ -153,8 +153,8 @@ export default class tableConfig {
 
     static categoryEquipmentTable() {
         return [
-            { text: "Tên", value: "name", sortable: true },
-            { text: "Ngày bảo hành", value: "warrantyDate", sortable: true },
+            { text: "Tên danh mục", value: "name", sortable: true },
+            { text: "Mô tả", value: "description", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }
@@ -198,11 +198,12 @@ export default class tableConfig {
 
     static equipmentTable() {
         return [
-            { text: "Tên", value: "name", sortable: true },
+            { text: "Tên sản phẩm", value: "name", sortable: true },
             // { text: "Mã", value: "code", sortable: true },
             { text: "Giá", value: "price", sortable: true },
             { text: "Ngày mua", value: "purchaseDate", sortable: true },
-            { text: "Hạn bảo hành", value: "warrantyPeriod", sortable: true },
+            { text: "Trạng thái", value: "status", sortable: true },
+            // { text: "Hạn bảo hành", value: "warrantyPeriod", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }

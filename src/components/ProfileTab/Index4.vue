@@ -1,17 +1,37 @@
 <template>
   <div class="w-full">
     <div class="w-full flex items-center justify-between">
-      <p class="page-sub-title">Danh sách yêu cầu</p>
-      <button class="btn-primary px-3 py-1" @click="isCreate = true">
+      <p class="page-sub-title">
+        Danh sách yêu cầu
+        {{
+          authStore.getAuth?.roleName == "Admin" ||
+          authStore.getAuth?.roleName == "Manager"
+            ? "của người dùng"
+            : null
+        }}
+      </p>
+      <button
+        v-if="
+          authStore.getAuth?.roleName != 'Admin' &&
+          authStore.getAuth?.roleName != 'Manager'
+        "
+        class="btn-primary px-3 py-1"
+        @click="isCreate = true"
+      >
         Tạo yêu cầu
       </button>
     </div>
-    <div class="w-[90%] mx-auto">
+    <div
+      v-if="
+        authStore.getAuth?.roleName != 'Admin' &&
+        authStore.getAuth?.roleName != 'Manager'
+      "
+      class="w-[90%] mx-auto"
+    >
       <NormalTable
         :data="requests"
         :header="header"
         :is-show-search="true"
-        :is-update="true"
         :is-delete="true"
         excel="request-data"
         csv="request-data"
@@ -19,6 +39,21 @@
         @reload-action="reloadList"
         @update-action="updateRequest"
         @delete-action="deleteRequest"
+      />
+    </div>
+    <div class="w-[90%] mx-auto" v-else>
+      <NormalTable
+        :data="requestsOfUsers"
+        :header="header"
+        :is-show-search="true"
+        :is-delete="true"
+        excel="request-data"
+        csv="request-data"
+        :reload="true"
+        @reload-action="reloadList"
+        @update-action="updateRequest"
+        @delete-action="deleteRequest"
+        @approve-action="approveAction"
       />
     </div>
 
@@ -39,7 +74,7 @@
         </select>
 
         <div class="w-full mt-5" v-show="selectedRequest === 'Location'">
-          <p class="font-bold text-[20px]">Yêu cầu chuyển cơ sở</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu chuyển cơ sở</p>
           <div class="w-full flex items-center justify-between">
             <select
               name=""
@@ -60,24 +95,53 @@
           </div>
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Class'">
-          <p class="font-bold text-[20px]">Yêu cầu chuyển lớp</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu chuyển lớp</p>
           class
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Schedule'">
-          <p class="font-bold text-[20px]">Yêu cầu nhờ dạy giúp 1 ngày</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu nhờ dạy giúp 1 ngày</p>
           schedule
         </div>
-        <div class="w-full mt-5" v-show="selectedRequest === 'Equipment'">
-          <p class="font-bold text-[20px]">Yêu cầu mượn trang thiết bị</p>
-          Equipment
-        </div>
+        <!-- <div class="w-full mt-5" v-show="selectedRequest === 'Equipment'">
+          <p class="font-bold text-[20px] mb-2">Yêu cầu mượn trang thiết bị</p>
+          <div class="w-full flex items-center justify-between">
+            <select
+              name=""
+              class="select-primary px-5 py-2 w-[35%]"
+              v-model="selectedEquipment"
+              id=""
+            >
+              <option :value="item.id" v-for="item in equipments">
+                {{ item.name }}
+              </option>
+            </select>
+            <input
+              type="text"
+              placeholder="Mô tả"
+              v-model="descriptionText"
+              class="i-c w-[60%]"
+            />
+          </div>
+        </div> -->
         <div class="w-full mt-5" v-show="selectedRequest === 'Refund'">
-          <p class="font-bold text-[20px]">Yêu cầu hoàn tiền khoá học</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu hoàn tiền khoá học</p>
           Refund
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Leave'">
-          <p class="font-bold text-[20px]">Yêu cầu xin nghỉ việc</p>
-          Leave
+          <p class="font-bold text-[20px] mb-2">Yêu cầu xin nghỉ việc</p>
+          <div class="w-full flex items-center justify-between">
+            <input
+              type="date"
+              v-model="selectedLeaveDate"
+              class="i-c w-[35%]"
+            />
+            <input
+              type="text"
+              placeholder="Mô tả"
+              v-model="descriptionText"
+              class="i-c w-[60%]"
+            />
+          </div>
         </div>
 
         <div class="w-full flex items-center justify-end mt-3">
@@ -111,6 +175,7 @@ export default {
     return {
       header: tableConfig.requestTable(),
       requests: [],
+      requestsOfUsers: [],
       locations: [],
       managersId: [],
       requestTypes: [
@@ -125,14 +190,25 @@ export default {
       descriptionText: "",
       selectedRequest: "Class",
       selectedLocation: "",
+      selectedLeaveDate: "",
     };
   },
   created() {
     this.fetchRequest();
     this.fetchLocation();
     this.fetchRole();
+    this.fetchRequestOfUsers();
   },
   methods: {
+    fetchRequestOfUsers() {
+      this.systemStore.setChangeLoading(true);
+      API_REQUEST.getRequests()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.requestsOfUsers = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     fetchRequest() {
       this.systemStore.setChangeLoading(true);
       API_REQUEST.getRequestByUserId(this.authStore.getAuth?.id)
@@ -199,13 +275,17 @@ export default {
           break;
         case "Class":
           break;
-        case "Equipment":
-          break;
+        // case "Equipment":
+        //   data.userIds = this.managersId
+        //   // data.e
+        //   break;
         case "Schedule":
           break;
         case "Refund":
           break;
         case "Leave":
+          data.leaveDate = this.selectedLeaveDate;
+          data.userIds = this.managersId;
           break;
       }
 
@@ -222,6 +302,9 @@ export default {
           swal.error(err.response?.data);
         });
     },
+    approveAction(item) {
+      
+    }
   },
 };
 </script>
