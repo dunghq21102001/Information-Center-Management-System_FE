@@ -270,6 +270,8 @@ export default {
         .then((res) => {
           let fData = [];
           fData = res.data.filter((item) => {
+            item["endTime"] = item.endTime.slice(0, 5);
+            item["startTime"] = item.startTime.slice(0, 5);
             if (item?.slotType == 2) return item;
           });
 
@@ -304,7 +306,10 @@ export default {
         this.adviceRequest.fullName.includes("@") ||
         this.adviceRequest.fullName.includes("@gmail") ||
         this.adviceRequest.fullName.includes("@email") ||
-        this.adviceRequest.fullName.includes("gmail") ||
+        this.adviceRequest.fullName.includes("fpt") ||
+        this.adviceRequest.fullName.includes("edu") ||
+        this.adviceRequest.fullName.includes("eco") ||
+        this.adviceRequest.fullName.includes("vn") ||
         this.adviceRequest.fullName.includes("email")
       ) {
         return swal.error(
@@ -427,7 +432,15 @@ export default {
       this.systemStore.setChangeLoading(true);
       API_COURSE.getCourses()
         .then((res) => {
-          this.courses = res.data;
+          let i = 0;
+          let tmp = [];
+          res.data.map((item) => {
+            i += 1;
+            if (i < 5) {
+              tmp.push(item);
+            }
+          });
+          this.courses = tmp;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {

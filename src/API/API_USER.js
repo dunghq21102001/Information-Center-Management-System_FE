@@ -87,6 +87,9 @@ export default class API_USER {
     //     return
     // }
 
+    static getChildrensByStaffId() {
+        return axios.get(`${API_BASE.BASE_URL}/Children/getChildrensByStaffId`)
+    }
   
 
 }

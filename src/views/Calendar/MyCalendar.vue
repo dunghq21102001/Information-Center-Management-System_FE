@@ -1,11 +1,11 @@
 <template>
   <div class="w-full">
-    <!-- <span
+    <span
       v-if="scheduleFilter.length == 0"
       class="block w-full text-center font-bold text-gray-600 text-[24px]"
     >
       Bạn không có lịch dạy/học tính đến hiện tại
-    </span> -->
+    </span>
     <Calendar
       v-if="scheduleFilter.length > 0"
       :events="scheduleFilter"
@@ -230,8 +230,13 @@ export default {
                 conditionLoop = item.totalDuration;
               else conditionLoop = endDate;
 
-              if (defaultNum <= startDate.getDay()) startIsFirstIndex = true;
-              else startIsFirstIndex = false;
+              if (defaultNum == 4 && defaultNum <= startDate.getDay()) {
+                startIsFirstIndex = false;
+              } else if (defaultNum <= startDate.getDay()) {
+                startIsFirstIndex = false;
+              } else {
+                startIsFirstIndex = false;
+              }
 
               if (typeof conditionLoop === "number") {
                 do {

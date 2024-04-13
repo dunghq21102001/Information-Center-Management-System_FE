@@ -24,6 +24,22 @@
       />
     </div>
 
+    <div class="w-full mt-14" v-if="authStore.getAuth?.roleName == 'Staff'">
+      <span class="text-[28px] font-bold block text-gray-700">Danh sách trẻ</span>
+      <div class="w-[90%] mx-auto">
+        <NormalTable
+          :data="childrenListData"
+          :header="childrenHeader"
+          :is-show-search="true"
+          is-add=""
+          excel="children-data"
+          csv="children-data"
+          :reload="true"
+          @reload-action="reloadList"
+        />
+      </div>
+    </div>
+
     <div
       class="fog-l"
       v-if="isShowChildrenList"
@@ -89,8 +105,10 @@ export default {
   data() {
     return {
       header: tableConfig.userTable(),
+      childrenHeader: tableConfig.childrenTable(),
       users: [],
       childrenListByParent: [],
+      childrenListData: [],
       isShowChildrenList: false,
     };
   },
@@ -116,6 +134,15 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
       // }
+    },
+    fetchChildrenByStaff() {
+      this.systemStore.setChangeLoading(true)
+      API_USER.getChildrenByStaff(this.authStore.getAuth?.id)
+      .then(res => {
+        this.childrenListData = res.data
+        this.systemStore.setChangeLoading(false)
+      })
+      .catch(err => this.systemStore.setChangeLoading(false))
     },
     async updateUser(data) {
       if (func.isBlobURL(data?.avatar)) {
@@ -254,6 +281,7 @@ export default {
     },
     reloadList(param) {
       this.fetchUsers();
+      this.fetchChildrenByStaff()
     },
     getAge(date) {
       const curYear = new Date().getFullYear();
@@ -263,6 +291,7 @@ export default {
   },
   created() {
     this.fetchUsers();
+    this.fetchChildrenByStaff()
   },
 };
 </script>

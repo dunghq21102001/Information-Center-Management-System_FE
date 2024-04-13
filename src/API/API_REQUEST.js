@@ -30,4 +30,8 @@ export default class API_REQUEST {
     static deleteRequest(id) {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
     }
+
+    static approveRequest(data) {
+        return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ChangeStatusRequest`, data)
+    }
 }

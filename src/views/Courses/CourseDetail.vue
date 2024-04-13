@@ -25,10 +25,12 @@
             ><span class="font-bold">Tên khoá học:</span>
             {{ courseDetail?.name }}</span
           ><br />
-          <span class="my-2 text-[18px]"
+          <span
+            v-if="courseDetail?.price != 0 && courseDetail?.price != null"
+            class="my-2 text-[18px]"
             ><span class="font-bold">Giá:</span>
             {{ convertVND(courseDetail?.price) }}</span
-          ><br />
+          ><br v-if="courseDetail?.price != 0 && courseDetail?.price != null"/>
           <span class="my-2 text-[18px]"
             ><span class="font-bold">Mô tả:</span>
             {{ courseDetail?.description }}</span
@@ -313,6 +315,7 @@
                 >Danh sách bài học</span
               >
               <MultiSelect
+                :disabled="examData.length > 0"
                 v-model="selectedListLesson"
                 :options="courseDetail?.lessons"
                 :optionLabel="`name`"
@@ -325,6 +328,7 @@
                 >Loại bài kiểm tra</span
               >
               <select
+                :disabled="examData.length > 0"
                 v-model="selectedTestType"
                 class="select-primary w-full py-1"
               >
@@ -339,7 +343,10 @@
               </select>
             </div>
           </div>
-          <div class="w-[97%] flex justify-end mt-4">
+          <div
+            v-if="finalDataExam == null"
+            class="w-[97%] flex justify-end mt-4"
+          >
             <button
               :disabled="examData.length > 0"
               :class="examData.length > 0 ? 'cursor-not-allowed' : ''"
@@ -350,7 +357,7 @@
             </button>
           </div>
 
-          <div
+          <!-- <div
             v-if="examData.length > 0"
             class="flex items-start flex-row-reverse mt-10"
           >
@@ -397,7 +404,7 @@
                   <span class="block text-[18px] font-bold"
                     >Câu hỏi {{ i + 1 }}</span
                   >
-                  <!-- <span class="block">Độ khó: {{ item?.level }}</span> -->
+                  
                 </div>
                 <div
                   class="br-cus w-full lg:w-[79%] mt-5 lg:mt-0 px-2 flex items-start flex-col"
@@ -443,15 +450,183 @@
               </div>
             </div>
 
-            <!-- submit btn -->
-          </div>
-          <div
+       
+          </div> -->
+          <!-- <div
             v-if="examData.length > 0"
             class="w-full flex items-center justify-end"
           >
             <button class="btn-primary px-3 py-1 mt-5" @click="submitExam">
               Nộp bài
             </button>
+          </div> -->
+
+          <div
+            v-if="examData.length > 0"
+            class="flex items-start flex-row-reverse mt-10"
+          >
+            <div class="w-[20%] sticky top-10 left-[90%]">
+              <div class="gap-2 grid grid-cols-12">
+                <div
+                  class="col-span-3 lg:col-span-2 br-c h-[50px] flex flex-col overflow-hidden"
+                  v-for="(ic, index) in examData"
+                  :class="[
+                    ic?.childrenAnswer == null
+                      ? 'border-init'
+                      : 'border-select',
+                  ]"
+                >
+                  <span class="text-center py-[2px] block bg-gray-300">{{
+                    index + 1
+                  }}</span>
+                  <div class="bg-white"></div>
+                </div>
+              </div>
+              <span class="mt-5 block"
+                >Thời gian: {{ initTime - 1 }} phút {{ second }} giây</span
+              >
+              <div class="w-full" v-if="isShowResult">
+                <span class="block">
+                  Số câu đúng:
+                  {{ rightAnswerByChildren.length }} /
+                  {{ allAnswerByChildren.length }}
+                </span>
+                <span class="block">
+                  Điểm của bạn:
+                  {{
+                    (
+                      (rightAnswerByChildren.length * 10) /
+                      allAnswerByChildren.length
+                    ).toFixed(0)
+                  }}
+                  / 10
+                  <br />
+                  <!-- <span
+                  class="font-bold"
+                  :class="
+                    (rightAnswerByChildren.length * 10) /
+                      allAnswerByChildren.length >=
+                    5
+                      ? 'text-green-500'
+                      : 'text-red-500'
+                  "
+                  >{{
+                    (rightAnswerByChildren.length * 10) /
+                      allAnswerByChildren.length >=
+                    5
+                      ? "Passed"
+                      : "Not passed"
+                  }}</span
+                > -->
+                </span>
+              </div>
+              <button @click="submitExam" class="btn-primary px-3 py-1 mt-3">
+                Nộp bài
+              </button>
+            </div>
+            <div class="w-[80%] flex flex-col items-start">
+              <div
+                class="w-full pr-2 flex items-start justify-between mb-2 flex-wrap flex-col lg:flex-row"
+                v-for="(item, i) in examData"
+                :key="i"
+              >
+                <div class="br-cus w-full lg:w-[20%] px-2">
+                  <span class="block text-[18px] font-bold"
+                    >Câu hỏi {{ i + 1 }}</span
+                  >
+                  <!-- <span class="block">Độ khó: {{ item?.level }}</span> -->
+                </div>
+                <div
+                  class="br-cus w-full lg:w-[79%] lg:mt-0 mt-5 px-2 flex items-start flex-col"
+                >
+                  <p class="mb-3">{{ item?.title }}</p>
+                  <p>
+                    <input
+                      :disabled="isShowResult"
+                      v-model="item.childrenAnswer"
+                      type="radio"
+                      :id="item?.answer1"
+                      :value="item?.answer1"
+                    />
+                    <label
+                      :class="
+                        item?.answer1 == item?.rightAnswer &&
+                        item?.answer1 == item?.childrenAnswer &&
+                        isShowResult
+                          ? 'font-bold text-green-500'
+                          : ''
+                      "
+                      :for="item?.answer1"
+                    >
+                      A. {{ item?.answer1 }}</label
+                    >
+                  </p>
+                  <p>
+                    <input
+                      :disabled="isShowResult"
+                      v-model="item.childrenAnswer"
+                      type="radio"
+                      :id="item?.answer2"
+                      :value="item?.answer2"
+                    />
+                    <label
+                      :class="
+                        item?.answer2 == item?.rightAnswer &&
+                        item?.answer2 == item?.childrenAnswer &&
+                        isShowResult
+                          ? 'font-bold text-green-500'
+                          : ''
+                      "
+                      :for="item?.answer2"
+                    >
+                      B. {{ item?.answer2 }}</label
+                    >
+                  </p>
+                  <p>
+                    <input
+                      :disabled="isShowResult"
+                      v-model="item.childrenAnswer"
+                      type="radio"
+                      :id="item?.answer3"
+                      :value="item?.answer3"
+                    />
+                    <label
+                      :class="
+                        item?.answer3 == item?.rightAnswer &&
+                        item?.answer3 == item?.childrenAnswer &&
+                        isShowResult
+                          ? 'font-bold text-green-500'
+                          : ''
+                      "
+                      :for="item?.answer3"
+                    >
+                      C. {{ item?.answer3 }}</label
+                    >
+                  </p>
+                  <p>
+                    <input
+                      :disabled="isShowResult"
+                      v-model="item.childrenAnswer"
+                      type="radio"
+                      :id="item?.answer4"
+                      :value="item?.answer4"
+                    />
+                    <label
+                      :class="
+                        item?.answer4 == item?.rightAnswer &&
+                        item?.answer4 == item?.childrenAnswer &&
+                        isShowResult
+                          ? 'font-bold text-green-500'
+                          : ''
+                      "
+                      :for="item?.answer4"
+                    >
+                      D. {{ item?.answer4 }}</label
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -515,6 +690,11 @@ export default {
       rightAnswerByChildren: [],
       allAnswerByChildren: [],
       enumTestType: [],
+      finalDataExam: null,
+      initTime: 30,
+      second: 60,
+      intervalId: null,
+      isSubmit: false,
     };
   },
   created() {
@@ -831,6 +1011,10 @@ export default {
           level: "",
         },
       ];
+      this.finalDataExam = null;
+      this.second = 60;
+      this.initTime = 30;
+      this.isSubmit = false;
     },
     createExam() {
       if (this.selectedListLesson.length == 0)
@@ -842,6 +1026,7 @@ export default {
         tmpArr.push({
           lessonId: item?.id,
           totalQuestion: 5,
+          type: 1,
         });
         return item;
       });
@@ -868,20 +1053,38 @@ export default {
         });
       API_EXAM.postExam({
         courseId: this.$route.params.id,
-        testName: "ansc222",
+        testName: "Bài kiểm tra",
         testDate: new Date().toISOString(),
         testDuration: 60,
-        testType: 1,
+        testType: this.selectedTestType,
+        testCode: func.makeUnique(10),
       })
         .then((res) => {
+          // this.finalDataExam = res.data;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
           // swal.error(err.response?.data);
           this.systemStore.setChangeLoading(false);
         });
+
+      this.intervalId = setInterval(() => {
+        if (this.second > 0) {
+          this.second--;
+        } else {
+          if (this.initTime > 0) {
+            this.initTime--;
+            this.second = 60;
+          } else {
+            this.submitExam();
+            clearInterval(this.intervalId);
+            return;
+          }
+        }
+      }, 1000);
     },
     submitExam() {
+      if (this.isSubmit == true) return swal.error("Bạn đã nộp bài rồi");
       let tmpArr = [];
       this.examData.map((item) => {
         if (item?.childrenAnswer == item?.rightAnswer) {
@@ -889,13 +1092,14 @@ export default {
         }
         return item;
       });
-
+      if (this.intervalId) clearInterval(this.intervalId);
       this.rightAnswerByChildren = tmpArr;
       this.allAnswerByChildren = this.examData;
       // this.examData = [];
       // this.cancelAll();
       this.isShowResult = true;
       swal.success("Nộp bài thành công!");
+      this.isSubmit = true;
     },
   },
 };
@@ -939,5 +1143,17 @@ export default {
   display: flex;
   align-items: center;
   justify-content: flex-end;
+}
+
+.br-c {
+  border-radius: 5px;
+}
+
+.border-init {
+  border: 2px solid rgb(209, 213, 219);
+}
+
+.border-select {
+  border: 2px solid rgb(40, 101, 194);
 }
 </style>

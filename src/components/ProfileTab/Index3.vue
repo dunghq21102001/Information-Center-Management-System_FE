@@ -51,9 +51,6 @@
         <div class="w-full mt-10">
           <div class="flex w-full items-center justify-between flex-wrap">
             <span class="text-[20px]">Danh sách khoá học</span>
-            <!-- <button @click="handleCreateTest" class="btn-primary px-2 py-1">
-              Thực hiện bài kiểm tra đầu vào
-            </button> -->
           </div>
           <div class="w-full mt-10">
             <TableWithPagin
@@ -341,6 +338,7 @@ import TableWithPagin from "../../components/TableWithPagin.vue";
 import dayjs from "dayjs";
 import swal from "../../common/swal";
 import QuestionReview from "../QuestionReview.vue";
+import func from "../../common/func";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -382,7 +380,7 @@ export default {
       isShowViewExam: false,
       listQuestionsReview: [],
       totalScore: 0,
-      backupChildId: ''
+      backupChildId: "",
     };
   },
   created() {
@@ -414,7 +412,7 @@ export default {
     handleGetDetail(child) {
       this.isShowUniqueData = true;
       this.systemStore.setChangeLoading(true);
-      this.backupChildId = child?.id
+      this.backupChildId = child?.id;
       API_USER.getChildrenById(child?.id)
         .then((res) => {
           this.childrenDetail = res.data;
@@ -458,6 +456,7 @@ export default {
         testDate: new Date().toISOString(),
         testDuration: 30,
         testType: 1,
+        testCode: func.makeUnique(10),
       })
         .then((res) => {
           this.examData = res.data;
@@ -551,7 +550,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success("Bạn đã nộp bài thành công");
-          this.handleGetDetail(this.backupChildId)
+          this.handleGetDetail(this.backupChildId);
         })
         .catch((err) => {
           swal.error(err.response?.data);

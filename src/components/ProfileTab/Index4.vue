@@ -50,10 +50,43 @@
         excel="request-data"
         csv="request-data"
         :reload="true"
+        :isApprove="true"
         @reload-action="reloadList"
         @update-action="updateRequest"
         @delete-action="deleteRequest"
-        @approve-action="approveAction"
+        @approve-action="handleApprove"
+      />
+    </div>
+
+    <p
+      v-if="
+        authStore.getAuth?.roleName != 'Admin' &&
+        authStore.getAuth?.roleName != 'Manager'
+      "
+      class="block page-sub-title mt-f"
+    >
+      Danh sách yêu cầu đã nhận
+    </p>
+    <div
+      class="w-[90%] mx-auto"
+      v-if="
+        authStore.getAuth?.roleName != 'Admin' &&
+        authStore.getAuth?.roleName != 'Manager'
+      "
+    >
+      <NormalTable
+        :data="requestByUserReceiver"
+        :header="header"
+        :is-show-search="true"
+        :is-delete="true"
+        excel="request-data"
+        csv="request-data"
+        :reload="true"
+        :isApprove="true"
+        @reload-action="reloadList"
+        @update-action="updateRequest"
+        @delete-action="deleteRequest"
+        @approve-action="handleApproveReceiver"
       />
     </div>
 
@@ -96,7 +129,34 @@
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Class'">
           <p class="font-bold text-[20px] mb-2">Yêu cầu chuyển lớp</p>
-          class
+          <div class="w-full flex items-center justify-between">
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Từ lớp</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="selectedClassByTeacher"
+                id=""
+              >
+                <option :value="item.id" v-for="item in classTeachByTeacher">
+                  {{ item.classCode }}
+                </option>
+              </select>
+            </div>
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Sang lớp</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="selectedClassPending"
+                id=""
+              >
+                <option :value="item" v-for="item in classPending">
+                  {{ item.classCode }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Schedule'">
           <p class="font-bold text-[20px] mb-2">Yêu cầu nhờ dạy giúp 1 ngày</p>
@@ -156,6 +216,7 @@
 <script>
 import API_REQUEST from "../../API/API_REQUEST.js";
 import API_LOCATION from "../../API/API_LOCATION.js";
+import API_CLASS from "../../API/API_CLASS.js";
 import tableConfig from "../../common/config/tableConfig.js";
 import { useAuthStore } from "../../stores/Auth.js";
 import { useSystemStore } from "../../stores/System.js";
@@ -176,8 +237,11 @@ export default {
       header: tableConfig.requestTable(),
       requests: [],
       requestsOfUsers: [],
+      requestByUserReceiver: [],
       locations: [],
       managersId: [],
+      classTeachByTeacher: [],
+      classPending: [],
       requestTypes: [
         { value: "Class", display: "Đổi lớp" },
         { value: "Location", display: "Đổi cơ sở" },
@@ -191,6 +255,8 @@ export default {
       selectedRequest: "Class",
       selectedLocation: "",
       selectedLeaveDate: "",
+      selectedClassByTeacher: "",
+      selectedClassPending: "",
     };
   },
   created() {
@@ -198,6 +264,9 @@ export default {
     this.fetchLocation();
     this.fetchRole();
     this.fetchRequestOfUsers();
+    this.fetchClassTeachByTeacherId();
+    this.fetchClassPending();
+    this.fetchRequestReceiver();
   },
   methods: {
     fetchRequestOfUsers() {
@@ -222,6 +291,17 @@ export default {
     deleteRequest(item) {},
     reloadList() {
       this.fetchRequest();
+      this.fetchRequestOfUsers();
+      this.fetchRequestReceiver();
+    },
+    fetchRequestReceiver() {
+      this.systemStore.setChangeLoading(true);
+      API_REQUEST.getRequestByReceiver(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.requestByUserReceiver = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
     fetchLocation() {
       this.systemStore.setChangeLoading(true);
@@ -232,6 +312,18 @@ export default {
           this.selectedLocation = res.data[0]?.id;
         })
         .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchClassPending() {
+      this.systemStore.setChangeLoading(true);
+      API_CLASS.getListClassStatusPending()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.selectedClassPending = res.data[0];
+          this.classPending = res.data;
+        })
+        .catch((er) => {
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -247,6 +339,18 @@ export default {
           this.managersId = tmpData;
         })
         .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchClassTeachByTeacherId() {
+      this.systemStore.setChangeLoading(true);
+      API_CLASS.getListClassTeachingByTeacher(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.selectedClassByTeacher = res.data[0]?.id;
+          this.classTeachByTeacher = res.data;
+        })
+        .catch((er) => {
           this.systemStore.setChangeLoading(false);
         });
     },
@@ -274,6 +378,12 @@ export default {
           data.locationId = this.selectedLocation;
           break;
         case "Class":
+          data.fromClassId = this.selectedClassByTeacher;
+          data.toClassId = this.selectedClassPending?.id;
+          data.requestDescription = "Chuyển sang lớp khác";
+          data.userIds = [
+            this.selectedClassPending?.scheduleClassViews[0]?.teacherId,
+          ];
           break;
         // case "Equipment":
         //   data.userIds = this.managersId
@@ -302,9 +412,37 @@ export default {
           swal.error(err.response?.data);
         });
     },
-    approveAction(item) {
-      
-    }
+    handleApprove(item) {
+      this.systemStore.setChangeLoading(true);
+      item["requestIds"] = [item?.id];
+      item["status"] = "Approved";
+      API_REQUEST.approveRequest(item)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.fetchRequestOfUsers();
+          this.systemStore.setChangeLoading("Đã chấp thuận yêu cầu thành công");
+          this.fetchRequest();
+        })
+        .catch((er) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    handleApproveReceiver(item) {
+      item["status"] = "Approved";
+      this.systemStore.setChangeLoading(true);
+      item["requestIds"] = [item?.id];
+      API_REQUEST.approveRequest(item)
+        .then((res) => {
+          this.systemStore.setChangeLoading("Đã chấp thuận yêu cầu thành công");
+          this.systemStore.setChangeLoading(false);
+          this.fetchRequestReceiver();
+        })
+        .catch((er) => {
+          swal.error(err.response?.data);
+          this.systemStore.setChangeLoading(false);
+        });
+    },
   },
 };
 </script>
@@ -330,5 +468,9 @@ export default {
 
 .i-c:focus {
   outline: none;
+}
+
+.mt-f {
+  margin-top: 80px !important;
 }
 </style>

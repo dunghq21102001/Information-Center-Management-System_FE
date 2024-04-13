@@ -4,11 +4,11 @@ export default class tableConfig {
             { text: "Tài khoản", value: "userName", sortable: true },
             // { text: "Full Name", value: "fullName", sortable: true },
             // { text: "Email", value: "email", sortable: true },
-            // { text: "Role", value: "roleName", sortable: true },
+            { text: "Vị trí", value: "roleName", sortable: true },
             { text: "Giới tính", value: "genderType", sortable: true },
             // { text: "Avatar", value: "avatar", sortable: true },
             // { text: "Phone", value: "phone", sortable: true },
-            { text: "Sinh nhật", value: "dateOfBirth", sortable: true, width: 200 },
+            { text: "Sinh nhật", value: "dateOfBirth", sortable: true, width: 150 },
             // { text: "Bank Name", value: "bankName", sortable: true },
             // { text: "Bank Account Number", value: "bankAccountNumber", sortable: true},
             // { text: "Bank Account Name", value: "bankAccountName", sortable: true },
@@ -27,6 +27,18 @@ export default class tableConfig {
             { text: "Last Out", value: "lastOut", sortable: true },
             { text: "Shift", value: "shift", sortable: true },
             { text: "Hành động", value: "operation" }
+        ]
+    }
+    
+
+    static childrenTable() {
+        return [
+            { text: "MSSV", value: "childrenCode", sortable: true, },
+            { text: "Họ tên", value: "fullName", sortable: true, },
+            { text: "Giới tính", value: "genderType", sortable: true },
+            { text: "Sinh nhật", value: "birthDay", sortable: true },
+            { text: "Kỹ năng", value: "specialSkill", sortable: true },
+            // { text: "Hành động", value: "operation" }
         ]
     }
 
@@ -224,9 +236,9 @@ export default class tableConfig {
 
     static childrenInClassTable() {
         return [
+            { text: "Mã lớp", value: "code", sortable: true },
             { text: "MSSV", value: "childrenCode", sortable: true },
             { text: "Họ tên", value: "fullName", sortable: true },
-            { text: "Mã lớp", value: "code", sortable: true },
             // { text: "Hành động", value: "operation" }
         ]
     }
@@ -247,6 +259,7 @@ export default class tableConfig {
             { text: "Mô tả", value: "requestDescription", sortable: true },
             { text: "Ngày nghỉ", value: "leaveDate", sortable: true },
             { text: "Ngày dạy thay", value: "teachingDate", sortable: true },
+            { text: "Trạng thái", value: "status", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
     }

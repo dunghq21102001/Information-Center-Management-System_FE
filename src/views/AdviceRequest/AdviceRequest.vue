@@ -76,7 +76,7 @@ export default {
     },
     updateAdvice(data) {
       data["isTested"] = data.isTested == "True" ? true : false;
-      // data["userId"] = this.authStore.getAuth?.id;
+      data["userId"] = this.authStore.getAuth?.id;
       // data["statusAdviseRequest"] = 2;
       const slotItem = this.enum.find((item) => {
         if (item?.id == data?.slotId) return item;
@@ -122,11 +122,14 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    removeEmail(email) {
+      return email.replace(/@gmail\.com$/, "");
+    },
     createAccount(item) {
       console.log(item);
       this.systemStore.setChangeLoading(true);
       API_USER.postUser({
-        userName: item?.email,
+        userName: this.removeEmail(item?.email),
         passwordHash: "User@123",
         fullName: item?.fullName,
         genderType: "Nam",

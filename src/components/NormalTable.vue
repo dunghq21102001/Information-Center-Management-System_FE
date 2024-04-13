@@ -333,6 +333,13 @@
                 @click="showAddNewCourse(item)"
               />
             </button>
+            <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
+              <v-icon
+                name="fc-ok"
+                :scale="1.5"
+                @click="handleApprove(item)"
+              />
+            </button>
             <button v-tooltip="'Tạo tài khoản'" v-if="isCreateAccount">
               <v-icon
                 name="fa-user-plus"

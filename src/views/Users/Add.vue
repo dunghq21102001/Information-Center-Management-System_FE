@@ -79,7 +79,7 @@ export default {
   methods: {
     async handleAddUser(data) {
       this.systemStore.setChangeLoading(true);
-
+      data["passwordHash"] = "User@123";
       try {
         const currentTime = new Date();
         const uniqueFileName = "image_" + currentTime.getTime();
@@ -100,7 +100,6 @@ export default {
           .then(async (downloadURL) => {
             data.avatar = downloadURL;
 
-            // for file syllabus
             const currentTime2 = new Date();
             const uniqueFileName2 = "file_" + currentTime2.getTime();
             const storageRef2 = ref(
@@ -147,7 +146,7 @@ export default {
                     this.$router.push({ name: "users" });
                   })
                   .catch((err) => {
-                    swal.error(err.response?.data)
+                    swal.error(err.response?.data);
                     this.systemStore.setChangeLoading(false);
                   });
               });

@@ -17,6 +17,7 @@
     "dayjs": "^1.11.10",
     "firebase": "^10.7.2",
     "floating-vue": "^5.2.2",
+    "html2canvas": "^1.4.1",
     "oh-vue-icons": "^1.0.0-rc3",
     "pinia": "^2.1.7",
     "primevue": "^3.48.1",

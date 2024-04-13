@@ -262,7 +262,13 @@ export default {
         if (
           item?.field != "bankAccountNumber" &&
           item?.field != "bankAccountName" &&
-          item?.field != "bankName"
+          item?.field != "bankName" &&
+          item?.field != "startDateTmp" &&
+          item?.field != "endDateTmp" &&
+          item?.field != "contractCodeTmp" &&
+          item?.field != "configJobTypeIdTmp" &&
+          item?.field != "jobTmp" &&
+          item?.field != "fileTmp"
         ) {
           if (item.field === "phone") {
             if (!this.isValidPhoneNumber(item.value)) {

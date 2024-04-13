@@ -58,6 +58,15 @@
         </div>
       </div>
     </div>
+
+    <!-- <div class="w-full" id="certificate">
+      <Certificate
+        :children-name="'Hoang Quoc Dung'"
+        :course-name="'Robotic cơ bản'"
+        :code="'AK91VQ2'"
+      />
+      <button @click="captureCertificate">Tải xuống certificate</button>
+    </div> -->
   </div>
 </template>
 <script>
@@ -68,9 +77,14 @@ import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 import API_COURSE from "../../API/API_COURSE.js";
 import { useAuthStore } from "../../stores/Auth.js";
+import Certificate from "../../components/Certificate.vue";
+import html2canvas from "html2canvas";
+import { storage } from "../../common/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 export default {
   components: {
     NormalTable,
+    Certificate,
   },
   setup() {
     const systemStore = useSystemStore();
@@ -87,6 +101,120 @@ export default {
       isSelectedStatus: false,
       enumClass: [],
       selectedStatus: "",
+      fData: [
+        {
+          childrenProfile: {
+            id: "f2e7be78-fe6a-478f-1f93-08dc4a7d7be1",
+            userId: "354143f6-4727-42a0-a4c9-08dc4a7a0964",
+            fullName: "Nguyễn Minh Tài",
+            genderType: "Nam",
+            birthDay: "2018-03-22T14:34:41.081",
+            avatar:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fminhtai.jpg?alt=media&token=c28c9e3e-e7d4-4004-8b3d-456df93583b1",
+            specialSkill: "lap rap",
+          },
+          course: {
+            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
+            courseCode: "PRN211",
+            price: 200000,
+            name: "Basic Cross-Platform Application Programming With .NET",
+            description: "string",
+            durationTotal: 8,
+            syllabus: "string",
+            level: "1",
+            entryPoint: "7",
+            prerequisite: null,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+            courseType: "Single",
+          },
+          class: null,
+        },
+        {
+          childrenProfile: {
+            id: "f4960142-6397-4dc8-1f94-08dc4a7d7be1",
+            userId: "f9c25b98-5cc4-4bfe-a4ca-08dc4a7a0964",
+            fullName: "Nguyễn Gia Huy",
+            genderType: "Nam",
+            birthDay: "2017-03-22T14:34:41.081",
+            avatar:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fgiahuy.jpg?alt=media&token=e39e9d07-685b-4b24-b68b-d8882e47bb7b",
+            specialSkill: "lap rap",
+          },
+          course: {
+            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
+            courseCode: "PRN211",
+            price: 200000,
+            name: "Basic Cross-Platform Application Programming With .NET",
+            description: "string",
+            durationTotal: 8,
+            syllabus: "string",
+            level: "1",
+            entryPoint: "7",
+            prerequisite: null,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+            courseType: "Single",
+          },
+          class: null,
+        },
+        {
+          childrenProfile: {
+            id: "bb4bbe20-6caa-4ae2-1f95-08dc4a7d7be1",
+            userId: "dde02b15-492b-40ff-a4cb-08dc4a7a0964",
+            fullName: "Trần Quang Khải",
+            genderType: "Nam",
+            birthDay: "2017-03-02T14:34:41.081",
+            avatar:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fquangkhai.jpg?alt=media&token=9a2cbb4a-eaf9-4816-b642-99c50ad08484",
+            specialSkill: "lap rap",
+          },
+          course: {
+            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
+            courseCode: "PRN211",
+            price: 200000,
+            name: "Basic Cross-Platform Application Programming With .NET",
+            description: "string",
+            durationTotal: 8,
+            syllabus: "string",
+            level: "1",
+            entryPoint: "7",
+            prerequisite: null,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+            courseType: "Single",
+          },
+          class: null,
+        },
+        {
+          childrenProfile: {
+            id: "e102ad3a-1438-406f-1f96-08dc4a7d7be1",
+            userId: "30028715-1ac0-4097-a4cc-08dc4a7a0964",
+            fullName: "Phạm Hùng Cường",
+            genderType: "Nam",
+            birthDay: "2017-03-02T14:34:41.081",
+            avatar:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fhungcuong.jpg?alt=media&token=1b41bb29-671a-433e-bba9-c60ff09ae07b",
+            specialSkill: "lap rap",
+          },
+          course: {
+            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
+            courseCode: "PRN211",
+            price: 200000,
+            name: "Basic Cross-Platform Application Programming With .NET",
+            description: "string",
+            durationTotal: 8,
+            syllabus: "string",
+            level: "1",
+            entryPoint: "7",
+            prerequisite: null,
+            image:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+            courseType: "Single",
+          },
+          class: null,
+        },
+      ],
     };
   },
   created() {
@@ -108,6 +236,32 @@ export default {
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
         });
+    },
+    captureCertificate() {
+      const certificateElement = document.getElementById("certificate");
+
+      html2canvas(certificateElement).then((canvas) => {
+        const imageDataUrl = canvas.toDataURL("image/png");
+        const fileName = this.generateUniqueFileName("png");
+        this.uploadImageToFirebase(imageDataUrl, fileName);
+      });
+    },
+    async uploadImageToFirebase(imageDataUrl, fileName) {
+      const storageRef = ref(storage, `certificates/${fileName}`);
+      const metadata = { contentType: "image/png" };
+
+      try {
+        await uploadBytes(storageRef, imageDataUrl, metadata);
+        const downloadURL = await getDownloadURL(storageRef);
+        console.log("Download URL: ", downloadURL);
+      } catch (error) {
+        console.error("Error uploading image: ", error);
+      }
+    },
+    generateUniqueFileName(extension) {
+      const timestamp = new Date().getTime();
+      const randomString = Math.random().toString(36).substring(2, 8);
+      return `${timestamp}_${randomString}.${extension}`;
     },
     updateClass(data) {
       if (this.authStore.getAuth.roleName == "Staff")
@@ -193,6 +347,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchClass();
+          this.selectedClass = [];
           swal.success("Cập nhật trạng thái cho lớp học thành công");
           this.isSelectedStatus = false;
         })

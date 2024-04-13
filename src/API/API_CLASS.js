@@ -46,4 +46,12 @@ export default class API_CLASS {
     static exportExcelListChildren(classId) {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ExportExcelFile/${classId}`)
     }
+
+    static getListClassTeachingByTeacher(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetListClassTeachingByTeacher/${id}`)
+    }
+
+    static getListClassStatusPending() {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/GetListClassStatusPending`)
+    }
 }
