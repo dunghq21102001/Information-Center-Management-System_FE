@@ -134,7 +134,8 @@
               ]"
               @click="selectHour(slot)"
             >
-              {{ slot?.startTime }} - {{ slot?.endTime }}
+              {{ slot?.startTime }} - {{ slot?.endTime }} (Còn lại
+              {{ 5 - slot?.total }} chỗ)
               <div
                 v-show="adviceRequest.testDate == ''"
                 class="absolute top-0 left-0 right-0 bottom-0 bg-black/0 cursor-not-allowed"
@@ -240,6 +241,7 @@ export default {
       ],
       locations: [],
       slots: [],
+      slotsBK: [],
       blogs: [],
       courses: [],
       adviceRequest: {
@@ -285,6 +287,7 @@ export default {
             element["total"] = 0;
           });
           this.slots = fData;
+          this.slotsBK = fData
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
@@ -363,6 +366,8 @@ export default {
             startTime: "",
             endTime: "",
           };
+
+          this.slots = this.slotsBK
         })
         .catch((err) => {
           swal.error(err.response?.data);
@@ -387,7 +392,7 @@ export default {
               { hour12: false }
             );
             this.slots.forEach((hour) => {
-              if (startTime === hour.startTime) {
+              if (startTime.toString().slice(0, 5) === hour.startTime) {
                 hour.total++;
               }
             });

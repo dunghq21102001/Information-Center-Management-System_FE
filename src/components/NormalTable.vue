@@ -393,8 +393,8 @@
             </button>
             <button
               class="mr-4"
-              v-tooltip="'Nhận tư vấn người dùng'"
-              v-if="isReceiveAdviceRequestProp"
+              v-tooltip="'Phân công nhân viên'"
+              v-if="isReceiveAdviceRequestProp && authStore.getAuth?.roleName == 'Manager'"
             >
               <v-icon
                 @click="getAdviceRequest(item)"
@@ -723,8 +723,8 @@
             </button>
             <button
               class="mr-4"
-              v-tooltip="'Nhận tư vấn người dùng'"
-              v-if="isReceiveAdviceRequestProp"
+              v-tooltip="'Phân công nhân viên'"
+              v-if="isReceiveAdviceRequestProp && authStore.getAuth?.roleName == 'Manager'"
             >
               <v-icon
                 @click="getAdviceRequest(item)"

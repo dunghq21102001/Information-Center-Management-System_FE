@@ -3,9 +3,9 @@ export default class menu {
         const menuItems = [
             {
                 id: 74216, name: 'Advice Request', icon: 'fa-tasks', subTab: [
-                    { name: 'Add Advice', url: 'advice-create' },
-                    { name: 'Advice Request', url: 'advice-request' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
+                    { name: 'Thêm yêu cầu', url: 'advice-create' },
+                    { name: 'Danh sách yêu cầu', url: 'advice-request' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
                 id: 6, name: 'Attendance', icon: 'md-taskalt', subTab: [

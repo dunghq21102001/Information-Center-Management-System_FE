@@ -383,7 +383,7 @@ const router = createRouter({
       component: AdviceRequest,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Staff']
+        requiredRole: ['Admin', 'Manager', 'Staff']
       },
       beforeEnter: checkValidRole
     },

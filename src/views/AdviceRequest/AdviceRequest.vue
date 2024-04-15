@@ -27,6 +27,26 @@
         @create-account="createAccount"
       />
     </div>
+
+    <div class="fog" v-if="isShowSelectedStaff" @click.self="cancelAll">
+      <div class="bg-white rounded-md p-4">
+        <select name="" class="select-primary px-4 py-1" v-model="selectedStaff" id="">
+          <option
+            v-for="(item, index) in staffs"
+            :key="index"
+            :value="item?.id"
+          >
+            {{ item?.userName }}
+          </option>
+        </select>
+
+        <div class="w-full mt-4 flex items-center justify-end">
+          <button @click="assignStaff" class="btn-primary px-3 py-1">
+            Chỉ định
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -55,12 +75,17 @@ export default {
       data: [],
       enum: [],
       locations: [],
+      staffs: [],
+      isShowSelectedStaff: false,
+      selectedStaff: null,
+      selectedAR: null,
     };
   },
   created() {
     this.fetchAdvices();
     this.fetchSlot();
     this.fetchLocations();
+    this.fetchStaff();
   },
   methods: {
     fetchAdvices() {
@@ -107,15 +132,35 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    cancelAll() {
+      this.selectedStaff = null;
+      this.isShowSelectedStaff = false;
+      this.selectedAR = null;
+    },
+    fetchStaff() {
+      API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a52")
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.staffs = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     getAdviceRequest(item) {
-      item["userId"] = this.authStore.getAuth?.id;
+      this.selectedAR = item;
+      this.isShowSelectedStaff = true;
+      this.selectedStaff = this.staffs[0]?.id;
+    },
+    assignStaff() {
+      let item = this.selectedAR;
+      item["userId"] = this.selectedStaff;
       item["statusAdviseRequest"] = 2;
       this.systemStore.setChangeLoading(true);
       API_USER.putAdviceRequest(item)
         .then((res) => {
-          swal.success("Bạn đã nhận phiếu đăng ký tư vấn này thành công");
+          swal.success("Bạn đã chỉ định nhân viên thành công!");
           this.systemStore.setChangeLoading(false);
           this.fetchAdvices();
+          this.cancelAll();
         })
         .catch((err) => {
           swal.success(err.response?.data);
@@ -200,3 +245,17 @@ export default {
   },
 };
 </script>
+<style scoped>
+.fog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+</style>

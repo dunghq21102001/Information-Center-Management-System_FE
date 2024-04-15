@@ -10,7 +10,7 @@ export default function role(to, from, next, router) {
     const userRole = authStore.getAuth?.roleName
 
     if (!requiredRole.includes(userRole)) {
-        // swal.error('Bạn không có quyền truy cập trang này!')
+        swal.error('Bạn không có quyền truy cập trang này!')
         next('/profile')
     } else {
         next()
