@@ -66,7 +66,16 @@
         <!-- list class -->
         <div class="w-full mt-10">
           <div class="flex w-full items-center justify-between flex-wrap">
-            <span class="text-[20px]">Danh sách lớp</span>
+            <div class="w-full flex items-center justify-between">
+              <span class="text-[20px]">Danh sách lớp</span>
+              <button
+                v-if="classesData.length > 0"
+                class="btn-primary px-3 py-1"
+                @click="handleShowWeeklyTimetable"
+              >
+                Thời khoá biểu
+              </button>
+            </div>
             <!-- <button @click="handleCreateTest" class="btn-primary px-2 py-1">
               Thực hiện bài kiểm tra đầu vào
             </button> -->
@@ -101,12 +110,28 @@
             />
           </div>
         </div>
+
+        <!-- list certificate -->
+        <div class="w-full mt-10">
+          <div class="flex w-full items-center justify-between flex-wrap">
+            <span class="text-[20px]">Danh sách chứng chỉ</span>
+          </div>
+          <div class="w-full mt-10">
+            <TableWithPagin
+              :pageSize="5"
+              :data="certificatesData"
+              :is-show-action="true"
+              :view-certificate="true"
+              @view-certificate="handleViewCertificate"
+            />
+          </div>
+        </div>
       </div>
     </div>
 
     <div class="fog-q" v-if="isShowTest">
       <div
-        class="w-[95%] md:w-[90%] lg:w-[80%] bg-white rounded-2xl relative p-6 max-h-[90vh] overflow-y-scroll hide-scrollbar"
+        class="w-[95%] md:w-[90%] lg:w-[90%] bg-white rounded-2xl relative p-6 max-h-[95vh] overflow-y-scroll hide-scrollbar"
       >
         <v-icon
           class="sticky top-0 left-[98%] cursor-pointer"
@@ -174,7 +199,7 @@
           </div>
           <div class="w-[80%] flex flex-col items-start">
             <div
-              class="w-full pr-2 flex items-start justify-between mb-2 flex-wrap flex-col lg:flex-row"
+              class="w-full pr-2 flex items-start justify-between mb-5 flex-wrap flex-col lg:flex-row"
               v-for="(item, i) in questionList"
               :key="i"
             >
@@ -185,7 +210,7 @@
                 <!-- <span class="block">Độ khó: {{ item?.level }}</span> -->
               </div>
               <div
-                class="br-cus w-full lg:w-[79%] lg:mt-0 mt-5 px-2 flex items-start flex-col"
+                class="br-cus w-full lg:w-[79%] lg:mt-0 mt-1 px-2 flex items-start flex-col"
               >
                 <p class="mb-3">{{ item?.title }}</p>
                 <p>
@@ -303,6 +328,78 @@
 
     <div
       class="fog-attendance"
+      v-if="isShowWeeklyTimetable"
+      @click.self="cancelAll"
+    >
+      <div
+        class="w-[95%] md:w-[90%] lg:w-[80%] bg-white overflow-y-scroll hide-scrollbar max-h-[90vh] p-10 rounded-xl"
+      >
+        <span class="block w-full text-[26px] font-bold">
+          Lịch học của {{ childrenDetail?.fullName }}
+        </span>
+
+        <div class="w-full mt-10">
+          <div class="w-full flex items-start justify-between br-f p-2">
+            <div class="w-[30%] flex flex-col items-start br-r">
+              <div class="w-full">
+                <select
+                  class="select-primary px-3 py-1"
+                  name=""
+                  v-model="selectedYear"
+                  id=""
+                >
+                  <option
+                    :value="item"
+                    v-for="(item, index) in years"
+                    :key="index"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+              <div class="w-full mt-2">
+                <select
+                  class="select-primary px-3 py-1"
+                  name=""
+                  v-model="selectedWeek"
+                  id=""
+                >
+                  <option
+                    :value="item"
+                    v-for="(item, index) in listWeeks"
+                    :key="index"
+                  >
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="w-[70%] flex items-center justify-between h-[75px]">
+              <div
+                v-for="(item, index) in listDateInWeek"
+                :key="index"
+                class="w-[14%] br-r text-center h-full"
+              >
+                {{ getDay(item) }} <br />
+                {{ item }}
+              </div>
+            </div>
+          </div>
+
+          <!-- hien thi lich o day -->
+          <div class="w-full">
+            <!-- <div v-if="scheduleData[date]?.[slot]">
+              {{ scheduleData[date][slot].courseName }} <br />
+              {{ scheduleData[date][slot].roomName }}
+            </div>
+            <div v-else>-</div> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="fog-attendance"
       v-if="isShowViewExam"
       @click.self="isShowViewExam = false"
     >
@@ -315,7 +412,6 @@
           :pageSize="5"
           :is-edit="false"
           :is-delete="false"
-          @reload="reload"
           :total-score="totalScore"
         />
       </div>
@@ -332,10 +428,21 @@ import API_EXAM from "../../API/API_EXAM";
 import API_ATTENDANCE from "../../API/API_ATTENDANCE";
 import API_QUESTION from "../../API/API_QUESTION";
 import API_CHILDRENANSWER from "../../API/API_CHILDRENANSWER";
+import {
+  startOfWeek,
+  endOfWeek,
+  addDays,
+  eachWeekOfInterval,
+  eachDayOfInterval,
+  format,
+  parse,
+} from "date-fns";
 import { useSystemStore } from "../../stores/system";
 import { useAuthStore } from "../../stores/Auth";
 import TableWithPagin from "../../components/TableWithPagin.vue";
 import dayjs from "dayjs";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import viLocale from "date-fns/locale/vi";
 import swal from "../../common/swal";
 import QuestionReview from "../QuestionReview.vue";
 import func from "../../common/func";
@@ -356,8 +463,49 @@ export default {
   },
   data() {
     return {
+      scheduleData: {},
       childrenData: [],
       isShowUniqueData: false,
+      isShowWeeklyTimetable: false,
+      toDateTimeWeeklyTimetable: "",
+      fromDateTimeWeeklyTimetable: "",
+      listWeeks: [],
+      selectedWeek: null,
+      years: [
+        "2020",
+        "2021",
+        "2022",
+        "2023",
+        "2024",
+        "2025",
+        "2026",
+        "2027",
+        "2028",
+        "2029",
+        "2030",
+        "2031",
+        "2032",
+        "2033",
+        "2034",
+        "2035",
+        "2036",
+        "2037",
+        "2038",
+        "2039",
+        "2040",
+        "2041",
+        "2042",
+        "2043",
+        "2044",
+        "2045",
+        "2046",
+        "2047",
+        "2048",
+        "2049",
+        "2050",
+      ],
+      listDateInWeek: [],
+      selectedYear: "",
       childrenDetail: null,
       examData: null,
       fData: [
@@ -374,6 +522,7 @@ export default {
       intervalId: null,
       coursesData: [],
       classesData: [],
+      certificatesData: [],
       testOfChildrenData: [],
       isShowViewSchedule: false,
       attendanceData: [],
@@ -385,6 +534,38 @@ export default {
   },
   created() {
     this.fetchChildren();
+  },
+  mounted() {
+    this.selectedYear = new Date().getFullYear();
+    // Ngày đầu tiên của năm
+    const startDate = new Date(this.selectedYear, 0, 1);
+    // Ngày cuối cùng của năm
+    const endDate = new Date(this.selectedYear, 11, 31);
+    // mảng các tuần trong khoảng thời gian
+    const weeks = eachWeekOfInterval({ start: startDate, end: endDate });
+
+    const today = new Date();
+    const startOfCurrentWeek = startOfWeek(today);
+    const endOfCurrentWeek = endOfWeek(today);
+    this.selectedWeek = `${format(startOfCurrentWeek, "dd/MM")} đến ${format(
+      endOfCurrentWeek,
+      "dd/MM"
+    )}`;
+
+    this.listWeeks = weeks.map((week) => {
+      const start = startOfWeek(week);
+      const end = endOfWeek(week);
+      const formattedWeek = `${format(start, "dd/MM")} đến ${format(
+        end,
+        "dd/MM"
+      )}`;
+      return formattedWeek;
+    });
+  },
+  watch: {
+    selectedWeek(newValue, oldValue) {
+      this.updateListDateInWeek();
+    },
   },
   methods: {
     fetchChildren() {
@@ -412,13 +593,14 @@ export default {
     handleGetDetail(child) {
       this.isShowUniqueData = true;
       this.systemStore.setChangeLoading(true);
-      this.backupChildId = child?.id;
+      this.backupChildId = child;
       API_USER.getChildrenById(child?.id)
         .then((res) => {
           this.childrenDetail = res.data;
           this.systemStore.setChangeLoading(false);
           this.convertDataCourse();
           this.convertDataClass();
+          this.convertDataCertificate();
           this.convertDataExam();
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
@@ -428,6 +610,24 @@ export default {
           behavior: "smooth",
         });
       });
+    },
+    updateListDateInWeek() {
+      dayjs.extend(customParseFormat);
+      const [startStr, endStr] = this.selectedWeek.split(" đến ");
+      const year = new Date().getFullYear();
+      const startDate = startStr + "/" + year;
+      const endDate = endStr + "/" + year;
+      const startD = dayjs(startDate, "DD/MM/YYYY").format("DD/MM/YYYY");
+      const endD = dayjs(endDate, "DD/MM/YYYY").format("DD/MM/YYYY");
+      const daysInWeek = [];
+      let currentDate = startD;
+      while (currentDate <= endD) {
+        daysInWeek.push(dayjs(currentDate, "DD/MM/YYYY").format("DD/MM"));
+        currentDate = dayjs(currentDate, "DD/MM/YYYY")
+          .add(1, "day")
+          .format("DD/MM/YYYY");
+      }
+      this.listDateInWeek = daysInWeek;
     },
     viewExam(item) {
       this.systemStore.setChangeLoading(true);
@@ -494,6 +694,16 @@ export default {
       });
       this.coursesData = fData;
     },
+    convertDataCertificate() {
+      let fData = [];
+      this.childrenDetail?.certificates.map((item) => {
+        fData.push({
+          // courseId: item.courseId,
+          code: item.code,
+        });
+      });
+      this.certificatesData = fData;
+    },
     convertDataClass() {
       let fData = [];
       this.childrenDetail?.classes.map((item) => {
@@ -514,6 +724,14 @@ export default {
       this.testOfChildrenData = fData;
     },
     submitExam() {
+      let isChooseAll = true;
+      this.questionList.map((item) => {
+        if (item?.childrenAnswer == null) isChooseAll = false;
+        return;
+      });
+
+      if (isChooseAll == false)
+        return swal.error("Bạn phải làm tất cả các câu hỏi trước khi nộp bài!");
       if (this.isShowResult == true) {
         if (this.intervalId) clearInterval(this.intervalId);
         return swal.error("Bạn đã nộp bài rồi!");
@@ -557,7 +775,42 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    handleViewCertificate(item) {
+      const currentUrl = func.getClientURL();
+      window.open(
+        `${currentUrl}/certificate?childrenId=${this.childrenDetail?.id}&code=${item?.code}`
+      );
+    },
+    handleShowWeeklyTimetable() {
+      this.isShowWeeklyTimetable = true;
+
+      this.getAllSchedule();
+    },
+    getAllSchedule() {
+      const [startStr, endStr] = this.selectedWeek.split(" đến ");
+      let sD = dayjs(
+        `${startStr.replaceAll("/", "-")}-${this.selectedYear}`,
+        "DD-MM-YYYY"
+      ).format("YYYY-MM-DD");
+      let eD = dayjs(
+        `${endStr.replaceAll("/", "-")}-${this.selectedYear}`,
+        "DD-MM-YYYY"
+      ).format("YYYY-MM-DD");
+      this.systemStore.setChangeLoading(true);
+      API_ATTENDANCE.attendanceByChildrenId(this.childrenDetail?.id, sD, eD)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.scheduleData = {};
+          
+          console.log(this.scheduleData);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
+        });
+    },
     cancelAll() {
+      this.isShowWeeklyTimetable = false;
       this.isShowTest = false;
       this.questionList = [];
       this.allAnswerByChildren = [];
@@ -566,19 +819,18 @@ export default {
       this.initTime = 30;
       this.isShowResult = false;
       if (this.intervalId) clearInterval(this.intervalId);
+      this.handleGetDetail(this.backupChildId);
     },
 
     getQuestions() {
-      API_QUESTION.getQuestionsOrCreateQuiz([
-        {
-          lessonId: null,
-          totalQuestion: null,
-          type: 2,
-        },
-      ])
+      API_QUESTION.createTestEntry({
+        totalQuestion: 20,
+        childrenId: this.childrenDetail?.id,
+      })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.questionList = res.data[0]?.questions;
+          // this.questionList = res.data[0]?.questions;
+          this.questionList = res.data;
         })
         .catch((err) => {
           swal.error(err.response?.data);
@@ -598,6 +850,13 @@ export default {
           swal.error(err.response?.data);
         });
     },
+    getDay(item) {
+      const currentDate = parse(item, "dd/MM", new Date());
+
+      const finalDate = format(currentDate, "EEEE", { locale: viLocale });
+
+      return finalDate;
+    },
   },
 };
 </script>
@@ -608,8 +867,8 @@ export default {
 
 .table {
   display: table;
-  border: 1px solid #ebebeb; /* Thêm viền cho các ô */
-  width: 100%; /* Đặt chiều rộng bằng 100% hoặc giá trị mong muốn */
+  border: 1px solid #ebebeb;
+  width: 100%;
 }
 
 .row {
@@ -618,8 +877,8 @@ export default {
 
 .cell {
   display: table-cell;
-  border: 1px solid #ebebeb; /* Thêm viền cho các ô */
-  padding: 5px; /* Thêm padding nếu cần */
+  border: 1px solid #ebebeb;
+  padding: 5px;
 }
 
 .line {
@@ -679,5 +938,12 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.br-f {
+  border: 1px solid rgb(209, 209, 209);
+}
+.br-r {
+  border-right: 1px solid rgb(209, 209, 209);
 }
 </style>

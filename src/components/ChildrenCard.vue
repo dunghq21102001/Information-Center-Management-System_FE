@@ -53,7 +53,7 @@ export default {
 .book {
   position: relative;
   border-radius: 10px;
-  width: 220px;
+  width: 100%;
   height: 200px;
   /* background-color: whitesmoke; */
   /* -webkit-box-shadow: 1px 1px 12px #000;

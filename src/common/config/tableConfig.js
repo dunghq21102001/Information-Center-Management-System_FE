@@ -29,7 +29,7 @@ export default class tableConfig {
             { text: "Hành động", value: "operation" }
         ]
     }
-    
+
 
     static childrenTable() {
         return [
@@ -74,6 +74,15 @@ export default class tableConfig {
             { text: "Learning Age", value: "learningAge", sortable: true },
             { text: "Description", value: "description", sortable: true },
             { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static examByClassTable() {
+        return [
+            { text: "Tên bài thực hành", value: "testName", sortable: true },
+            { text: "Mã bài thực hành", value: "testCode", sortable: true },
+            { text: "Ngày thực hành", value: "testDate", sortable: true },
+            { text: "Thời gian", value: "testDuration" }
         ]
     }
 
@@ -228,6 +237,18 @@ export default class tableConfig {
             // { text: "Học sinh tối đa", value: "maxNumber", sortable: true },
             { text: "Ngày bắt đầu", value: "startDate", sortable: true, width: 170 },
             // { text: "Ngày kết thúc", value: "endDate", sortable: true, width: 170 },
+            { text: "Trạng thái", value: "statusOfClass", sortable: true },
+            { text: 'Chi tiết', value: 'detail', width: 90 },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static classByTeacherTable() {
+        return [
+            { text: "Mã lớp", value: "classCode", sortable: true },
+            { text: "Bắt đầu", value: "teachingStartDate", sortable: true, width: 130 },
+            { text: "Kết thúc", value: "teachingEndDate", sortable: true, width: 130 },
+            { text: "Tổng buổi", value: "totalDuration", sortable: true, width: 170 },
             { text: "Trạng thái", value: "statusOfClass", sortable: true },
             { text: 'Chi tiết', value: 'detail', width: 90 },
             { text: "Hành động", value: "operation" }

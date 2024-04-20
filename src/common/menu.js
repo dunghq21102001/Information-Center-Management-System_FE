@@ -35,13 +35,13 @@ export default class menu {
                 id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
                     { name: 'Add Class', url: 'class-create' },
                     { name: 'Classes', url: 'classes' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
             },
             {
                 id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
                     { name: 'Add Course', url: 'course-create' },
                     { name: 'Courses', url: 'courses' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Teacher']
             },
             {
                 id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
@@ -131,7 +131,7 @@ export default class menu {
             {
                 id: 11, name: 'Settings', icon: 'io-settings-sharp', subTab: [
                     { name: 'System', url: 'settings' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
         ]
 

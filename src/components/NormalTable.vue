@@ -255,6 +255,16 @@
             {{ convertDate(item?.dateOfBirth) }}
           </span>
         </template>
+        <template #item-teachingStartDate="item">
+          <span class="block">
+            {{ convertDate(item?.teachingStartDate) }}
+          </span>
+        </template>
+        <template #item-teachingEndDate="item">
+          <span class="block">
+            {{ convertDate(item?.teachingEndDate) }}
+          </span>
+        </template>
         <template #item-orderDate="item">
           <span class="block">
             {{ convertDate(item?.orderDate) }}
@@ -334,11 +344,7 @@
               />
             </button>
             <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
-              <v-icon
-                name="fc-ok"
-                :scale="1.5"
-                @click="handleApprove(item)"
-              />
+              <v-icon name="fc-ok" :scale="1.5" @click="handleApprove(item)" />
             </button>
             <button v-tooltip="'Tạo tài khoản'" v-if="isCreateAccount">
               <v-icon
@@ -394,7 +400,10 @@
             <button
               class="mr-4"
               v-tooltip="'Phân công nhân viên'"
-              v-if="isReceiveAdviceRequestProp && authStore.getAuth?.roleName == 'Manager'"
+              v-if="
+                isReceiveAdviceRequestProp &&
+                authStore.getAuth?.roleName == 'Manager'
+              "
             >
               <v-icon
                 @click="getAdviceRequest(item)"
@@ -601,6 +610,16 @@
             {{ convertDate(item?.dateOfBirth) }}
           </span>
         </template>
+        <template #item-teachingStartDate="item">
+          <span class="block">
+            {{ convertDate(item?.teachingStartDate) }}
+          </span>
+        </template>
+        <template #item-teachingEndDate="item">
+          <span class="block">
+            {{ convertDate(item?.teachingEndDate) }}
+          </span>
+        </template>
         <template #item-orderDate="item">
           <span class="block">
             {{ convertDate(item?.orderDate) }}
@@ -672,11 +691,7 @@
               />
             </button>
             <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
-              <v-icon
-                name="fc-ok"
-                :scale="1.5"
-                @click="handleApprove(item)"
-              />
+              <v-icon name="fc-ok" :scale="1.5" @click="handleApprove(item)" />
             </button>
             <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
               <v-icon
@@ -724,7 +739,10 @@
             <button
               class="mr-4"
               v-tooltip="'Phân công nhân viên'"
-              v-if="isReceiveAdviceRequestProp && authStore.getAuth?.roleName == 'Manager'"
+              v-if="
+                isReceiveAdviceRequestProp &&
+                authStore.getAuth?.roleName == 'Manager'
+              "
             >
               <v-icon
                 @click="getAdviceRequest(item)"
@@ -1133,6 +1151,7 @@ export default {
       this.$emit("createAccount", item);
     },
     handleImportData() {
+      console.log('vao day');
       this.$emit("importData", true);
     },
     updateStatusAccount() {
@@ -1343,12 +1362,13 @@ export default {
       this.$emit("deleteAction", item);
     },
     handleApprove(item) {
-      this.$emit('approveAction', item)
+      this.$emit("approveAction", item);
     },
     reloadAction() {
       this.$emit("reloadAction", true);
     },
     handleImportFile(event) {
+      console.log('vao day');
       const file = event.target.files[0];
       if (!file) return;
 

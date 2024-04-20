@@ -233,7 +233,8 @@ export default {
       API_ORDER.postPayment(this.$route.params.id)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          window.open(res.data, "_self");
+          // window.open(res.data, "_self");
+          this.$router.push({ name: 'classes' })
         })
         .catch((err) => {
           swal.info(err.response.data)

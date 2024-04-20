@@ -29,7 +29,7 @@
       class="w-[90%] mx-auto"
     >
       <NormalTable
-        :data="requests"
+        :data="requestsOfUsers"
         :header="header"
         :is-show-search="true"
         :is-delete="true"
@@ -43,7 +43,7 @@
     </div>
     <div class="w-[90%] mx-auto" v-else>
       <NormalTable
-        :data="requestsOfUsers"
+        :data="requests"
         :header="header"
         :is-show-search="true"
         :is-delete="true"
@@ -61,6 +61,7 @@
     <p
       v-if="
         authStore.getAuth?.roleName != 'Admin' &&
+        authStore.getAuth?.roleName != 'Parent' &&
         authStore.getAuth?.roleName != 'Manager'
       "
       class="block page-sub-title mt-f"
@@ -71,6 +72,7 @@
       class="w-[90%] mx-auto"
       v-if="
         authStore.getAuth?.roleName != 'Admin' &&
+        authStore.getAuth?.roleName != 'Parent' &&
         authStore.getAuth?.roleName != 'Manager'
       "
     >
@@ -159,33 +161,142 @@
           </div>
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Schedule'">
-          <p class="font-bold text-[20px] mb-2">Yêu cầu nhờ dạy giúp 1 ngày</p>
-          schedule
-        </div>
-        <!-- <div class="w-full mt-5" v-show="selectedRequest === 'Equipment'">
-          <p class="font-bold text-[20px] mb-2">Yêu cầu mượn trang thiết bị</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu dạy giúp 1 ngày</p>
           <div class="w-full flex items-center justify-between">
-            <select
-              name=""
-              class="select-primary px-5 py-2 w-[35%]"
-              v-model="selectedEquipment"
-              id=""
-            >
-              <option :value="item.id" v-for="item in equipments">
-                {{ item.name }}
-              </option>
-            </select>
-            <input
-              type="text"
-              placeholder="Mô tả"
-              v-model="descriptionText"
-              class="i-c w-[60%]"
-            />
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Lớp</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                @change="handleChangeClass"
+                id=""
+              >
+                <option :value="item.id" v-for="item in classOfScheduleData">
+                  {{ item.classCode }}
+                </option>
+              </select>
+            </div>
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Người dạy</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                @change="teacherSelected"
+                id=""
+              >
+                <option :value="item.id" v-for="item in teachersData">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </div>
           </div>
-        </div> -->
+          <div class="w-full flex items-center justify-between">
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Lịch</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="scheduleSelected"
+                id=""
+              >
+                <option :value="item?.id" v-for="item in scheduleData">
+                  {{ item.dayInWeek }}
+                </option>
+              </select>
+            </div>
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Ngày</span>
+              <input
+                type="date"
+                v-model="teachingDate"
+                class="w-full px-3 py-1"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="w-full mt-5" v-show="selectedRequest === 'ChildrenClass'">
+          <p class="font-bold text-[20px] mb-2">Yêu cầu đổi lớp</p>
+          <div class="w-full flex items-center justify-between">
+            <div class="w-full flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Trẻ</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                @change="handleChangeChildren"
+                id=""
+              >
+                <option :value="item.id" v-for="item in childrenData">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="w-full flex items-center justify-between">
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Từ lớp</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="selectedClassOfChildren"
+                id=""
+              >
+                <option
+                  :value="item?.classId"
+                  v-for="item in classOfChildrenData"
+                >
+                  {{ item.classCode }}
+                </option>
+              </select>
+            </div>
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Sang lớp</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="selectedClassPending"
+                id=""
+              >
+                <option :value="item" v-for="item in classPending">
+                  {{ item.classCode }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Refund'">
           <p class="font-bold text-[20px] mb-2">Yêu cầu hoàn tiền khoá học</p>
-          Refund
+          <div class="w-full flex items-center justify-between">
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Trẻ</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                @change="handleChangeChildren"
+                id=""
+              >
+                <option :value="item.id" v-for="item in childrenData">
+                  {{ item.fullName }}
+                </option>
+              </select>
+            </div>
+            <div class="w-[45%] flex items-start flex-col">
+              <span class="text-[18px] block mb-1">Khoá học</span>
+              <select
+                name=""
+                class="select-primary px-5 py-2 w-full"
+                v-model="selectedCourse"
+                id=""
+              >
+                <option :value="item?.courseCode" v-for="item in coursesData">
+                  {{ item.courseCode }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="w-full mt-5" v-show="selectedRequest === 'ChildrenReserve'">
+          <p class="font-bold text-[20px] mb-2">Yêu cầu bảo lưu</p>
+          ChildrenReserve
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Leave'">
           <p class="font-bold text-[20px] mb-2">Yêu cầu xin nghỉ việc</p>
@@ -223,6 +334,8 @@ import { useSystemStore } from "../../stores/System.js";
 import NormalTable from "../NormalTable.vue";
 import API_USER from "../../API/API_USER.js";
 import swal from "../../common/swal.js";
+import API_COURSE from "../../API/API_COURSE.js";
+import API_SCHEDULE from "../../API/API_SCHEDULE.js";
 export default {
   components: {
     NormalTable,
@@ -242,14 +355,13 @@ export default {
       managersId: [],
       classTeachByTeacher: [],
       classPending: [],
-      requestTypes: [
-        { value: "Class", display: "Đổi lớp" },
-        { value: "Location", display: "Đổi cơ sở" },
-        { value: "Equipment", display: "Mượn trang thiết bị" },
-        { value: "Schedule", display: "Dạy thay" },
-        { value: "Refund", display: "Hoàn tiền" },
-        { value: "Leave", display: "Xin nghỉ" },
-      ],
+      requestTypes: [],
+      childrenData: [],
+      coursesData: [],
+      classOfChildrenData: [],
+      scheduleData: [],
+      classOfScheduleData: [],
+      teachersData: [],
       isCreate: false,
       descriptionText: "",
       selectedRequest: "Class",
@@ -257,21 +369,70 @@ export default {
       selectedLeaveDate: "",
       selectedClassByTeacher: "",
       selectedClassPending: "",
+      selectedChildren: "",
+      selectedCourse: "",
+      selectedClassOfChildren: "",
+      scheduleSelected: "",
+      classOfScheduleSelected: "",
+      teachingDate: "",
+      teacherSelected: "",
     };
   },
   created() {
-    this.fetchRequest();
-    this.fetchLocation();
     this.fetchRole();
     this.fetchRequestOfUsers();
-    this.fetchClassTeachByTeacherId();
-    this.fetchClassPending();
     this.fetchRequestReceiver();
+
+    if (this.authStore.getAuth?.roleName == "Staff") {
+      this.fetchLocation();
+      this.selectedRequest = "Location";
+      this.requestTypes = [
+        { value: "Location", display: "Đổi cơ sở" },
+        { value: "Leave", display: "Xin nghỉ" },
+      ];
+    } else if (
+      this.authStore.getAuth?.roleName == "Manager" ||
+      this.authStore.getAuth?.roleName == "Admin"
+    ) {
+      this.fetchRequest();
+    } else if (this.authStore.getAuth?.roleName == "Parent") {
+      this.fetchChildren();
+      this.fetchClassPending();
+      this.selectedRequest = "Refund";
+      this.requestTypes = [
+        { value: "Refund", display: "Hoàn tiền" },
+        { value: "ChildrenClass", display: "Chuyển lớp" },
+        { value: "ChildrenReserve", display: "Bảo lưu" },
+      ];
+    } else if (this.authStore.getAuth?.roleName == "Teacher") {
+      this.fetchClassTeachByTeacherId();
+      this.fetchClassPending();
+      this.fetchLocation();
+      this.fetchScheduleByTeacherId();
+      this.fetchTeachers();
+      this.selectedRequest = "Class";
+      this.requestTypes = [
+        { value: "Class", display: "Đổi lớp" },
+        { value: "Location", display: "Đổi cơ sở" },
+        { value: "Schedule", display: "Dạy thay" },
+        { value: "Leave", display: "Xin nghỉ" },
+      ];
+    }
   },
   methods: {
+    fetchTeachers() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a53")
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.teachersData = res.data;
+          this.teacherSelected = res.data[0]?.id;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     fetchRequestOfUsers() {
       this.systemStore.setChangeLoading(true);
-      API_REQUEST.getRequests()
+      API_REQUEST.getRequestByUserId(this.authStore.getAuth?.id)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.requestsOfUsers = res.data;
@@ -280,7 +441,7 @@ export default {
     },
     fetchRequest() {
       this.systemStore.setChangeLoading(true);
-      API_REQUEST.getRequestByUserId(this.authStore.getAuth?.id)
+      API_REQUEST.getRequests()
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.requests = res.data;
@@ -289,6 +450,32 @@ export default {
     },
     updateRequest(item) {},
     deleteRequest(item) {},
+    fetchChildren() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.getChildrenByParent(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.childrenData = res.data;
+          this.selectedChildren = res.data[0]?.childrenCode;
+          this.selectedCourse = res.data[0]?.courses[0]?.courseCode;
+          this.coursesData = res.data[0]?.courses;
+          this.selectedClassOfChildren = res.data[0]?.classes[0]?.classId;
+          this.classOfChildrenData = res.data[0]?.classes;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    fetchCourse() {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourses()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.coursesData = res.data;
+          this.selectedCourse = res.data[0]?.courseCode;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     reloadList() {
       this.fetchRequest();
       this.fetchRequestOfUsers();
@@ -358,6 +545,17 @@ export default {
       this.descriptionText = "";
       this.isCreate = false;
     },
+    handleChangeChildren(e) {
+      let finalData = this.childrenData.find(
+        (item) => item?.id === e.target.value
+      );
+
+      this.selectedChildren = finalData.childrenCode;
+      this.selectedCourse = finalData.courses[0]?.courseCode;
+      this.coursesData = finalData.courses;
+      this.selectedClassOfChildren = finalData[0]?.classes[0]?.classId;
+      this.classOfChildrenData = finalData[0]?.classes;
+    },
     handleCreateRequest() {
       let data = {
         userIds: null,
@@ -371,6 +569,8 @@ export default {
         toClassId: null,
         scheduleId: null,
         receiverRefundId: null,
+        childrenCode: null,
+        courseCode: null,
       };
       switch (this.selectedRequest) {
         case "Location":
@@ -385,17 +585,27 @@ export default {
             this.selectedClassPending?.scheduleClassViews[0]?.teacherId,
           ];
           break;
-        // case "Equipment":
-        //   data.userIds = this.managersId
-        //   // data.e
-        //   break;
         case "Schedule":
+          data.teachingDate = this.teachingDate;
+          data.userIds = [this.teacherSelected];
+          data.requestDescription = "Dạy thay 1 ngày";
+          data.scheduleId = this.scheduleSelected;
           break;
         case "Refund":
+          data.userIds = this.managersId;
+          data.childrenCode = this.selectedChildren;
+          data.courseCode = this.selectedCourse;
+          data.requestDescription = "Yêu cầu hoàn tiền";
           break;
         case "Leave":
           data.leaveDate = this.selectedLeaveDate;
           data.userIds = this.managersId;
+          break;
+        case "ChildrenClass":
+          data.userIds = this.managersId;
+          data.fromClassId = this.selectedClassOfChildren;
+          data.toClassId = this.selectedClassPending?.id;
+          data.requestDescription = "Chuyển lớp cho trẻ";
           break;
       }
 
@@ -404,7 +614,8 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success(res.data);
-          this.fetchRequest();
+          this.fetchRequestOfUsers();
+          this.fetchRequestReceiver();
           this.cancelAll();
         })
         .catch((err) => {
@@ -420,13 +631,29 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchRequestOfUsers();
-          this.systemStore.setChangeLoading("Đã chấp thuận yêu cầu thành công");
+          swal.success(res.data);
           this.fetchRequest();
         })
         .catch((er) => {
           swal.error(err.response?.data);
           this.systemStore.setChangeLoading(false);
         });
+    },
+    fetchScheduleByTeacherId() {
+      API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.classOfScheduleData = res.data?.classes;
+          this.classOfScheduleSelected = res.data?.classes[0]?.id;
+          this.scheduleData = res.data?.classes[0]?.schedules;
+          this.scheduleSelected = res.data?.classes[0]?.schedules[0]?.id;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    handleChangeClass(e) {
+      console.log(e.target.value);
     },
     handleApproveReceiver(item) {
       item["status"] = "Approved";
@@ -442,6 +669,36 @@ export default {
           swal.error(err.response?.data);
           this.systemStore.setChangeLoading(false);
         });
+    },
+    convertToVietNamText(data) {
+      let d = "";
+      switch (data) {
+        case "Monday":
+          d = "Thứ 2";
+          break;
+        case "Tuesday":
+          d = "Thứ 3";
+          break;
+        case "Wednesday":
+          d = "Thứ 4";
+          break;
+        case "Thursday":
+          d = "Thứ 5";
+          break;
+        case "Friday":
+          d = "Thứ 6";
+          break;
+        case "Saturday":
+          d = "Thứ 7";
+          break;
+        case "Sunday":
+          d = "Chủ Nhật";
+          break;
+        default:
+          break;
+      }
+
+      return d;
     },
   },
 };

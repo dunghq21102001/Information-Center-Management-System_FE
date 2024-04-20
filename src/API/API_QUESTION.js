@@ -11,8 +11,16 @@ export default class API_QUESTION {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/${id}`)
     }
 
+    static getQuestionByType(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/QuestionsByType?type=${id}`)
+    }
+
     static getQuestionsOrCreateQuiz(data) {
         return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateTest`, data)
+    }
+
+    static createTestEntry(data) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CreateTestEntry`, data)
     }
 
     static postQuestion(data) {

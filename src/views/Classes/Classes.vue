@@ -2,9 +2,38 @@
   <div class="w-full">
     <span class="text-[28px] font-bold block text-gray-700">Lớp học</span>
 
-    <div class="w-[90%] mx-auto">
+    <div
+      class="w-[90%] mx-auto"
+      v-if="authStore.getAuth?.roleName != 'Teacher'"
+    >
       <NormalTable
         :data="data"
+        :header="header"
+        :is-show-search="true"
+        :is-update="true"
+        :is-delete="true"
+        :is-multi-select="true"
+        :is-change-status-classes="true"
+        is-add="class-create"
+        excel="class-data"
+        csv="class-data"
+        :reload="true"
+        :enum="true"
+        :enum-list="courses"
+        @click-to-row="gotoDetail"
+        @reload-action="reloadList"
+        @update-action="updateClass"
+        @delete-action="deleteClass"
+        @change-status-of-classes="changeStatusOfClasses"
+      />
+    </div>
+
+    <div
+      class="w-[90%] mx-auto"
+      v-if="authStore.getAuth?.roleName == 'Teacher'"
+    >
+      <NormalTable
+        :data="classByTeacher"
         :header="header"
         :is-show-search="true"
         :is-update="true"
@@ -58,21 +87,14 @@
         </div>
       </div>
     </div>
-
-    <!-- <div class="w-full" id="certificate">
-      <Certificate
-        :children-name="'Hoang Quoc Dung'"
-        :course-name="'Robotic cơ bản'"
-        :code="'AK91VQ2'"
-      />
-      <button @click="captureCertificate">Tải xuống certificate</button>
-    </div> -->
   </div>
 </template>
 <script>
 import tableConfig from "../../common/config/tableConfig";
 import { useSystemStore } from "../../stores/System";
 import API_CLASS from "../../API/API_CLASS.js";
+import API_SCHEDULE from "../../API/API_SCHEDULE.js";
+import API_CERTIFICATE from "../../API/API_CERTIFICATE.js";
 import NormalTable from "../../components/NormalTable.vue";
 import swal from "../../common/swal";
 import API_COURSE from "../../API/API_COURSE.js";
@@ -81,6 +103,7 @@ import Certificate from "../../components/Certificate.vue";
 import html2canvas from "html2canvas";
 import { storage } from "../../common/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import func from "../../common/func.js";
 export default {
   components: {
     NormalTable,
@@ -93,8 +116,9 @@ export default {
   },
   data() {
     return {
-      header: tableConfig.classTable(),
+      header: null,
       data: [],
+      classByTeacher: [],
       courses: [],
       selectedClass: [],
       selectedClassByName: [],
@@ -104,121 +128,91 @@ export default {
       fData: [
         {
           childrenProfile: {
-            id: "f2e7be78-fe6a-478f-1f93-08dc4a7d7be1",
-            userId: "354143f6-4727-42a0-a4c9-08dc4a7a0964",
-            fullName: "Nguyễn Minh Tài",
-            genderType: "Nam",
-            birthDay: "2018-03-22T14:34:41.081",
+            id: "bcff4f9d-0891-4702-77ed-08dc5f587718",
+            userId: "3695a955-a772-4c9b-c909-08dc5f58094f",
+            fullName: "Ngọc",
+            genderType: "Nữ",
+            birthDay: "2018-04-09T10:36:00",
             avatar:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fminhtai.jpg?alt=media&token=c28c9e3e-e7d4-4004-8b3d-456df93583b1",
-            specialSkill: "lap rap",
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fimage_1713411390110?alt=media&token=41833fbf-6ddd-4d54-9e61-150ce3de9247",
+            specialSkill: "Không",
           },
           course: {
-            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
-            courseCode: "PRN211",
-            price: 200000,
-            name: "Basic Cross-Platform Application Programming With .NET",
-            description: "string",
-            durationTotal: 8,
-            syllabus: "string",
-            level: "1",
-            entryPoint: "7",
+            id: "fcc1831f-c521-4645-dd3d-08dc579639eb",
+            courseCode: "SN212",
+            price: 3000000,
+            name: "Advanced robotic programming",
+            description: "Không",
+            durationTotal: 15,
+            syllabus:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/files%2Ffile_1712558189115.pdf?alt=media&token=799c6060-4b72-48f4-b237-dcf1f39e1310",
+            level: null,
+            entryPoint: "9",
             prerequisite: null,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2Fimage_1712558189094?alt=media&token=bfd7d87f-05ea-4a3b-9386-c5a0df5f43a9",
             courseType: "Single",
           },
           class: null,
         },
         {
           childrenProfile: {
-            id: "f4960142-6397-4dc8-1f94-08dc4a7d7be1",
-            userId: "f9c25b98-5cc4-4bfe-a4ca-08dc4a7a0964",
-            fullName: "Nguyễn Gia Huy",
+            id: "e5cac739-aa75-4581-77ee-08dc5f587718",
+            userId: "3695a955-a772-4c9b-c909-08dc5f58094f",
+            fullName: "Ngọc An",
             genderType: "Nam",
-            birthDay: "2017-03-22T14:34:41.081",
+            birthDay: "2017-04-09T10:36:00",
             avatar:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fgiahuy.jpg?alt=media&token=e39e9d07-685b-4b24-b68b-d8882e47bb7b",
-            specialSkill: "lap rap",
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fimage_1713411413679?alt=media&token=66ba6770-1146-474f-8b5a-27c89da7eee6",
+            specialSkill: "Múa",
           },
           course: {
-            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
-            courseCode: "PRN211",
-            price: 200000,
-            name: "Basic Cross-Platform Application Programming With .NET",
-            description: "string",
-            durationTotal: 8,
-            syllabus: "string",
-            level: "1",
-            entryPoint: "7",
+            id: "fcc1831f-c521-4645-dd3d-08dc579639eb",
+            courseCode: "SN212",
+            price: 3000000,
+            name: "Advanced robotic programming",
+            description: "Không",
+            durationTotal: 15,
+            syllabus:
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/files%2Ffile_1712558189115.pdf?alt=media&token=799c6060-4b72-48f4-b237-dcf1f39e1310",
+            level: null,
+            entryPoint: "9",
             prerequisite: null,
             image:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
+              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2Fimage_1712558189094?alt=media&token=bfd7d87f-05ea-4a3b-9386-c5a0df5f43a9",
             courseType: "Single",
           },
           class: null,
         },
         {
-          childrenProfile: {
-            id: "bb4bbe20-6caa-4ae2-1f95-08dc4a7d7be1",
-            userId: "dde02b15-492b-40ff-a4cb-08dc4a7a0964",
-            fullName: "Trần Quang Khải",
-            genderType: "Nam",
-            birthDay: "2017-03-02T14:34:41.081",
-            avatar:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fquangkhai.jpg?alt=media&token=9a2cbb4a-eaf9-4816-b642-99c50ad08484",
-            specialSkill: "lap rap",
+          childrenProfile: null,
+          course: null,
+          class: {
+            id: "5bc4a721-a471-435a-3dcb-08dc5b50b51d",
+            userId: null,
+            courseId: "fcc1831f-c521-4645-dd3d-08dc579639eb",
+            courseCode: "SN212",
+            classCode: "RPRO01",
+            startDate: "2024-04-13T07:29:00",
+            endDate: "2024-06-01T07:29:00",
+            statusOfClass: "Expired",
+            maxNumber: 15,
+            expectedNumber: 10,
+            actualNumber: 2,
+            scheduleClassViews: null,
           },
-          course: {
-            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
-            courseCode: "PRN211",
-            price: 200000,
-            name: "Basic Cross-Platform Application Programming With .NET",
-            description: "string",
-            durationTotal: 8,
-            syllabus: "string",
-            level: "1",
-            entryPoint: "7",
-            prerequisite: null,
-            image:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
-            courseType: "Single",
-          },
-          class: null,
-        },
-        {
-          childrenProfile: {
-            id: "e102ad3a-1438-406f-1f96-08dc4a7d7be1",
-            userId: "30028715-1ac0-4097-a4cc-08dc4a7a0964",
-            fullName: "Phạm Hùng Cường",
-            genderType: "Nam",
-            birthDay: "2017-03-02T14:34:41.081",
-            avatar:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/avatars%2Fhungcuong.jpg?alt=media&token=1b41bb29-671a-433e-bba9-c60ff09ae07b",
-            specialSkill: "lap rap",
-          },
-          course: {
-            id: "19d19980-9ac1-4272-a6c2-08dc48dfba36",
-            courseCode: "PRN211",
-            price: 200000,
-            name: "Basic Cross-Platform Application Programming With .NET",
-            description: "string",
-            durationTotal: 8,
-            syllabus: "string",
-            level: "1",
-            entryPoint: "7",
-            prerequisite: null,
-            image:
-              "https://firebasestorage.googleapis.com/v0/b/kidproedu-d505c.appspot.com/o/coursesImage%2FPRN211.jpg?alt=media&token=c514297b-ac0f-4e30-988b-e4e06fbaaa49",
-            courseType: "Single",
-          },
-          class: null,
         },
       ],
     };
   },
   created() {
-    this.fetchClass();
+    if (this.authStore.getAuth?.roleName == "Teacher") {
+      this.fetchClassByTeacher();
+      this.header = tableConfig.classByTeacherTable();
+    } else {
+      this.header = tableConfig.classTable();
+      this.fetchClass();
+    }
     this.fetchCourses();
     this.fetchEnumClass();
     const message = this.$route.query.message;
@@ -226,6 +220,15 @@ export default {
       swal.success("Giao dịch thành công! Tiến hành thêm trẻ vào lớp", 3000);
   },
   methods: {
+    fetchClassByTeacher() {
+      this.systemStore.setChangeLoading(true);
+      API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
+        .then((res) => {
+          this.classByTeacher = res.data?.classes;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     fetchClass() {
       this.systemStore.setChangeLoading(true);
       API_CLASS.getClasses()
@@ -350,11 +353,41 @@ export default {
           this.selectedClass = [];
           swal.success("Cập nhật trạng thái cho lớp học thành công");
           this.isSelectedStatus = false;
+          this.createCertificate(res.data);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
           swal.error(err.response.data);
         });
+    },
+
+    createCertificate(data) {
+      let tmpData = [];
+      if (data.length > 0) {
+        if (data[0]?.childrenProfile != null) {
+          data.map((item) => {
+            if (item?.childrenProfile && item?.course) {
+              tmpData.push({
+                childrenProfileId: item?.childrenProfile?.id,
+                courseId: item?.course?.id,
+                code: func.makeUnique(10),
+                url: "null",
+              });
+            }
+          });
+
+          this.systemStore.setChangeLoading(true);
+          API_CERTIFICATE.postCertificate(tmpData)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+            });
+        } else {
+          // hong có ai passed hoặc k phải đang end class
+        }
+      }
     },
   },
 };

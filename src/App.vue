@@ -1,19 +1,29 @@
 <template>
   <div class="w-full">
-    <Header v-show="curRoute != 'login'" />
+    <Header v-show="curRoute != 'login' && curRoute != 'certificate'" />
     <Transition name="sidebar">
-      <Sidebar v-show="curRoute != 'login' && curRoute != 'welcome'" />
+      <Sidebar
+        v-show="
+          curRoute != 'login' &&
+          curRoute != 'welcome' &&
+          curRoute != 'certificate'
+        "
+      />
     </Transition>
     <div
       :class="
-        curRoute == 'welcome' || curRoute == 'login'
+        curRoute == 'welcome' ||
+        curRoute == 'login' ||
+        curRoute == 'certificate'
           ? 'w-full'
           : 'w-full lg:w-[80%] float-right pt-8 main-bg'
       "
     >
       <div
         :class="
-          curRoute == 'welcome' || curRoute == 'login'
+          curRoute == 'welcome' ||
+          curRoute == 'login' ||
+          curRoute == 'certificate'
             ? 'w-full'
             : 'p-5 w-[90%] mx-auto bg-white rounded-lg'
         "
@@ -24,7 +34,11 @@
     <Loading v-show="systemStore.getLoading" />
     <div
       ref="settingBarOpen"
-      v-show="curRoute != 'login' && curRoute != 'welcome'"
+      v-show="
+        curRoute != 'login' &&
+        curRoute != 'welcome' &&
+        curRoute != 'certificate'
+      "
       @click="isShowSettingBar = !isShowSettingBar"
       class="hidden lg:flex fixed bottom-[50%] translate-y-[-50%] bg-blur p-3 cursor-pointer rotate items-center justify-center"
       :class="isShowSettingBar ? 'right-[300px]' : 'right-0'"

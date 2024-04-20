@@ -14,7 +14,18 @@
             Quản lý lớp
           </span>
         </div>
-        <button class="btn-primary px-3 py-1 w-[250px]" @click="showEnrollment">
+        <button
+          v-if="authStore.getAuth?.roleName == 'Teacher'"
+          class="btn-primary px-3 py-1 w-[250px]"
+          @click="showCreateExam = true"
+        >
+          Tạo bài kiểm tra
+        </button>
+        <button
+          v-else
+          class="btn-primary px-3 py-1 w-[250px]"
+          @click="showEnrollment"
+        >
           Thêm trẻ vào lớp
         </button>
       </div>
@@ -111,6 +122,30 @@
         </div>
       </div>
 
+      <span
+        v-if="authStore.getAuth?.roleName == 'Teacher'"
+        class="block text-[20px] font-bold mt-10"
+        >Danh sách bài kiểm tra</span
+      >
+      <div
+        class="w-[90%] mx-auto"
+        v-if="authStore.getAuth?.roleName == 'Teacher'"
+      >
+        <NormalTable
+          :data="examByClass"
+          :header="examHeader"
+          :excel-custom="true"
+          :is-show-search="true"
+          :is-import-data="true"
+          excel="children-in-class-data"
+          csv="children-in-class-data"
+          :reload="true"
+          @reload-action="reloadList"
+          @handle-click-excel-custom="handleClickExcelCustom"
+          @import-data="importScore"
+        />
+      </div>
+
       <span class="block text-[20px] font-bold mt-10">Danh sách học viên</span>
       <div class="w-[90%] mx-auto">
         <NormalTable
@@ -128,6 +163,26 @@
         />
       </div>
 
+      <div
+        class="fog-e"
+        v-if="showCreateExam"
+        @click.self="showCreateExam = false"
+      >
+        <div class="bg-white p-3 rounded-lg flex items-end justify-between">
+          <div class="flex flex-col mr-2">
+            <label for="">Tên bài kiểm tra</label>
+            <input
+              type="text"
+              placeholder="Tên bài kiểm tra"
+              v-model="testName"
+              class="px-4 py-1 i-cus"
+            />
+          </div>
+          <button class="btn-primary px-3 py-[2px]" @click="createExam">
+            Tạo
+          </button>
+        </div>
+      </div>
       <div
         v-if="isShowEnrollment"
         @click.self="isShowEnrollment = false"
@@ -157,6 +212,7 @@
 </template>
 <script>
 import API_CLASS from "../../API/API_CLASS";
+import API_EXAM from "../../API/API_EXAM";
 import API_USER from "../../API/API_USER.js";
 import API_ENROLLMENT from "../../API/API_ENROLLMENT.js";
 import { useAuthStore } from "../../stores/Auth.js";
@@ -166,6 +222,7 @@ import NormalTable from "../../components/NormalTable.vue";
 import FormList from "../../components/FormList.vue";
 import swal from "../../common/swal.js";
 import dayjs from "dayjs";
+import func from "../../common/func.js";
 export default {
   components: { NormalTable, FormList },
   setup() {
@@ -176,18 +233,35 @@ export default {
   data() {
     return {
       classDetail: null,
+      showCreateExam: false,
+      testName: "",
       childrenData: [],
       childrenInClass: [],
       header: tableConfig.childrenInClassTable(),
       isShowEnrollment: false,
+      examByClass: [],
+      examHeader: tableConfig.examByClassTable(),
     };
   },
   created() {
     this.fetchDetail(this.$route.params.id);
     this.getListChildrenByStaff();
     this.getChildrenByClass(this.$route.params.id);
+    if (this.authStore.getAuth.roleName == "Teacher") {
+      this.fetchExamByCLass();
+    }
   },
   methods: {
+    fetchExamByCLass() {
+      API_EXAM.examByClass(this.$route.params.id)
+        .then((res) => {
+          this.examByClass = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     fetchDetail(id) {
       this.systemStore.setChangeLoading(true);
       API_CLASS.getClassById(id)
@@ -208,6 +282,27 @@ export default {
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    createExam() {
+      this.systemStore.setChangeLoading(true);
+      API_EXAM.createExam({
+        classId: this.$route.params.id,
+        testName: this.testName,
+        testCode: func.makeUnique(8),
+        testDate: new Date().toISOString(),
+        testDuration: 60,
+        testType: 1,
+      })
+        .then((res) => {
+          swal.success("Tạo bài kiểm tra thành công");
+          this.systemStore.setChangeLoading(false);
+          this.showCreateExam = false;
+          this.fetchExamByCLass();
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error("Tạo thất bại");
+        });
     },
     getListChildrenByStaff() {
       if (this.authStore.getAuth?.roleName == "Staff") {
@@ -251,6 +346,22 @@ export default {
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
           swal.error(err.response?.data, 4000);
+        });
+    },
+    importScore(data) {
+      console.log("vao day");
+      this.systemStore.setChangeLoading(true);
+      const formData = new FormData();
+      formData.append("formFile", data.file);
+      API_EXAM.importScore(formData)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.fetchExamByCLass();
+          // this.fetchDetail(this.$route.params.id);
+        })
+        .catch((er) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(er.response?.data);
         });
     },
     importData(data) {
@@ -367,7 +478,20 @@ export default {
 
 .cell {
   display: table-cell;
-  border: 1px solid #ebebeb; 
+  border: 1px solid #ebebeb;
   padding: 5px; /* Thêm padding nếu cần */
+}
+
+.fog-e {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

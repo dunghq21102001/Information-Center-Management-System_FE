@@ -15,8 +15,20 @@ export default class API_EXAM {
         return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
     }
 
+    static createExam(data) {
+        return axios.post(`${API_BASE.BASE_URL}/${this.BASE_PATH}/PostExamFinalPractice`, data)
+    }
+
+    static examByClass(id) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/ExamByClass/${id}`)
+    }
+
     static putExam(data) {
         return axios.put(`${API_BASE.BASE_URL}/${this.BASE_PATH}`, data)
+    }
+
+    static importScore(data) {
+        return axios.post(`${API_BASE.BASE_URL}/Class/ImportScoreExcelFile`, data)
     }
 
     static deleteExam(id) {

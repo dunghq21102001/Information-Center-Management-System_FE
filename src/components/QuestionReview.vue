@@ -8,7 +8,7 @@
             : "Xem lại bài làm"
         }}
       </span>
-      <span class="font-bold text-[20px]">{{ totalScore }} điểm</span>
+      <span class="font-bold text-[20px]">{{ totalScore.toFixed(0) }} điểm</span>
     </div>
     <input
       type="text"

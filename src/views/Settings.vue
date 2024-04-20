@@ -235,16 +235,10 @@ export default {
     getQuestions(item) {
       this.currentLessonSelected = item;
       this.systemStore.setChangeLoading(true);
-      API_QUESTION.getQuestionsOrCreateQuiz([
-        {
-          lessonId: null,
-          totalQuestion: null,
-          type: 2,
-        },
-      ])
+      API_QUESTION.getQuestionByType(2)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.questions = res.data[0]?.questions;
+          this.questions = res.data;
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
     },

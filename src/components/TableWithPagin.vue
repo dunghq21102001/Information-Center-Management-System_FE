@@ -44,11 +44,18 @@
               Tình trạng điểm danh
             </button>
             <button
-            v-show="viewExam"
+              v-show="viewExam"
               @click="handleViewExam(item)"
               class="btn-primary px-2 py-1"
             >
               Xem lại
+            </button>
+            <button
+              v-show="viewCertificate"
+              @click="handleViewCertificate(item)"
+              class="btn-primary px-2 py-1"
+            >
+              Xem chứng chỉ
             </button>
           </td>
         </tr>
@@ -90,6 +97,10 @@ export default {
       default: false,
     },
     viewExam: {
+      type: Boolean,
+      default: false,
+    },
+    viewCertificate: {
       type: Boolean,
       default: false,
     },
@@ -157,6 +168,9 @@ export default {
         case "classCode":
           fHeader = "Mã lớp";
           break;
+        case "code":
+          fHeader = "Mã chứng chỉ";
+          break;
 
         default:
           fHeader = header;
@@ -170,6 +184,9 @@ export default {
     },
     handleViewExam(item) {
       this.$emit("viewExam", item);
+    },
+    handleViewCertificate(item) {
+      this.$emit("viewCertificate", item);
     },
   },
 };

@@ -11,6 +11,7 @@ import Welcome from '../views/Welcome.vue'
 import checkAuth from '../middleware/auth'
 import checkValidRole from '../middleware/role'
 import PaymentResult from '../views/Payment/PaymentResult.vue'
+import Certificate from '../views/Certificate.vue'
 
 // users
 import Users from '../views/Users/Users.vue'
@@ -234,7 +235,7 @@ const router = createRouter({
       component: Courses,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher']
+        requiredRole: ['Admin', 'Staff', 'Teacher']
       },
       beforeEnter: checkValidRole
     },
@@ -254,7 +255,7 @@ const router = createRouter({
       component: CourseDetail,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher']
+        requiredRole: ['Admin', 'Staff', 'Teacher']
       },
       beforeEnter: checkValidRole
     },
@@ -353,7 +354,7 @@ const router = createRouter({
       component: ClassDetail,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
+        requiredRole: ['Admin', 'Manager', 'Staff', 'Teacher']
       },
       beforeEnter: checkValidRole
     },
@@ -550,7 +551,8 @@ const router = createRouter({
       meta: {
         middleware: checkAuth,
         requiredRole: ['Admin']
-      }
+      },
+      beforeEnter: checkValidRole
     },
     {
       path: '/payment-result',
@@ -564,6 +566,14 @@ const router = createRouter({
       path: '/welcome',
       name: 'welcome',
       component: Welcome,
+      meta: {
+        // middleware: checkAuth,
+      },
+    },
+    {
+      path: '/certificate',
+      name: 'certificate',
+      component: Certificate,
       meta: {
         // middleware: checkAuth,
       },

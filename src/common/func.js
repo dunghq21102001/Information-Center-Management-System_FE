@@ -75,4 +75,9 @@ export default class func {
         document.cookie = cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
 
+    static getClientURL() {
+        const BASE_URL = import.meta.env.VITE_CLIENT_URL
+        return BASE_URL
+    }
+
 }
