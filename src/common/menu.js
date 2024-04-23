@@ -46,7 +46,7 @@ export default class menu {
             {
                 id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
                     { name: 'Contracts', url: 'contract' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             // {
             //     id: 3, name: 'Payroll', icon: 'la-money-check-alt-solid', subTab: [
@@ -146,7 +146,7 @@ export default class menu {
     static parentProfileMenu() {
         return [
             { name: 'Thông tin chung', index: 1 },
-            { name: 'Bảo mật', index: 2 },
+            { name: 'Bảo mật và giao dịch', index: 2 },
             { name: 'Danh sách trẻ', index: 3 },
             // { name: 'Bảng trả góp', index: 4 },
             { name: 'Các yêu cầu', index: 4 },

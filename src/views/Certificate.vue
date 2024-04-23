@@ -120,7 +120,7 @@ export default {
 .certificate {
   border: 20px solid #0c5280;
   padding: 25px;
-  height: 650px;
+  height: 82vh;
   position: relative;
 }
 

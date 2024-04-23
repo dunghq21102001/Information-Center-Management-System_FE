@@ -86,6 +86,40 @@ export default class tableConfig {
         ]
     }
 
+    static transactionTable() {
+        return [
+            { text: "Mã khoá học", value: "courseName", sortable: true },
+            { text: "Kì hạn", value: "installmentTerm", sortable: true },
+            { text: "Ngày trả", value: "payDate", sortable: true },
+            { text: "Trạng thái", value: "statusTransaction" },
+            { text: "Chi tiết", value: "detail", width: 90 },
+        ]
+    }
+
+    static transactionDetailTable() {
+        return [
+            { text: "Mã khoá học", value: "courseName", sortable: true },
+            { text: "Tổng tiền", value: "totalAmount", sortable: true },
+            // { text: "Kì hạn", value: "installmentTerm", sortable: true },
+            { text: "Hạn thanh toán", value: "installmentPeriod", sortable: true },
+            // { text: "Ngày trả", value: "payDate", sortable: true },
+            { text: "Trạng thái", value: "statusTransaction" },
+            // { text: "Chi tiết", value: "detail", width: 90 },
+        ]
+    }
+
+    // "id": "6ad8b0f7-3890-41bc-a415-331417c53b96",
+    // "bankingAccountNumber": null,
+    // "bankingNumber": null,
+    // "bankName": null,
+    // "courseName": "Khoá học đơn cơ bản",
+    // "totalAmount": 3500000,
+    // "message": null,
+    // "payDate": null,
+    // "installmentTerm": null,
+    // "installmentPeriod": "2024-04-22T15:38:02.4820082",
+    // "statusTransaction": "Successfully"
+
     static blogTable() {
         return [
             { text: "Title", value: "title", sortable: true },

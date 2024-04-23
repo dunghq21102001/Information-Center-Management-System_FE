@@ -21,12 +21,16 @@
           Đơn hàng
         </span>
         <v-icon scale="1.5" name="md-keyboardarrowright" />
-        <span class="text-[12px] md:text-[28px] font-bold block text-gray-700 hv-t">
+        <span
+          class="text-[12px] md:text-[28px] font-bold block text-gray-700 hv-t"
+        >
           Chi tiết đơn hàng
         </span>
       </div>
 
-      <button @click="createPayment" class="w-[200px] btn-primary px-2 py-1">Thanh toán</button>
+      <button @click="createPayment" class="w-[200px] btn-primary px-2 py-1">
+        Thanh toán
+      </button>
     </div>
 
     <div class="w-[90%] mx-auto mt-5">
@@ -122,10 +126,15 @@
       class="w-[90%] mx-auto flex items-start justify-between flex-col lg:flex-row mt-10"
     >
       <div class="w-full lg:w-[40%]">
-        <div class="block font-bold text-[18px] flex flex-wrap items-center">
-          Ngày đặt hàng:
-          <div class="text-[24px] font-bold text-gray-600"></div> &nbsp;
-          {{ convertDateOldVer(data?.creationDate) }}
+        <div class="font-bold text-[18px] flex flex-wrap items-start flex-col">
+          <span>
+            Ngày đặt hàng:
+            {{ convertDateOldVer(data?.creationDate) }}
+          </span>
+          <span
+            ><span class="font-bold">Loại thanh toán:</span>
+            {{ data?.eWalletMethod }}</span
+          >
         </div>
       </div>
       <div class="w-full md:w-[58%] lg:w-[40%]">
@@ -234,10 +243,10 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           // window.open(res.data, "_self");
-          this.$router.push({ name: 'classes' })
+          this.$router.push({ name: "classes" });
         })
         .catch((err) => {
-          swal.info(err.response.data)
+          swal.info(err.response.data);
           this.systemStore.setChangeLoading(false);
         });
     },

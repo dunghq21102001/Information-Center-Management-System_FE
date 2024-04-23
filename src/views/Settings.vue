@@ -71,7 +71,7 @@
         <div class="w-full grid grid-cols-12 gap-3">
           <div class="col-span-12 md:col-span-6 lg:col-span-4">
             <button class="px-3 py-1 btn-primary" @click="createListSchedule">
-              Tạo lịch cho lớp học
+              Xếp lịch cho lớp học
             </button>
           </div>
         </div>

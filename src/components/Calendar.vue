@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="w-[90%] mx-auto h-[550px]">
+    <div class="w-[90%] mx-auto h-[550px]" v-if="fData.length > 0">
       <vue-cal
         locale="vi"
         :editable-events="{
@@ -16,7 +16,7 @@
         @event-drag-create="showEventCreationDialog = true"
         :drag-to-create-event="isPermissionProp.create"
         :on-event-create="onEventCreate"
-        :events="eventsProp"
+        :events="fData"
         :on-event-click="handleClickEvent"
       />
     </div>
@@ -68,7 +68,30 @@
   </div>
 </template>
 <script>
+import { ref, watch } from "vue";
+import { useSystemStore } from "../stores/system";
+import { useAuthStore } from "../stores/Auth";
+import API_SCHEDULE from "../API/API_SCHEDULE";
+import dayjs from "dayjs";
+
 export default {
+  setup(props) {
+    const eventsProp = ref(props.events);
+    watch(
+      () => props.events,
+      (newValue) => {
+        eventsProp.value = newValue;
+      }
+    );
+
+    const systemStore = useSystemStore();
+    const authStore = useAuthStore();
+    return {
+      eventsProp,
+      systemStore,
+      authStore,
+    };
+  },
   props: {
     events: Array,
     isPermission: Object,
@@ -76,7 +99,7 @@ export default {
   components: {},
   data() {
     return {
-      eventsProp: this.events,
+      // eventsProp: this.events,
       isPermissionProp: this.isPermission,
       selectedEvent: {
         title: "",
@@ -86,12 +109,229 @@ export default {
         class: "type-1",
         background: false,
       },
+
+      fData: [
+        {
+          start: "2018-11-19 10:35",
+          end: "2018-11-19 11:30",
+          title: "Doctor appointment",
+        },
+        {
+          start: "2018-11-19 18:30",
+          end: "2018-11-19 19:15",
+          title: "Dentist appointment",
+        },
+        {
+          start: "2018-11-20 18:30",
+          end: "2018-11-20 20:30",
+          title: "Crossfit",
+        },
+        {
+          start: "2018-11-21 11:00",
+          end: "2018-11-21 13:00",
+          title: "Brunch with Jane",
+        },
+        {
+          start: "2018-11-21 19:30",
+          end: "2018-11-21 23:00",
+          title: "Swimming lesson",
+        },
+        {
+          start: "2019-09-30 19:30",
+          end: "2019-09-30 23:00",
+          title: "Swimming lesson",
+        },
+        {
+          start: "2018-11-19 12:00",
+          end: "2018-11-19 14:00",
+          title: "LUNCH",
+          class: "lunch",
+          background: true,
+        },
+        {
+          start: "2018-11-20 12:00",
+          end: "2018-11-20 14:00",
+          title: "LUNCH",
+          class: "lunch",
+          background: true,
+        },
+      ],
       showEventCreationDialog: false,
       eventsCssClasses: ["type-1", "type-2", "type-3"],
     };
   },
-  created() {},
+  created() {
+    this.fetchSchedule();
+  },
   methods: {
+    fetchSchedule() {
+      this.systemStore.setChangeLoading(true);
+      API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
+        .then((res) => {
+          let tmpData = [];
+          tmpData = res.data.classes.map((cls) => {
+            cls.schedules.map((schedule) => {
+              schedule["classId"] = cls.id;
+              schedule.classCode = cls.classCode;
+              schedule.totalDuration = cls.totalDuration;
+              schedule.teachingStartDate = cls.teachingStartDate;
+              schedule.teachingEndDate = cls.teachingEndDate;
+              return schedule;
+            });
+            return cls;
+          });
+
+          const listSchedules = tmpData.flatMap((cls) => cls.schedules);
+          let finalData = [];
+          let currentId = null;
+          listSchedules.map((item) => {
+            if (currentId != item.classId) {
+              const startDate = new Date(item.teachingStartDate);
+              let totalScheduleOfClassNow = 0;
+              // => t3 + t6 (2 và 5)  => t4 + t7 (3 và 6)  => t5 + CN (4 và 0)
+              let defaultNum = null;
+              let nextNum = null;
+              let theNextDate = startDate;
+              let startIsFirstIndex = false;
+
+              defaultNum = this.convertToNumber(listSchedules[0]?.dayInWeek);
+              nextNum = this.convertToNumber(listSchedules[1]?.dayInWeek);
+
+              let conditionLoop = null;
+              const endDate = new Date(item.teachingEndDate);
+              if (endDate.getFullYear() == 1)
+                conditionLoop = item.totalDuration;
+              else conditionLoop = endDate;
+
+              // if (defaultNum == 4 && defaultNum <= startDate.getDay()) {
+              //   startIsFirstIndex = false;
+              // } else if (defaultNum < startDate.getDay()) {
+              //   startIsFirstIndex = false;
+              // } else {
+              //   startIsFirstIndex = true;
+              // }
+
+              // if (defaultNum < startDate.getDay()) startIsFirstIndex = false;
+              // else startIsFirstIndex = true;
+
+              if (typeof conditionLoop === "number") {
+                do {
+                  if (theNextDate.getDay() == defaultNum) {
+                    totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[0]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  } else if (theNextDate.getDay() == nextNum) {
+                    totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[1]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  }
+                  // totalScheduleOfClassNow += 1;
+
+                  theNextDate.setDate(theNextDate.getDate() + 1);
+                } while (totalScheduleOfClassNow < item.totalDuration);
+              } else {
+                do {
+                  if (theNextDate.getDay() == defaultNum) {
+                    // totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[0]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  } else if (theNextDate.getDay() == nextNum) {
+                    // totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[1]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  }
+                  // totalScheduleOfClassNow += 1;
+                  theNextDate.setDate(theNextDate.getDate() + 1);
+                } while (theNextDate.getTime() < conditionLoop.getTime());
+              }
+
+              currentId = item.classId;
+            }
+          });
+
+          // this.scheduleFilter = finalData;
+          this.fData = finalData;
+          // this.isLoad = true;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     onEventCreate(event, deleteEventFunction) {
       this.selectedEvent = event;
       this.deleteEventFunction = deleteEventFunction;
@@ -99,7 +339,7 @@ export default {
       return event;
     },
     handleClickEvent(data) {
-      this.$emit('handleClickEvent', data)
+      this.$emit("handleClickEvent", data);
     },
     cancelEventCreation() {
       this.closeCreationDialog();
@@ -118,6 +358,38 @@ export default {
     },
     changeBgColor(event) {
       this.selectedEvent.class = event.target.value;
+    },
+    convertToNumber(data) {
+      // convert thứ thành số
+
+      let d = 0;
+      switch (data) {
+        case "Monday":
+          d = 1;
+          break;
+        case "Tuesday":
+          d = 2;
+          break;
+        case "Wednesday":
+          d = 3;
+          break;
+        case "Thursday":
+          d = 4;
+          break;
+        case "Friday":
+          d = 5;
+          break;
+        case "Saturday":
+          d = 6;
+          break;
+        case "Sunday":
+          d = 0;
+          break;
+        default:
+          break;
+      }
+
+      return d;
     },
   },
 };

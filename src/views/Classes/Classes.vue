@@ -38,8 +38,6 @@
         :is-show-search="true"
         :is-update="true"
         :is-delete="true"
-        :is-multi-select="true"
-        :is-change-status-classes="true"
         is-add="class-create"
         excel="class-data"
         csv="class-data"
@@ -50,7 +48,6 @@
         @reload-action="reloadList"
         @update-action="updateClass"
         @delete-action="deleteClass"
-        @change-status-of-classes="changeStatusOfClasses"
       />
     </div>
 
@@ -302,7 +299,8 @@ export default {
             })
             .catch((err) => {
               this.systemStore.setChangeLoading(false);
-              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+              // swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+              swal.error(err.response?.data, 2500);
             });
         }
       });
@@ -349,8 +347,8 @@ export default {
       })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.fetchClass();
           this.selectedClass = [];
+          this.fetchClass();
           swal.success("Cập nhật trạng thái cho lớp học thành công");
           this.isSelectedStatus = false;
           this.createCertificate(res.data);

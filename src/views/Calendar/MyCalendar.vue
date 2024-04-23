@@ -1,14 +1,14 @@
 <template>
   <div class="w-full">
-    <span
+    <!-- <span
       v-if="scheduleFilter.length == 0"
       class="block w-full text-center font-bold text-gray-600 text-[24px]"
     >
       Bạn không có lịch dạy/học tính đến hiện tại
-    </span>
+    </span> -->
     <Calendar
-      v-if="scheduleFilter.length > 0"
-      :events="scheduleFilter"
+     
+      :events="null"
       :is-permission="isPermission"
       @handle-click-event="handleClickEvent"
     />
@@ -22,8 +22,13 @@
           <span class="block mb-5 font-bold text-[24px]">
             Điểm danh lớp {{ selectedClass }} ngày {{ selectedDateClass }}
           </span>
-
-          <div class="w-full flex items-center mb-3">
+          <p class="w-full text-center" v-if="attendanceData.length == 0">
+            Lớp học này chưa có học sinh
+          </p>
+          <div
+            v-if="attendanceData.length > 0"
+            class="w-full flex items-center mb-3"
+          >
             <div
               class="font-bold br-c text-[20px] pl-2 text-white bg-[#6a90d9] w-[5%]"
             >
@@ -99,7 +104,11 @@
           </div>
         </div>
         <div class="w-full flex items-center justify-end mb-4">
-          <button class="btn-primary px-3 py-1" @click="checkAttendance">
+          <button
+            class="btn-primary px-3 py-1"
+            @click="checkAttendance"
+            v-if="attendanceData.length > 0"
+          >
             Lưu điểm danh
           </button>
         </div>
@@ -127,6 +136,7 @@ export default {
   components: { Calendar },
   data() {
     return {
+      isLoad: false,
       isPermission: {
         title: false,
         drag: false,
@@ -157,7 +167,7 @@ export default {
     };
   },
   created() {
-    this.fetchSchedule();
+    // this.fetchSchedule();
     // this.fetchTest();
   },
   methods: {
@@ -165,7 +175,6 @@ export default {
       this.systemStore.setChangeLoading(true);
       API_SCHEDULE.getAutomaticalySchedule(this.authStore.getAuth?.id)
         .then((res) => {
-          this.systemStore.setChangeLoading(false);
           let tmpData = [];
           tmpData = res.data.classes.map((cls) => {
             cls.schedules.map((schedule) => {
@@ -230,20 +239,20 @@ export default {
                 conditionLoop = item.totalDuration;
               else conditionLoop = endDate;
 
-              if (defaultNum == 4 && defaultNum <= startDate.getDay()) {
-                startIsFirstIndex = false;
-              } else if (defaultNum <= startDate.getDay()) {
-                startIsFirstIndex = false;
-              } else {
-                startIsFirstIndex = false;
-              }
+              // if (defaultNum == 4 && defaultNum <= startDate.getDay()) {
+              //   startIsFirstIndex = false;
+              // } else if (defaultNum < startDate.getDay()) {
+              //   startIsFirstIndex = false;
+              // } else {
+              //   startIsFirstIndex = true;
+              // }
+
+              // if (defaultNum < startDate.getDay()) startIsFirstIndex = false;
+              // else startIsFirstIndex = true;
 
               if (typeof conditionLoop === "number") {
                 do {
-                  if (
-                    theNextDate.getDay() == defaultNum ||
-                    theNextDate.getDay() == nextNum
-                  ) {
+                  if (theNextDate.getDay() == defaultNum) {
                     totalScheduleOfClassNow += 1;
                     let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
                     let startTime = dayjs(
@@ -260,9 +269,30 @@ export default {
                       title: item.classCode,
                       content: `${item.rooms[0]?.name}`,
                       class: "type-3",
-                      scheduleId: startIsFirstIndex
-                        ? listSchedules[0]?.id
-                        : listSchedules[1]?.id,
+                      scheduleId: listSchedules[0]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  } else if (theNextDate.getDay() == nextNum) {
+                    totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[1]?.id,
                       classId: item?.classId,
                       date: finalDate,
                     });
@@ -274,11 +304,8 @@ export default {
                 } while (totalScheduleOfClassNow < item.totalDuration);
               } else {
                 do {
-                  if (
-                    theNextDate.getDay() == defaultNum ||
-                    theNextDate.getDay() == nextNum
-                  ) {
-                    totalScheduleOfClassNow += 1;
+                  if (theNextDate.getDay() == defaultNum) {
+                    // totalScheduleOfClassNow += 1;
                     let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
                     let startTime = dayjs(
                       `${finalDate} ${item.slot.startTime}`,
@@ -294,9 +321,30 @@ export default {
                       title: item.classCode,
                       content: `${item.rooms[0]?.name}`,
                       class: "type-3",
-                      scheduleId: startIsFirstIndex
-                        ? listSchedules[0]?.id
-                        : listSchedules[1]?.id,
+                      scheduleId: listSchedules[0]?.id,
+                      classId: item?.classId,
+                      date: finalDate,
+                    });
+                    theNextDate.setDate(theNextDate.getDate() + 1);
+                    startIsFirstIndex = !startIsFirstIndex;
+                  } else if (theNextDate.getDay() == nextNum) {
+                    // totalScheduleOfClassNow += 1;
+                    let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
+                    let startTime = dayjs(
+                      `${finalDate} ${item.slot.startTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    let endTime = dayjs(
+                      `${finalDate} ${item.slot.endTime}`,
+                      "HH:mm:ss"
+                    ).format("HH:mm");
+                    finalData.push({
+                      start: `${finalDate} ${startTime}`,
+                      end: `${finalDate} ${endTime}`,
+                      title: item.classCode,
+                      content: `${item.rooms[0]?.name}`,
+                      class: "type-3",
+                      scheduleId: listSchedules[1]?.id,
                       classId: item?.classId,
                       date: finalDate,
                     });
@@ -313,6 +361,8 @@ export default {
           });
 
           this.scheduleFilter = finalData;
+          this.isLoad = true;
+          this.systemStore.setChangeLoading(false);
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
     },

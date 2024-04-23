@@ -40,7 +40,7 @@
         v-if="classDetail?.scheduleClassViews.length > 0"
         class="w-full mt-5"
       >
-        <span class="block text-[20px] font-bold mb-5">Lịch học của lớp</span>
+        <span class="block text-[20px] font-bold mb-5">Lịch học của lớp {{ classDetail?.classCode }}</span>
 
         <div
           class="w-full flex items-center justify-between border-gray-600 border-solid border-[1px]"

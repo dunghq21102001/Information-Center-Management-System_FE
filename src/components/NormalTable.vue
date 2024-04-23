@@ -156,6 +156,19 @@
             {{ convertDate(item?.warrantyDate) }}
           </span>
         </template>
+        <template #item-installmentPeriod="item">
+          <span class="block">
+            {{ convertDate(item?.installmentPeriod) }}
+          </span>
+        </template>
+        <template #item-payDate="item">
+          <span class="block">
+            {{ convertDate(item?.payDate) }}
+          </span>
+        </template>
+        <template #item-installmentTerm="item">
+          <span class="block"> {{ item?.installmentTerm }} tháng </span>
+        </template>
         <template #item-startTime="item">
           <span class="block">
             {{ convertDate(item?.startTime) }}
@@ -471,6 +484,20 @@
             {{ convertDate(item?.warrantyDate) }}
           </span>
         </template>
+        <template #item-installmentPeriod="item">
+          <span class="block">
+            {{ convertDate(item?.installmentPeriod) }}
+          </span>
+        </template>
+        <template #item-payDate="item">
+          <span class="block">
+            {{ convertDate(item?.payDate) }}
+          </span>
+        </template>
+        <template #item-installmentTerm="item">
+          <span class="block"> {{ item?.installmentTerm }} tháng </span>
+        </template>
+
         <template #item-startTime="item">
           <span class="block">
             {{ convertDate(item?.startTime) }}
@@ -1151,7 +1178,7 @@ export default {
       this.$emit("createAccount", item);
     },
     handleImportData() {
-      console.log('vao day');
+      console.log("vao day");
       this.$emit("importData", true);
     },
     updateStatusAccount() {
@@ -1255,6 +1282,7 @@ export default {
     },
     changeStatusOfClasses() {
       this.$emit("changeStatusOfClasses", this.itemsSelected);
+      this.itemsSelected = [];
     },
     viewChildrenListByParent(item) {
       this.$emit("viewChildrenListByParent", item);
@@ -1368,7 +1396,7 @@ export default {
       this.$emit("reloadAction", true);
     },
     handleImportFile(event) {
-      console.log('vao day');
+      console.log("vao day");
       const file = event.target.files[0];
       if (!file) return;
 

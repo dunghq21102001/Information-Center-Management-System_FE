@@ -48,6 +48,12 @@
           :class="{ 'on-focus': item.focus }"
           v-model="item.value"
           class="input-cus"
+          :disabled="
+            item.title == 'startDate' ||
+            item.title == 'endDate' ||
+            item.title == 'Start Date' ||
+            item.title == 'End Date'
+          "
         />
         <textarea
           cols="1"

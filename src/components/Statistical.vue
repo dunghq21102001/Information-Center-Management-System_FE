@@ -6,7 +6,12 @@
       class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
     >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>{{ usersData.length }}</span>
+        <span>{{
+          dashboardData?.totalParent +
+          dashboardData?.totalStaff +
+          dashboardData?.totalTeacher +
+          dashboardData?.totalManager
+        }}</span>
         <span>Người dùng</span>
       </div>
       <v-icon
@@ -20,7 +25,7 @@
       class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
     >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>340.201.000 VND</span>
+        <span>{{convertVND(dashboardData?.totalAmountTransaction)}}</span>
         <span>Doanh thu</span>
       </div>
       <v-icon
@@ -34,7 +39,7 @@
       class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
     >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>401</span>
+        <span>{{ dashboardData?.totalChildren }}</span>
         <span>Học sinh</span>
       </div>
       <v-icon
@@ -45,11 +50,11 @@
     </div>
     <!-- 4 -->
     <div
-    @click="goToRoute('courses')"
+      @click="goToRoute('courses')"
       class="col-span-12 md:col-span-6 lg:col-span-3 cursor-pointer hover:shadow-lg duration-100 box"
     >
       <div class="flex flex-col items-start xl:items-center text-[18px]">
-        <span>{{ courseData.length }}</span>
+        <span>{{ dashboardData?.totalCourse }}</span>
         <span>Khoá học</span>
       </div>
       <v-icon
@@ -63,6 +68,7 @@
 <script>
 import { useSystemStore } from "../stores/system";
 import API_COURSE from "../API/API_COURSE";
+import func from '../common/func'
 import API_USER from "../API/API_USER";
 export default {
   setup() {
@@ -70,7 +76,9 @@ export default {
     return { systemStore };
   },
   components: {},
-  props: {},
+  props: {
+    dashboardData: Object,
+  },
   data() {
     return {
       usersData: [],
@@ -79,8 +87,8 @@ export default {
     };
   },
   created() {
-    this.fetchUsersList();
-    this.fetchCourses()
+    // this.fetchUsersList();
+    // this.fetchCourses()
   },
   methods: {
     goToRoute(pathName) {
@@ -104,6 +112,9 @@ export default {
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
+    convertVND(price) {
+      return func.convertVND(price)
+    }
   },
 };
 </script>
