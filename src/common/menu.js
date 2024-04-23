@@ -2,26 +2,26 @@ export default class menu {
     static sidebarMenu(userRole) {
         const menuItems = [
             {
-                id: 74216, name: 'Advice Request', icon: 'fa-tasks', subTab: [
+                id: 74216, name: 'Yêu cầu tư vấn', icon: 'fa-tasks', subTab: [
                     { name: 'Thêm yêu cầu', url: 'advice-create' },
                     { name: 'Danh sách yêu cầu', url: 'advice-request' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
-                id: 6, name: 'Attendance', icon: 'md-taskalt', subTab: [
-                    { name: 'Today Attendance', url: 'today-attendance' },
+                id: 6, name: 'Lịch', icon: 'md-taskalt', subTab: [
+                    { name: 'Lịch', url: 'today-attendance' },
                     { name: 'User Attendance', url: 'user-attendance' },
                 ], isShow: false, isActive: false, isHidden: false, roles: []
             },
             {
-                id: 10, name: 'Blogs', icon: 'hi-newspaper', subTab: [
-                    { name: 'Add Blog', url: 'blog-create' },
-                    { name: 'Blogs', url: 'blogs' },
+                id: 10, name: 'Tin tức', icon: 'hi-newspaper', subTab: [
+                    { name: 'Thêm tin tức', url: 'blog-create' },
+                    { name: 'Danh sách tin tức', url: 'blogs' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             {
-                id: 3, name: 'Chat', icon: 'bi-chat-dots-fill', subTab: [
-                    { name: 'Chat', url: 'chat' },
+                id: 3, name: 'Trò chuyện', icon: 'bi-chat-dots-fill', subTab: [
+                    { name: 'Trò chuyện', url: 'chat' },
                     // { name: 'Anonymous chat', url: 'anonymous-chat' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher', 'Parent']
             },
@@ -32,20 +32,20 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Teacher']
             },
             {
-                id: 5, name: 'Classes', icon: 'si-googleclassroom', subTab: [
-                    { name: 'Add Class', url: 'class-create' },
-                    { name: 'Classes', url: 'classes' },
+                id: 5, name: 'Lớp học', icon: 'si-googleclassroom', subTab: [
+                    { name: 'Thêm lớp', url: 'class-create' },
+                    { name: 'Danh sách lớp', url: 'classes' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff', 'Teacher']
             },
             {
-                id: 7, name: 'Courses', icon: 'si-coursera', subTab: [
-                    { name: 'Add Course', url: 'course-create' },
-                    { name: 'Courses', url: 'courses' },
+                id: 7, name: 'Khoá học', icon: 'si-coursera', subTab: [
+                    { name: 'Thêm khoá học', url: 'course-create' },
+                    { name: 'Danh sách khoá học', url: 'courses' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Teacher']
             },
             {
-                id: 2, name: 'Contracts', icon: 'fa-file-contract', subTab: [
-                    { name: 'Contracts', url: 'contract' },
+                id: 2, name: 'Hợp đồng', icon: 'fa-file-contract', subTab: [
+                    { name: 'Danh sách hợp đồng', url: 'contract' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             // {
@@ -72,14 +72,14 @@ export default class menu {
             //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             // },
             {
-                id: 2145, name: 'Enrollment', icon: 'gi-archive-register', subTab: [
-                    { name: 'Enrollment', url: 'enrollment' },
+                id: 2145, name: 'Ghi danh', icon: 'gi-archive-register', subTab: [
+                    { name: 'Danh sách ghi danh', url: 'enrollment' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
             {
-                id: 9, name: 'Equipments', icon: 'px-devices', subTab: [
-                    { name: 'Add Equipment', url: 'equipment-create' },
-                    { name: 'Equipments', url: 'equipments' },
+                id: 9, name: 'Trang thiết bị', icon: 'px-devices', subTab: [
+                    { name: 'Thêm thiết bị', url: 'equipment-create' },
+                    { name: 'Danh sách thiết bị', url: 'equipments' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             // {
@@ -89,26 +89,26 @@ export default class menu {
             //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             // },
             {
-                id: 8, name: 'Locations', icon: 'io-location-sharp', subTab: [
-                    { name: 'Add Location', url: 'location-create' },
-                    { name: 'Locations', url: 'locations' },
+                id: 8, name: 'Khu vực', icon: 'io-location-sharp', subTab: [
+                    { name: 'Thêm khu vực', url: 'location-create' },
+                    { name: 'Danh sách khu vực', url: 'locations' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             },
             {
-                id: 7, name: 'Order', icon: 'bi-box-seam', subTab: [
-                    { name: 'Order', url: 'order-list' },
+                id: 7, name: 'Đơn hàng', icon: 'bi-box-seam', subTab: [
+                    { name: 'Danh sách đơn hàng', url: 'order-list' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
             {
-                id: 1, name: 'Users', icon: 'hi-user-group', subTab: [
-                    { name: 'Add User', url: 'user-create' },
-                    { name: 'Users', url: 'users' },
+                id: 1, name: 'Người dùng', icon: 'hi-user-group', subTab: [
+                    { name: 'Thêm người dùng', url: 'user-create' },
+                    { name: 'Danh sách người dùng', url: 'users' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {
-                id: 5, name: 'Rooms', icon: 'co-room', subTab: [
-                    { name: 'Add Room', url: 'room-create' },
-                    { name: 'Rooms', url: 'rooms' },
+                id: 5, name: 'Phòng học', icon: 'co-room', subTab: [
+                    { name: 'Thêm phòng', url: 'room-create' },
+                    { name: 'Danh sách phòng', url: 'rooms' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             // {
@@ -124,14 +124,14 @@ export default class menu {
             //     ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
             // },
             {
-                id: 9, name: 'Reports', icon: 'hi-solid-document-report', subTab: [
-                    { name: 'Reports', url: 'reports' },
+                id: 9, name: 'Báo cáo', icon: 'hi-solid-document-report', subTab: [
+                    { name: 'Xuất báo cáo', url: 'reports' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
             {
-                id: 11, name: 'Settings', icon: 'io-settings-sharp', subTab: [
-                    { name: 'System', url: 'settings' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin']
+                id: 11, name: 'Cài đặt', icon: 'io-settings-sharp', subTab: [
+                    { name: 'Hệ thống', url: 'settings' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
             },
         ]
 

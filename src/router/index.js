@@ -550,7 +550,7 @@ const router = createRouter({
       component: Settings,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
+        requiredRole: ['Admin', 'Manager']
       },
       beforeEnter: checkValidRole
     },
