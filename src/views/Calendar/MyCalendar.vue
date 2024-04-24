@@ -199,7 +199,7 @@ export default {
               let defaultNum = null;
               let nextNum = null;
               let theNextDate = startDate;
-              let startIsFirstIndex = null;
+              let startIsFirstIndex = false;
 
               defaultNum = this.convertToNumber(listSchedules[0]?.dayInWeek);
               nextNum = this.convertToNumber(listSchedules[1]?.dayInWeek);

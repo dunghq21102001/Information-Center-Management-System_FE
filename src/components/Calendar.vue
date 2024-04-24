@@ -214,8 +214,11 @@ export default {
               // if (defaultNum < startDate.getDay()) startIsFirstIndex = false;
               // else startIsFirstIndex = true;
 
+
               if (typeof conditionLoop === "number") {
                 do {
+                  console.log(theNextDate.getDay());
+
                   if (theNextDate.getDay() == defaultNum) {
                     totalScheduleOfClassNow += 1;
                     let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
@@ -237,8 +240,6 @@ export default {
                       classId: item?.classId,
                       date: finalDate,
                     });
-                    theNextDate.setDate(theNextDate.getDate() + 1);
-                    startIsFirstIndex = !startIsFirstIndex;
                   } else if (theNextDate.getDay() == nextNum) {
                     totalScheduleOfClassNow += 1;
                     let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
@@ -260,8 +261,6 @@ export default {
                       classId: item?.classId,
                       date: finalDate,
                     });
-                    theNextDate.setDate(theNextDate.getDate() + 1);
-                    startIsFirstIndex = !startIsFirstIndex;
                   }
                   // totalScheduleOfClassNow += 1;
 
@@ -290,8 +289,6 @@ export default {
                       classId: item?.classId,
                       date: finalDate,
                     });
-                    theNextDate.setDate(theNextDate.getDate() + 1);
-                    startIsFirstIndex = !startIsFirstIndex;
                   } else if (theNextDate.getDay() == nextNum) {
                     // totalScheduleOfClassNow += 1;
                     let finalDate = dayjs(theNextDate).format("YYYY/MM/DD");
@@ -313,8 +310,6 @@ export default {
                       classId: item?.classId,
                       date: finalDate,
                     });
-                    theNextDate.setDate(theNextDate.getDate() + 1);
-                    startIsFirstIndex = !startIsFirstIndex;
                   }
                   // totalScheduleOfClassNow += 1;
                   theNextDate.setDate(theNextDate.getDate() + 1);
@@ -327,6 +322,7 @@ export default {
 
           // this.scheduleFilter = finalData;
           this.fData = finalData;
+          console.log(finalData);
           // this.isLoad = true;
           this.systemStore.setChangeLoading(false);
         })

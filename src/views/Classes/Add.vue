@@ -10,6 +10,7 @@
   </div>
 </template>
 <script>
+import func from "../../common/func";
 import { useSystemStore } from "../../stores/System";
 import schemaConfig from "../../common/config/schemaConfig";
 import swal from "../../common/swal";
@@ -67,6 +68,32 @@ export default {
   },
   methods: {
     handleAddClass(data) {
+      if (data?.dayInWeek.length == 0 || data?.dayInWeek.length == 1)
+        return swal.error("Bạn phải chọn 2 thứ trong 1 tuần");
+      if (data?.dayInWeek.length > 2)
+        return swal.error("Bạn chỉ có thể chọn 2 thứ trong 1 tuần");
+
+      let cloneDayInWeek = func.cloneArray(data.dayInWeek);
+      let finalDayInWeek = [];
+      if (this.convertToNumber(cloneDayInWeek[0]) == 0) {
+        finalDayInWeek.push(cloneDayInWeek[1]);
+        finalDayInWeek.push(cloneDayInWeek[0]);
+      } else if (this.convertToNumber(cloneDayInWeek[1]) == 0) {
+        finalDayInWeek.push(cloneDayInWeek[0]);
+        finalDayInWeek.push(cloneDayInWeek[1]);
+      } else if (
+        this.convertToNumber(cloneDayInWeek[0]) >
+        this.convertToNumber(cloneDayInWeek[1])
+      ) {
+        finalDayInWeek.push(cloneDayInWeek[1]);
+        finalDayInWeek.push(cloneDayInWeek[0]);
+      } else {
+        finalDayInWeek.push(cloneDayInWeek[0]);
+        finalDayInWeek.push(cloneDayInWeek[1]);
+      }
+
+      data["dayInWeek"] = finalDayInWeek;
+
       this.systemStore.setChangeLoading(true);
 
       const slotItem = this.slots.find((item) => {
@@ -80,10 +107,10 @@ export default {
       const startTime = formattedDate + "T" + slotItem?.startTime;
       const endTime = formattedDate + "T" + slotItem?.endTime;
 
-      let fDayInWeek = data.dayInWeek.split(",");
+      // let fDayInWeek = data.dayInWeek.split(",");
 
       let finalDay = [];
-      fDayInWeek.map((item) => {
+      data?.dayInWeek.map((item) => {
         finalDay.push({
           classId: null,
           slotId: data?.slotId,
@@ -150,6 +177,38 @@ export default {
           this.fetchCount++;
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    convertToNumber(data) {
+      // convert thứ thành số
+
+      let d = 0;
+      switch (data) {
+        case "Monday":
+          d = 1;
+          break;
+        case "Tuesday":
+          d = 2;
+          break;
+        case "Wednesday":
+          d = 3;
+          break;
+        case "Thursday":
+          d = 4;
+          break;
+        case "Friday":
+          d = 5;
+          break;
+        case "Saturday":
+          d = 6;
+          break;
+        case "Sunday":
+          d = 0;
+          break;
+        default:
+          break;
+      }
+
+      return d;
     },
   },
 };

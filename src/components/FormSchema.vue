@@ -124,6 +124,18 @@
             />
           </div>
         </div>
+        <div class="w-full pt-3" v-else-if="item.type === 'multiSelectV2'">
+          <div class="card flex justify-content-center">
+            <MultiSelect
+              v-model="selectedItemsInMultiSelectV2"
+              @change="(e) => handleChangeMultiSelectV2(e, item)"
+              :options="item.listData"
+              :optionLabel="`tagName`"
+              placeholder="Chọn 2 thứ trong tuần"
+              class="w-full px-3 py-1"
+            />
+          </div>
+        </div>
         <div
           class="w-full flex items-center flex-wrap pt-6"
           v-else-if="item.type === 'radio'"
@@ -246,6 +258,7 @@ export default {
       isValid: true,
       //  isHideAddBtnProp: this.isHideAddBtn
       isShowContract: false,
+      selectedItemsInMultiSelectV2: [],
     };
   },
   mounted() {
@@ -347,6 +360,13 @@ export default {
           const tmpURL = URL.createObjectURL(files[0]);
           item.value = tmpURL;
         }
+      });
+    },
+    handleChangeMultiSelectV2(e, item) {
+      item.value = [];
+
+      e.value.map((eI) => {
+        item.value.push(eI?.beData);
       });
     },
     validateImage(files) {

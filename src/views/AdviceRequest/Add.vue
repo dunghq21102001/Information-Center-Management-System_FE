@@ -61,7 +61,7 @@ export default {
         if (item?.id == data?.slotId) return item;
       });
 
-      const formattedDate = dayjs(data?.testDate, "M/D/YYYY").format(
+      const formattedDate = dayjs(data?.testDate, "MM/DD/YYYY").format(
         "YYYY-MM-DD"
       );
 

@@ -218,6 +218,11 @@
             />
           </div>
         </template>
+        <template #item-testDuration="item">
+          <span class="block">
+            {{ item?.testDuration }} phút
+          </span>
+        </template>
         <template #item-price="item">
           <span class="block">
             {{ convertToVND(item?.price) }}
@@ -542,6 +547,11 @@
               alt="Ảnh người dùng"
             />
           </div>
+        </template>
+        <template #item-testDuration="item">
+          <span class="block">
+            {{ item?.testDuration }} phút
+          </span>
         </template>
         <template #item-price="item">
           <span class="block">

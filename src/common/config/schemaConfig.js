@@ -165,7 +165,17 @@ export default class schemaConfig {
             { title: 'Số trẻ tối đa', field: 'maxNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Số trẻ dự kiến', field: 'expectedNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Thời gian bắt đầu', field: 'slotId', value: slots[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: slots },
-            { title: 'Thứ trong tuần', field: 'dayInWeek', value: dayInWeek[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: dayInWeek },
+            {
+                title: 'Thứ trong tuần', field: 'dayInWeek', value: [], type: 'multiSelectV2', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: [
+                    { value: 0, beData: 'Sunday', tagName: 'Chủ Nhật' },
+                    { value: 1, beData: 'Monday', tagName: 'Thứ 2' },
+                    { value: 2, beData: 'Tuesday', tagName: 'Thứ 3' },
+                    { value: 3, beData: 'Wednesday', tagName: 'Thứ 4' },
+                    { value: 4, beData: 'Thursday', tagName: 'Thứ 5' },
+                    { value: 5, beData: 'Friday', tagName: 'Thứ 6' },
+                    { value: 6, beData: 'Saturday', tagName: 'Thứ 7' },
+                ]
+            },
         ]
     }
 
