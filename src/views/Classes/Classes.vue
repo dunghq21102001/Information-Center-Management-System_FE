@@ -264,7 +264,7 @@ export default {
       return `${timestamp}_${randomString}.${extension}`;
     },
     updateClass(data) {
-      if (this.authStore.getAuth.roleName == "Staff")
+      if (this.authStore.getAuth.roleName == "Staff"|| this.authStore.getAuth.roleName == "Teacher")
         return swal.error("Nhân viên không có quyền thực hiện chức năng này!");
       this.systemStore.setChangeLoading(true);
       API_CLASS.putClass(data)
@@ -286,7 +286,7 @@ export default {
       this.fetchClass();
     },
     deleteClass(item) {
-      if (this.authStore.getAuth.roleName == "Staff")
+      if (this.authStore.getAuth.roleName == "Staff" || this.authStore.getAuth.roleName == "Teacher")
         return swal.error("Nhân viên không có quyền thực hiện chức năng này!");
       swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
         if (result.value) {

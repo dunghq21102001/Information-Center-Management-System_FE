@@ -2,7 +2,7 @@
   <div class="w-full">
     <div class="w-full flex items-center justify-between">
       <p class="page-sub-title">
-        Danh sách yêu cầu
+        Danh sách yêu cầu đã gửi
         {{
           authStore.getAuth?.roleName == "Admin" ||
           authStore.getAuth?.roleName == "Manager"
@@ -161,7 +161,7 @@
           </div>
         </div>
         <div class="w-full mt-5" v-show="selectedRequest === 'Schedule'">
-          <p class="font-bold text-[20px] mb-2">Yêu cầu dạy giúp 1 ngày</p>
+          <p class="font-bold text-[20px] mb-2">Yêu cầu dạy thay</p>
           <div class="w-full flex items-center justify-between">
             <div class="w-[45%] flex items-start flex-col">
               <span class="text-[18px] block mb-1">Lớp</span>
@@ -449,7 +449,23 @@ export default {
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
     updateRequest(item) {},
-    deleteRequest(item) {},
+    deleteRequest(item) {
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_REQUEST.deleteRequest(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.reloadList();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error(err.response?.data, 2500);
+            });
+        }
+      });
+    },
     fetchChildren() {
       this.systemStore.setChangeLoading(true);
       API_USER.getChildrenByParent(this.authStore.getAuth?.id)

@@ -29,19 +29,30 @@
     </div>
 
     <div class="fog" v-if="isShowSelectedStaff" @click.self="cancelAll">
-      <div class="bg-white rounded-md p-4">
-        <select name="" class="select-primary px-4 py-1" v-model="selectedStaff" id="">
-          <option
-            v-for="(item, index) in staffs"
-            :key="index"
-            :value="item?.id"
+      <div class="bg-white rounded-md p-4 w-[90%] md:w-[60%] lg:w-[30%]">
+        <span class="block my-3 font-bold text-[24px]"
+          >Phân công nhân viên</span
+        >
+        <span class="block text-[18px] mb-3 text-gray-600">
+          Đây sẽ là nhân viên được bạn chỉ định để tư vấn khách hàng
+        </span>
+        <div class="w-full flex items-center justify-between">
+          <select
+            name=""
+            class="select-primary px-4 py-1 mr-2 w-[75%]"
+            v-model="selectedStaff"
+            id=""
           >
-            {{ item?.userName }}
-          </option>
-        </select>
+            <option
+              v-for="(item, index) in staffs"
+              :key="index"
+              :value="item?.id"
+            >
+              {{ item?.userName }}
+            </option>
+          </select>
 
-        <div class="w-full mt-4 flex items-center justify-end">
-          <button @click="assignStaff" class="btn-primary px-3 py-1">
+          <button @click="assignStaff" class="btn-primary px-3 py-1 w-[20%]">
             Chỉ định
           </button>
         </div>
@@ -171,7 +182,6 @@ export default {
       return email.replace(/@gmail\.com$/, "");
     },
     createAccount(item) {
-      console.log(item);
       this.systemStore.setChangeLoading(true);
       API_USER.postUser({
         userName: this.removeEmail(item?.email),
@@ -186,6 +196,7 @@ export default {
           "https://static.vecteezy.com/system/resources/previews/009/292/244/original/default-avatar-icon-of-social-media-user-vector.jpg",
         roleId: "d5fa55c7-315d-4634-9c73-08dbbc3f3a54",
         createContractViewModel: null,
+        locationId: item?.locationId,
       })
         .then((res) => {
           this.systemStore.setChangeLoading(false);

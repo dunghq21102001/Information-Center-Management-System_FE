@@ -28,7 +28,7 @@ export default class API_REQUEST {
     }
 
     static deleteRequest(id) {
-        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?id=${id}`)
+        return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_PATH}?RequestId=${id}`)
     }
 
     static approveRequest(data) {

@@ -40,7 +40,9 @@
         v-if="classDetail?.scheduleClassViews.length > 0"
         class="w-full mt-5"
       >
-        <span class="block text-[20px] font-bold mb-5">Lịch học của lớp {{ classDetail?.classCode }}</span>
+        <span class="block text-[20px] font-bold mb-5"
+          >Lịch học của lớp {{ classDetail?.classCode }}</span
+        >
 
         <div
           class="w-full flex items-center justify-between border-gray-600 border-solid border-[1px]"
@@ -168,17 +170,38 @@
         v-if="showCreateExam"
         @click.self="showCreateExam = false"
       >
-        <div class="bg-white p-3 rounded-lg flex items-end justify-between">
-          <div class="flex flex-col mr-2">
-            <label for="">Tên bài kiểm tra</label>
-            <input
-              type="text"
-              placeholder="Tên bài kiểm tra"
-              v-model="testName"
-              class="px-4 py-1 i-cus"
-            />
+        <div class="bg-white p-3 rounded-lg flex flex-col items-end justify-between">
+          <span class="block my-2 font-bold text-[24px]">
+            Tạo bài kiểm tra thực hành
+          </span>
+          <div class="w-full flex flex-col">
+            <div class="flex flex-col mr-2">
+              <label for="">Tên bài kiểm tra</label>
+              <input
+                type="text"
+                placeholder="Tên bài kiểm tra"
+                v-model="testName"
+                class="px-4 py-1 i-cus"
+              />
+            </div>
+            <div class="flex flex-col mr-2">
+              <label for="">Thời gian</label>
+              <input
+                type="date"
+                v-model="testDate"
+                class="px-4 py-1 i-cus"
+              />
+            </div>
+            <div class="flex flex-col mr-2">
+              <label for="">Ngày thực hành</label>
+              <input
+                type="number"
+                v-model="testDuration"
+                class="px-4 py-1 i-cus"
+              />
+            </div>
           </div>
-          <button class="btn-primary px-3 py-[2px]" @click="createExam">
+          <button class="btn-primary px-3 py-[2px] mt-5" @click="createExam">
             Tạo
           </button>
         </div>
@@ -235,6 +258,8 @@ export default {
       classDetail: null,
       showCreateExam: false,
       testName: "",
+      testDate: "",
+      testDuration: 0,
       childrenData: [],
       childrenInClass: [],
       header: tableConfig.childrenInClassTable(),
@@ -284,13 +309,19 @@ export default {
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
     createExam() {
+      if (this.testDuration <= 0)
+        return swal.error("Thời gian làm bài không được nhỏ hơn 0");
+      if (this.testName.trim() == "")
+        return swal.error("Không được để trống tên bài thực hành");
+      if (this.testDate == "")
+        return swal.error("Không được để trống ngày làm bài thực hành");
       this.systemStore.setChangeLoading(true);
       API_EXAM.createExam({
         classId: this.$route.params.id,
         testName: this.testName,
         testCode: func.makeUnique(8),
-        testDate: new Date().toISOString(),
-        testDuration: 60,
+        testDate: this.testDate,
+        testDuration: this.testDuration,
         testType: 1,
       })
         .then((res) => {

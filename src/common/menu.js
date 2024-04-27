@@ -41,7 +41,7 @@ export default class menu {
                 id: 7, name: 'Khoá học', icon: 'si-coursera', subTab: [
                     { name: 'Thêm khoá học', url: 'course-create' },
                     { name: 'Danh sách khoá học', url: 'courses' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Teacher']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Manager']
             },
             {
                 id: 2, name: 'Hợp đồng', icon: 'fa-file-contract', subTab: [

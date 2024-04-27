@@ -46,7 +46,7 @@ export default class schemaConfig {
             { title: 'Email', field: 'email', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Điện thoại', field: 'phone', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Thi đầu vào', field: 'tested', value: 'False', type: 'radio', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: testData },
-            { title: 'Khu vực', field: 'locationId', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: locations },
+            // { title: 'Khu vực', field: 'locationId', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: locations },
             { title: 'Thời gian bắt đầu', field: 'slotId', value: slotData[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: slotData },
             { title: 'Ngày hẹn', field: 'testDate', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: slotData },
             { title: 'Địa chỉ', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },

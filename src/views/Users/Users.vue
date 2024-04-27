@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Người dùng</span>
+    <span class="text-[28px] font-bold block text-gray-700">Quản lý tài khoản</span>
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="users"

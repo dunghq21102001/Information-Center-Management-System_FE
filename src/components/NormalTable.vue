@@ -1250,7 +1250,8 @@ export default {
             key != "statusOfClass" &&
             key != "userId" &&
             key != "level" &&
-            key != "prerequisite"
+            key != "prerequisite" &&
+            key != 'courseCode'
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
