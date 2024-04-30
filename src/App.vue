@@ -1,6 +1,7 @@
 <template>
   <div class="w-full">
     <Header
+      :noti-list="notiList"
       v-show="
         curRoute != 'login' &&
         curRoute != 'certificate' &&
@@ -66,6 +67,7 @@
 </template>
 
 <script>
+import eventBus from './common/EventBus.js'
 import { useSystemStore } from "./stores/System";
 import Loading from "./components/Loading.vue";
 import Header from "./components/Header.vue";
@@ -92,7 +94,7 @@ export default {
     return {
       curRoute: "",
       isShowSettingBar: false,
-      notiList: "",
+      notiList: [],
       connection: null,
     };
   },
@@ -127,22 +129,33 @@ export default {
           .catch((err) => {});
       }
     },
-    test() {
-      const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca84";
+    sendNoti(param) {
+      // const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca84";
+      // this.connection
+      //   .invoke("SendMessage", [userId], "mess 134567890")
+      //   .catch(function (err) {
+      //     console.error("Error while sending notification:", err);
+      //   });
+
       this.connection
-        .invoke("SendMessage", [userId], "mess 134567890")
+        .invoke("SendMessage", param?.userIds, param?.message)
         .catch(function (err) {
           console.error("Error while sending notification:", err);
         });
     },
+    triggerNoti(param) {
+      this.sendNoti(param);
+    },
   },
   mounted() {
+    eventBus.on("triggerNoti", this.triggerTest);
     const thisVue = this;
     thisVue.connection.on("ReceiveMessage", function (u, message) {
       thisVue.fetchNoti();
     });
   },
   created() {
+    this.fetchNoti();
     this.changeTheme();
 
     this.connection = new signalR.HubConnectionBuilder()
@@ -152,6 +165,9 @@ export default {
     this.connection.start().catch(function (err) {
       return console.error(err.toString());
     });
+  },
+  beforeDestroy() {
+    eventBus.off("triggerNoti", this.triggerNoti);
   },
 };
 </script>

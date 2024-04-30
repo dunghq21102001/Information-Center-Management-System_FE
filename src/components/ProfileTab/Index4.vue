@@ -325,6 +325,7 @@
   </div>
 </template>
 <script>
+import eventBus from "../../common/EventBus.js";
 import API_REQUEST from "../../API/API_REQUEST.js";
 import API_LOCATION from "../../API/API_LOCATION.js";
 import API_CLASS from "../../API/API_CLASS.js";
@@ -588,36 +589,55 @@ export default {
         childrenCode: null,
         courseCode: null,
       };
+
+      let param = {
+        userIds: [],
+        message: "",
+      };
       switch (this.selectedRequest) {
         case "Location":
+          param.message = "Bạn nhận được 1 yêu cầu chuyển khu vực";
+          param.userIds = this.managersId;
           data.userIds = this.managersId;
           data.locationId = this.selectedLocation;
           break;
         case "Class":
+          param.message = "Bạn nhận được 1 yêu cầu chuyển lớp";
           data.fromClassId = this.selectedClassByTeacher;
           data.toClassId = this.selectedClassPending?.id;
           data.requestDescription = "Chuyển sang lớp khác";
+          param.userIds = [
+            this.selectedClassPending?.scheduleClassViews[0]?.teacherId,
+          ];
           data.userIds = [
             this.selectedClassPending?.scheduleClassViews[0]?.teacherId,
           ];
           break;
         case "Schedule":
+          param.message = "Bạn nhận được 1 yêu cầu đổi lịch";
           data.teachingDate = this.teachingDate;
+          param.userIds = [this.teacherSelected];
           data.userIds = [this.teacherSelected];
           data.requestDescription = "Dạy thay 1 ngày";
           data.scheduleId = this.scheduleSelected;
           break;
         case "Refund":
+          param.message = "Bạn nhận được 1 yêu cầu hoàn tiền";
+          param.userIds = this.managersId;
           data.userIds = this.managersId;
           data.childrenCode = this.selectedChildren;
           data.courseCode = this.selectedCourse;
           data.requestDescription = "Yêu cầu hoàn tiền";
           break;
         case "Leave":
+          param.message = "Bạn nhận được 1 yêu cầu xin nghỉ làm";
           data.leaveDate = this.selectedLeaveDate;
+          param.userIds = this.managersId;
           data.userIds = this.managersId;
           break;
         case "ChildrenClass":
+          param.message = "Bạn nhận được 1 yêu cầu chuyển lớp cho trẻ";
+          param.userIds = this.managersId;
           data.userIds = this.managersId;
           data.fromClassId = this.selectedClassOfChildren;
           data.toClassId = this.selectedClassPending?.id;
@@ -633,11 +653,16 @@ export default {
           this.fetchRequestOfUsers();
           this.fetchRequestReceiver();
           this.cancelAll();
+
+          this.triggerNoti(param);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
           swal.error(err.response?.data);
         });
+    },
+    triggerNoti(param) {
+      eventBus.$emit("triggerNoti", param);
     },
     handleApprove(item) {
       this.systemStore.setChangeLoading(true);

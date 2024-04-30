@@ -416,6 +416,23 @@
         />
       </div>
     </div>
+
+    <!-- update children profile -->
+    <div
+      class="fog-uc"
+      v-if="isShowUpdateProfile"
+      @click.self="isShowUpdateProfile = false"
+    >
+      <div
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
+      >
+        <FormSchema
+          :schema="modelChildrenProfile"
+          btn-name="Lưu"
+          @form-submitted="updateChildrenProfile"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -446,6 +463,9 @@ import viLocale from "date-fns/locale/vi";
 import swal from "../../common/swal";
 import QuestionReview from "../QuestionReview.vue";
 import func from "../../common/func";
+import FormSchema from "../FormSchema.vue";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../common/firebase";
 export default {
   setup() {
     const systemStore = useSystemStore();
@@ -460,6 +480,7 @@ export default {
     TableWithPagin,
     ChildrenAttendance,
     QuestionReview,
+    FormSchema,
   },
   data() {
     return {
@@ -530,6 +551,8 @@ export default {
       listQuestionsReview: [],
       totalScore: 0,
       backupChildId: "",
+      isShowUpdateProfile: false,
+      modelChildrenProfile: null,
     };
   },
   created() {
@@ -587,8 +610,56 @@ export default {
     convertDateTmp(date) {
       return dayjs(date).format("DD/MM/YYYY");
     },
+    separateUpperCase(text) {
+      if (/[A-Z]/.test(text)) {
+        return text
+          .replace(/([A-Z])/g, " $1")
+          .trim()
+          .replace(/\b\w/g, (firstChar) => firstChar.toUpperCase());
+      } else {
+        return text.charAt(0).toUpperCase() + text.slice(1);
+      }
+    },
     handleEdit(child) {
-      console.log(child);
+      this.isShowUpdateProfile = true;
+      const tmp = this.convertObjectToArray(child);
+      const finalSchema = tmp.filter((item) => {
+        if (item.field === "exams" || item.field === "certificates") {
+          return false;
+        } else {
+          item["title"] = this.separateUpperCase(item.field);
+          item["focus"] = false;
+          item["error"] = false;
+          item["errMes"] = "Không được bỏ trống!";
+          item["w"] = 2;
+
+          if (item.field === "description" || item.field === "address")
+            item["type"] = "textarea";
+          else if (item.field === "avatar" || item.field === "image")
+            item["type"] = "image";
+          else if (item.field === "genderType") {
+            item["type"] = "radio";
+            item["listData"] = ["Nam", "Nữ"];
+          } else if (item.field === "birthDay") {
+            const birthDay = new Date(item.value);
+            const year = birthDay.getFullYear().toString().padStart(4, "0");
+            const month = (birthDay.getMonth() + 1).toString().padStart(2, "0");
+            const day = birthDay.getDate().toString().padStart(2, "0");
+            const hour = birthDay.getHours().toString().padStart(2, "0");
+            const minute = birthDay.getMinutes().toString().padStart(2, "0");
+            const second = birthDay.getSeconds().toString().padStart(2, "0");
+
+            const formattedBirthDay = `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+            item["value"] = formattedBirthDay;
+            item["type"] = "date";
+          } else {
+            item["type"] = "text";
+          }
+
+          return true;
+        }
+      });
+      this.modelChildrenProfile = finalSchema;
     },
     handleGetDetail(child) {
       this.isShowUniqueData = true;
@@ -693,6 +764,71 @@ export default {
         });
       });
       this.coursesData = fData;
+    },
+    async updateChildrenProfile(data) {
+      if (func.isBlobURL(data?.avatar)) {
+        this.systemStore.setChangeLoading(true);
+        try {
+          const currentTime = new Date();
+          const uniqueFileName = "image_" + currentTime.getTime();
+          const storageRef = ref(storage, "avatars/" + uniqueFileName);
+
+          const response = await fetch(data.avatar);
+          const blob = await response.blob();
+
+          uploadBytes(storageRef, blob)
+            .then((snapshot) => {
+              return getDownloadURL(snapshot.ref);
+            })
+            .then((downloadURL) => {
+              data.avatar = downloadURL;
+              API_USER.putChildren({
+                id: data?.id,
+                userId: this.authStore.getAuth?.id,
+                fullName: data?.fullName,
+                genderType: data?.genderType,
+                birthDay: data?.birthDay,
+                avatar: data?.avatar,
+                specialSkill: data?.specialSkill,
+              })
+                .then((res) => {
+                  this.systemStore.setChangeLoading(false);
+                  swal.success(res.data);
+                  this.fetchChildren();
+                })
+                .catch((err) => {
+                  swal.error(err?.response?.data);
+                  this.systemStore.setChangeLoading(false);
+                });
+            })
+            .catch((error) => {
+              console.log("Lỗi khi tải ảnh lên:", error);
+            });
+        } catch (error) {
+          this.systemStore.setChangeLoading(false);
+          console.error("Error uploading:", error);
+        }
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_USER.putChildren({
+          id: data?.id,
+          userId: this.authStore.getAuth?.id,
+          fullName: data?.fullName,
+          genderType: data?.genderType,
+          birthDay: data?.birthDay,
+          avatar: data?.avatar,
+          specialSkill: data?.specialSkill,
+        })
+          .then((res) => {
+            this.systemStore.setChangeLoading(false);
+            swal.success(res.data);
+            this.fetchChildren();
+          })
+          .catch((err) => {
+            swal.error(err?.response?.data);
+            this.systemStore.setChangeLoading(false);
+          });
+      }
     },
     convertDataCertificate() {
       let fData = [];
@@ -850,6 +986,58 @@ export default {
           swal.error(err.response?.data);
         });
     },
+    convertObjectToArray(obj) {
+      return Object.keys(obj)
+        .filter(
+          (key) =>
+            key !== "key" &&
+            key !== "index" &&
+            // key !== "status" &&
+            key !== "createdBy" &&
+            key !== "creationDate" &&
+            key !== "deleteBy" &&
+            key !== "deletionDate" &&
+            key !== "modificationBy" &&
+            key !== "modificationDate" &&
+            key !== "equipments" &&
+            key !== "isDeleted" &&
+            key !== "locationTrainingPrograms" &&
+            key !== "users" &&
+            key !== "scheduleRooms" &&
+            key !== "trainingPrograms" &&
+            key != "blogTags" &&
+            key != "userAccount" &&
+            key != "semesterCourses" &&
+            key != "trainingProgramCategory" &&
+            key != "trainingProgramCourses" &&
+            key != "certificate" &&
+            key != "Checkbox" &&
+            key != "checkbox" &&
+            key != "roleName" &&
+            key != "courses" &&
+            key != "courseType" &&
+            key != "courseId" &&
+            key != "actualNumber" &&
+            key != "childrenProfiles" &&
+            key != "locationName" &&
+            key != "classes" &&
+            key != "lessons" &&
+            key != "semesterId" &&
+            key != "roomId" &&
+            key != "code" &&
+            key != "staff" &&
+            key != "startTime" &&
+            key != "endTime" &&
+            key != "adviseRequests" &&
+            key != "scheduleClassViews" &&
+            key != "statusOfClass" &&
+            key != "userId" &&
+            key != "level" &&
+            key != "prerequisite" &&
+            key != "courseCode"
+        )
+        .map((key) => ({ field: key, value: obj[key] }));
+    },
     getDay(item) {
       const currentDate = parse(item, "dd/MM", new Date());
 
@@ -945,5 +1133,18 @@ export default {
 }
 .br-r {
   border-right: 1px solid rgb(209, 209, 209);
+}
+
+.fog-uc {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
 }
 </style>

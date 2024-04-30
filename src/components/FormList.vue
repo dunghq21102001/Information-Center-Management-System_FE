@@ -8,7 +8,7 @@
       v-model="searchValue"
       @input="handleSearch"
     />
-    <div class="w-full overflow-y-scroll max-h-[75vh] hide-scrollbar">
+    <div class="w-full overflow-y-scroll max-h-[65vh] hide-scrollbar">
       <div
         v-for="i in dataProp"
         class="flex items-center justify-between px-3 py-2 brb-cus"

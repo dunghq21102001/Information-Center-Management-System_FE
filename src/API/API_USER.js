@@ -95,6 +95,10 @@ export default class API_USER {
         return axios.get(`${API_BASE.BASE_URL}/Children/getChildrensByStaffId`)
     }
 
+    static getChildrenByOutOfClassId(id) {
+        return axios.get(`${API_BASE.BASE_URL}/Children/ChildrensByOutOfClassId?classId=${id}`)
+    }
+
 
     static adviceRequestByUserId(id) {
         return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/GetAdviseRequestByUserId?id=${id}`)

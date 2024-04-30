@@ -192,11 +192,9 @@ export default {
           const uniqueFileName = "image_" + currentTime.getTime();
           const storageRef = ref(storage, "avatars/" + uniqueFileName);
 
-          // Chuyển đổi URL blob thành Blob
           const response = await fetch(data.avatar);
           const blob = await response.blob();
 
-          // Tải lên ảnh avatar lên Firestore
           uploadBytes(storageRef, blob)
             .then((snapshot) => {
               return getDownloadURL(snapshot.ref);

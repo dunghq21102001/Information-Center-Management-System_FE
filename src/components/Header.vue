@@ -23,6 +23,8 @@
       <div class="flex items-center justify-between">
         <div class="w-[30px] h-[30px] relative mr-5">
           <v-icon
+            @click="isShowNoti = !isShowNoti"
+            v-click-outside-element="closeNoti"
             name="io-notifications"
             class="absolute top-0 left-0 cursor-pointer"
             scale="2"
@@ -30,10 +32,35 @@
           />
           <span
             class="absolute w-[20px] h-[20px] -top-2 -right-2 rounded-full bg-gray-300 text-center leading-[20px]"
-            >0</span
           >
+            {{ notiList.length }}
+          </span>
+
+          <div
+            v-if="isShowNoti"
+            class="absolute top-[130%] hide-scrollbar w-[200px] md:w-[350px] right-[-80px] md:right-0 bg-white rounded-sm p-2 shadow-lg max-h-[90vh] overflow-y-scroll"
+          >
+            <span
+              class="block text-center font-bold text-gray-600"
+              v-if="notiList.length == 0"
+            >
+              Không có thông báo
+            </span>
+            <div
+              class="my-2 hover:bg-gray-100 px-2 py-1"
+              v-for="(item, index) in notiList"
+              :key="index"
+            >
+              <span class="block"> Nội dung: {{ item?.message }} </span>
+              <span class="block text-[12px] text-gray-600">
+                Nhận vào: {{ convertDate(item?.date) }}
+              </span>
+            </div>
+          </div>
         </div>
-        <span class="block z-10 mx-2 font-bold">{{ authStore.getAuth?.userName }}</span>
+        <span class="block z-10 mx-2 font-bold">{{
+          authStore.getAuth?.userName
+        }}</span>
         <div
           class="w-[50px] h-[50px] relative rounded-full flex items-center justify-center"
         >
@@ -98,6 +125,12 @@ export default {
     MobileMenu,
     CloudAnimation,
   },
+  props: {
+    notiList: {
+      type: Array,
+      default: [],
+    },
+  },
   setup() {
     const systemStore = useSystemStore();
     const authStore = useAuthStore();
@@ -107,6 +140,7 @@ export default {
   data() {
     return {
       isShowProfile: false,
+      isShowNoti: false,
       isShowMobileMenu: false,
       curRoute: "",
     };
@@ -117,11 +151,17 @@ export default {
     },
   },
   methods: {
+    convertDate(date) {
+      return func.convertDateOldVer(date);
+    },
     changExpand() {
       this.systemStore.setExpandSideBar();
     },
     closeProfile() {
       this.isShowProfile = false;
+    },
+    closeNoti() {
+      this.isShowNoti = false;
     },
     goToRoute(url) {
       this.$router.push({ name: url });

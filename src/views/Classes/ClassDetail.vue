@@ -351,7 +351,7 @@ export default {
     getListChildrenByStaff() {
       if (this.authStore.getAuth?.roleName == "Staff") {
         this.systemStore.setChangeLoading(true);
-        API_USER.getChildrenByStaff()
+        API_USER.getChildrenByOutOfClassId(this.$route.params.id)
           .then((res) => {
             this.childrenData = res.data;
             this.systemStore.setChangeLoading(false);

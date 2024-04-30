@@ -1345,7 +1345,7 @@ export default {
         item["title"] = this.separateUpperCase(item.field);
         item["focus"] = false;
         item["error"] = false;
-        item["errMes"] = "This data field cannot be blank!";
+        item["errMes"] = "Không được bỏ trống!!";
         item["w"] = 2;
 
         if (item.field == "description" || item.field == "address")
