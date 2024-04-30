@@ -64,7 +64,7 @@
                   : '',
               ]"
             >
-              <span class="font-bold">A.</span> {{ item?.answer1 }}
+              <span class="font-bold">A.</span> {{ item?.answer1 ? item?.answer1 : 'Không có đáp án'}}
             </p>
             <p
               :class="[
@@ -78,7 +78,7 @@
                   : '',
               ]"
             >
-              <span class="font-bold">B.</span> {{ item?.answer2 }}
+              <span class="font-bold">B.</span> {{item?.answer2 ? item?.answer2 : 'Không có đáp án'}}
             </p>
             <p
               :class="[
@@ -92,7 +92,7 @@
                   : '',
               ]"
             >
-              <span class="font-bold">C.</span> {{ item?.answer3 }}
+              <span class="font-bold">C.</span> {{ item?.answer3 ? item?.answer3 : 'Không có đáp án'}}
             </p>
             <p
               :class="[
@@ -106,7 +106,7 @@
                   : '',
               ]"
             >
-              <span class="font-bold">D.</span> {{ item?.answer4 }}
+              <span class="font-bold">D.</span> {{item?.answer4 ? item?.answer4 : 'Không có đáp án' }}
             </p>
           </div>
         </div>

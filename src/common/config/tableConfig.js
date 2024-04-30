@@ -33,7 +33,7 @@ export default class tableConfig {
 
     static childrenTable() {
         return [
-            { text: "MSSV", value: "childrenCode", sortable: true, },
+            { text: "Mã số", value: "childrenCode", sortable: true, },
             { text: "Họ tên", value: "fullName", sortable: true, },
             { text: "Giới tính", value: "genderType", sortable: true },
             { text: "Sinh nhật", value: "birthDay", sortable: true },
@@ -316,7 +316,7 @@ export default class tableConfig {
     static childrenInClassTable() {
         return [
             { text: "Mã lớp", value: "code", sortable: true },
-            { text: "MSSV", value: "childrenCode", sortable: true },
+            { text: "Mã số", value: "childrenCode", sortable: true },
             { text: "Họ tên", value: "fullName", sortable: true },
             // { text: "Hành động", value: "operation" }
         ]
