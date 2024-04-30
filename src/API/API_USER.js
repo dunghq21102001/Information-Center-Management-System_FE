@@ -43,6 +43,10 @@ export default class API_USER {
         return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrensByStaffId`)
     }
 
+    static getSuggestCourseByChildrenId(id) {
+        return axios.get(`${API_BASE.BASE_URL}/Children/CourseSuggestions/${id}`)
+    }
+
     static getChildrenByParent(id) {
         return axios.get(`${API_BASE.BASE_URL}/Children/GetChildrenByParentId/${id}`)
     }
@@ -90,6 +94,10 @@ export default class API_USER {
     static getChildrensByStaffId() {
         return axios.get(`${API_BASE.BASE_URL}/Children/getChildrensByStaffId`)
     }
-  
+
+
+    static adviceRequestByUserId(id) {
+        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/GetAdviseRequestByUserId?id=${id}`)
+    }
 
 }

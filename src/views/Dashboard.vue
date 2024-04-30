@@ -23,13 +23,13 @@
       <div
         class="col-span-12 md:col-span-6 border-cus min-h-[350px] p-4 flex items-center flex-wrap justify-around"
       >
-        <div class="w-[45%]">
+        <!-- <div class="w-[45%]">
           <PieChart />
-        </div>
-        <div class="w-[45%]" v-if="donutData.length == 0 && donutLabels == 0">
+        </div> -->
+        <div class="w-[90%]" v-if="donutData.length == 0 && donutLabels == 0">
           <p class="w-full text-center">Không có dữ liệu</p>
         </div>
-        <div class="w-[45%]" v-if="donutData.length != 0 && donutLabels != 0">
+        <div class="w-[60%]" v-if="donutData.length != 0 && donutLabels != 0">
           <DoughnutChart :labels="donutLabels" :data="donutData" />
         </div>
       </div>

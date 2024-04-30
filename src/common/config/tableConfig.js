@@ -7,8 +7,8 @@ export default class tableConfig {
             { text: "Vị trí", value: "roleName", sortable: true },
             { text: "Giới tính", value: "genderType", sortable: true },
             // { text: "Avatar", value: "avatar", sortable: true },
-            // { text: "Phone", value: "phone", sortable: true },
-            { text: "Sinh nhật", value: "dateOfBirth", sortable: true, width: 150 },
+            { text: "Phone", value: "phone", sortable: true },
+            // { text: "Sinh nhật", value: "dateOfBirth", sortable: true, width: 150 },
             // { text: "Bank Name", value: "bankName", sortable: true },
             // { text: "Bank Account Number", value: "bankAccountNumber", sortable: true},
             // { text: "Bank Account Name", value: "bankAccountName", sortable: true },
@@ -38,7 +38,7 @@ export default class tableConfig {
             { text: "Giới tính", value: "genderType", sortable: true },
             { text: "Sinh nhật", value: "birthDay", sortable: true },
             { text: "Kỹ năng", value: "specialSkill", sortable: true },
-            // { text: "Hành động", value: "operation" }
+            { text: "Hành động", value: "operation" }
         ]
     }
 
@@ -188,12 +188,22 @@ export default class tableConfig {
         ]
     }
 
+    static courseSuggestTable() {
+        return [
+            { text: "Mã", value: "courseCode", sortable: true },
+            { text: "Tên", value: "name", sortable: true },
+            { text: "Loại", value: "courseType", sortable: true },
+            { text: "Syllabus", value: "syllabus", sortable: true },
+            { text: "Chi tiết", value: "detail", width: 90 },
+        ]
+    }
+
     static courseChildTable() {
         return [
             { text: "Mã", value: "courseCode", sortable: true },
             { text: "Tên", value: "name", sortable: true },
             { text: "Giá", value: "price", sortable: true },
-            { text: "Loại", value: "courseType", sortable: true },
+            // { text: "Loại", value: "courseType", sortable: true },
             // { text: "Image", value: "image", sortable: true },
             { text: "Tổng slot", value: "durationTotal", sortable: true },
             // { text: "Syllabus", value: "syllabus", sortable: true },
@@ -203,6 +213,20 @@ export default class tableConfig {
             // { text: "Description", value: "description", sortable: true },
             // { text: "Chi tiết", value: "detail", width: 90 },
             { text: "Hành động", value: "operation" }
+        ]
+    }
+
+    static resourceTable() {
+        return [
+            { text: "Tệp", value: "url", sortable: true },
+            { text: "Mô tả", value: "description", sortable: true },
+            { text: "Hành động", value: "operation" }
+        ]
+    }
+    static resourceForChildrenTable() {
+        return [
+            { text: "Tệp", value: "url", sortable: true },
+            { text: "Mô tả", value: "description", sortable: true },
         ]
     }
 

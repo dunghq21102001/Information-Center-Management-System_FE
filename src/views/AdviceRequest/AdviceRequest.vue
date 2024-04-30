@@ -100,15 +100,27 @@ export default {
   },
   methods: {
     fetchAdvices() {
-      this.systemStore.setChangeLoading(true);
-      API_USER.getAdviceRequest()
-        .then((res) => {
-          this.data = res.data;
-          this.systemStore.setChangeLoading(false);
-        })
-        .catch((err) => {
-          this.systemStore.setChangeLoading(false);
-        });
+      if (this.authStore.getAuth?.roleName == "Staff") {
+        this.systemStore.setChangeLoading(true);
+        API_USER.adviceRequestByUserId(this.authStore.getAuth?.id)
+          .then((res) => {
+            this.data = res.data;
+            this.systemStore.setChangeLoading(false);
+          })
+          .catch((err) => {
+            this.systemStore.setChangeLoading(false);
+          });
+      } else {
+        this.systemStore.setChangeLoading(true);
+        API_USER.getAdviceRequest()
+          .then((res) => {
+            this.data = res.data;
+            this.systemStore.setChangeLoading(false);
+          })
+          .catch((err) => {
+            this.systemStore.setChangeLoading(false);
+          });
+      }
     },
     updateAdvice(data) {
       data["isTested"] = data.isTested == "True" ? true : false;

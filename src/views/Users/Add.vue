@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <FormSchema
-      v-if="fetchCount == 2"
+      v-if="fetchCount == 3"
       :schema="userSchema"
       btn-name="Tạo"
       @form-submitted="handleAddUser"
@@ -9,7 +9,7 @@
       :is-hide-add-btn="isHiddenBtn"
     />
     <FormSchema
-      v-if="fetchCount == 2 && isShowContract == true"
+      v-if="fetchCount == 3 && isShowContract == true"
       :schema="contractSchema"
       btn-name="Tạo"
       @form-submitted="handleAddContract"
@@ -28,6 +28,7 @@ import swal from "../../common/swal";
 import { useAuthStore } from "../../stores/Auth";
 import { storage } from "../../common/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import API_LOCATION from "../../API/API_LOCATION";
 export default {
   props: {},
   setup() {
@@ -44,13 +45,14 @@ export default {
       fetchCount: 0,
       isShowContract: false,
       isHiddenBtn: false,
+      locations: [],
       roles: [],
       jobType: [],
     };
   },
   watch: {
     fetchCount() {
-      if (this.fetchCount == 2) {
+      if (this.fetchCount == 3) {
         if (this.authStore.getAuth?.roleName == "Staff") {
           this.userSchema = schemaConfig.userSchema(
             ["Nam", "Nữ"],
@@ -60,13 +62,15 @@ export default {
                 name: "Parent",
               },
             ],
-            this.jobType
+            this.jobType,
+            this.locations
           );
         } else {
           this.userSchema = schemaConfig.userSchema(
             ["Nam", "Nữ"],
             this.roles,
-            this.jobType
+            this.jobType,
+            this.locations
           );
         }
       }
@@ -74,6 +78,7 @@ export default {
   },
   created() {
     this.fetchRoles();
+    this.fetchLocations()
     this.fetchConfigJobType();
   },
   methods: {
@@ -127,6 +132,7 @@ export default {
                   dateOfBirth: data?.dateOfBirth,
                   avatar: data?.avatar,
                   roleId: data?.roleId,
+                  locationId: data?.locationId,
                   createContractViewModel:
                     data?.roleId == "d5fa55c7-315d-4634-9c73-08dbbc3f3a53"
                       ? {
@@ -174,6 +180,16 @@ export default {
         this.isShowContract = false;
         this.isHiddenBtn = false;
       }
+    },
+    fetchLocations() {
+      this.systemStore.setChangeLoading(true)
+      API_LOCATION.getLocations()
+      .then(res => {
+        this.systemStore.setChangeLoading(false)
+        this.locations = res.data
+        this.fetchCount++
+      })
+      .catch(er => {this.systemStore.setChangeLoading(false)})
     },
     fetchRoles() {
       // if (this.authStore.getAuth?.roleName == "Staff") {

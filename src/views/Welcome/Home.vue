@@ -1,12 +1,18 @@
 <template>
   <div class="w-full">
     <!-- 1 -->
-    <div class="w-[95%] mx-auto overflow-hidden rounded-lg my-5">
+    <div class="relative w-[95%] mx-auto overflow-hidden rounded-lg my-5">
       <img
         src="../../assets/images/banner-1.png"
         class="w-full object-cover"
         alt=""
       />
+
+      <div class="w-[50%] absolute bottom-[20px] left-[50%] translate-x-[-50%]">
+        <div @click="scrollToAdvice" id="breathing-button">
+          Đăng ký tư vấn ngay
+        </div>
+      </div>
     </div>
 
     <!-- 2 -->
@@ -29,6 +35,7 @@
       <div
         v-for="course in courses"
         class="col-span-12 md:col-span-6 lg:col-span-3"
+        @click="handleGetDetail(course)"
       >
         <div
           class="w-full overflow-hidden flex h-[200px] items-start justify-center"
@@ -53,20 +60,21 @@
       v-if="courses.length > 4"
       class="w-full flex items-center justify-center mb-5"
     >
-      <div class="flex items-center flex-col">
+      <!-- <div class="flex items-center flex-col">
         <span class="text-[24px] text-primary">More than 300+ courses</span>
         <button class="btn-primary px-3 py-3 rounded-lg w-[300px]">
           <span class="">See more</span>
         </button>
-      </div>
+      </div> -->
     </div>
 
     <!-- advice request -->
     <div
+      id="av"
       class="adr-cus h-[900px] relative hidden md:block rounded-2xl overflow-hidden"
     >
       <div
-        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-[100px]"
+        class="absolute w-[40%] h-[450px] flex flex-col items-start justify-around right-[80px] top-[150px]"
       >
         <input
           type="text"
@@ -175,7 +183,7 @@
               class="px-3 py-1 rounded-lg flex items-center flex-wrap w-full"
             >
               <span
-                class="block bg-primary rounded-md mx-2 min-w-[50px] text-center text-white text-[18px] max-w-[200px]"
+                class="block bg-primary rounded-md px-2 py-1 mx-2 min-w-[50px] text-center text-white text-[18px] max-w-[200px]"
                 v-for="t in blog.tags"
               >
                 {{ t }}
@@ -206,6 +214,48 @@
     >
       <v-icon name="bi-chat-dots-fill" />
     </div> -->
+
+    <!-- course detail -->
+    <div
+      class="fog"
+      v-if="isShowCourseDetail"
+      @click.self="isShowCourseDetail = false"
+    >
+      <div class="bg-white rounded-md w-[95%] h-[90vh] p-4">
+        <div class="w-full flex flex-col items-center">
+          <div class="w-[300px]">
+            <img :src="courseDetail?.image" alt="" />
+          </div>
+          <span class="font-bold text-[24px]">{{ courseDetail?.name }}</span>
+          <p class="text-gray-600 text-[18px] text-center mt-5">
+            {{ courseDetail?.description }}
+          </p>
+          <p class="text-gray-600 text-[18px] text-center mt-5">
+            Số buổi học:
+            <span class="text-black font-bold">{{
+              courseDetail?.durationTotal
+            }}</span>
+            / Loại khoá học:
+            <span class="text-black font-bold">
+              {{
+                courseDetail?.courseType == "Single"
+                  ? "Khoá học đơn"
+                  : "Khoá học nhiều cấp độ"
+              }}
+            </span>
+          </p>
+        </div>
+        <span class="block text-[20px] mt-10"
+          >Danh sách bài học sẽ được học trong khoá học này:
+        </span>
+        <ul class="list-disc list-inside">
+          <li v-for="(item, index) in courseDetail?.lessons" :key="index">
+            Bài học {{ item?.lessonNumber }}: {{ item?.name }} / Số buổi học:
+            {{ item?.duration }}
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -217,7 +267,6 @@ import { useSystemStore } from "../../stores/system";
 import API_SLOT from "../../API/API_SLOT";
 import swal from "../../common/swal";
 import dayjs from "dayjs";
-import axios from "axios";
 export default {
   components: {},
   setup() {
@@ -228,9 +277,9 @@ export default {
     return {
       listTime: [],
       statistics: [
-        { total: "40+", des: "Cơ sở trên toàn quốc" },
+        { total: "2+", des: "Cơ sở trên toàn quốc" },
         {
-          total: "590.000+",
+          total: "60.000+",
           des: "Học sinh đã tốt nghiệp và đi ra thế giới từ KidProEdu",
         },
         {
@@ -257,6 +306,8 @@ export default {
         startTime: "",
         endTime: "",
       },
+      isShowCourseDetail: false,
+      courseDetail: null,
     };
   },
   created() {
@@ -287,10 +338,22 @@ export default {
             element["total"] = 0;
           });
           this.slots = fData;
-          this.slotsBK = fData
+          this.slotsBK = fData;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
+    },
+    handleGetDetail(course) {
+      this.systemStore.setChangeLoading(true);
+      API_COURSE.getCourseById(course?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.isShowCourseDetail = true;
+          this.courseDetail = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
     },
     postAdviceRequest() {
       if (
@@ -367,14 +430,19 @@ export default {
             endTime: "",
           };
 
-          this.slots = this.slotsBK
+          this.slots = this.slotsBK;
         })
         .catch((err) => {
           swal.error(err.response?.data);
           this.systemStore.setChangeLoading(false);
         });
     },
-
+    scrollToAdvice() {
+      const adviceSection = document.getElementById("av");
+      if (adviceSection) {
+        adviceSection.scrollIntoView({ behavior: "smooth" });
+      }
+    },
     selectBlog(item) {
       this.$emit("selectBlog", item);
     },
@@ -435,7 +503,7 @@ export default {
     },
     fetchCourse() {
       this.systemStore.setChangeLoading(true);
-      API_COURSE.getCourses()
+      API_COURSE.getCoursesInBlog()
         .then((res) => {
           let i = 0;
           let tmp = [];
@@ -548,5 +616,18 @@ export default {
     -ms-transform: scale(0.9);
     transform: scale(0.9);
   }
+}
+
+.fog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

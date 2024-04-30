@@ -7,6 +7,10 @@ export default class API_COURSE {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/Courses`)
     }
 
+    static getCoursesInBlog() {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CoursesInBlog`)
+    }
+
     static getSingleCourse() {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_PATH}/CoursesSingle`)
     }

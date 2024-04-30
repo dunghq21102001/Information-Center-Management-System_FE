@@ -598,10 +598,10 @@ export default {
         .then((res) => {
           this.childrenDetail = res.data;
           this.systemStore.setChangeLoading(false);
-          this.convertDataCourse();
-          this.convertDataClass();
-          this.convertDataCertificate();
-          this.convertDataExam();
+          if (res.data.courses != null) this.convertDataCourse();
+          if (res.data.classes != null) this.convertDataClass();
+          if (res.data.certificates != null) this.convertDataCertificate();
+          if (res.data.exams != null) this.convertDataExam();
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
       this.$nextTick(() => {
@@ -801,7 +801,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.scheduleData = {};
-          
+
           console.log(this.scheduleData);
         })
         .catch((err) => {

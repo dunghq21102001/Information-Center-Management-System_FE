@@ -1,12 +1,19 @@
 <template>
   <div class="w-full">
-    <Header v-show="curRoute != 'login' && curRoute != 'certificate'" />
+    <Header
+      v-show="
+        curRoute != 'login' &&
+        curRoute != 'certificate' &&
+        curRoute != 'payment-result'
+      "
+    />
     <Transition name="sidebar">
       <Sidebar
         v-show="
           curRoute != 'login' &&
           curRoute != 'welcome' &&
-          curRoute != 'certificate'
+          curRoute != 'certificate' &&
+          curRoute != 'payment-result'
         "
       />
     </Transition>
@@ -14,7 +21,8 @@
       :class="
         curRoute == 'welcome' ||
         curRoute == 'login' ||
-        curRoute == 'certificate'
+        curRoute == 'certificate' ||
+        curRoute == 'payment-result'
           ? 'w-full'
           : 'w-full lg:w-[80%] float-right pt-8 main-bg'
       "
@@ -23,7 +31,8 @@
         :class="
           curRoute == 'welcome' ||
           curRoute == 'login' ||
-          curRoute == 'certificate'
+          curRoute == 'certificate' ||
+          curRoute == 'payment-result'
             ? 'w-full'
             : 'p-5 w-[90%] mx-auto bg-white rounded-lg'
         "
@@ -37,7 +46,8 @@
       v-show="
         curRoute != 'login' &&
         curRoute != 'welcome' &&
-        curRoute != 'certificate'
+        curRoute != 'certificate' &&
+        curRoute != 'payment-result'
       "
       @click="isShowSettingBar = !isShowSettingBar"
       class="hidden lg:flex fixed bottom-[50%] translate-y-[-50%] bg-blur p-3 cursor-pointer rotate items-center justify-center"
@@ -118,9 +128,9 @@ export default {
       }
     },
     test() {
-      const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca82";
+      const userId = "434d275c-ff7d-48fa-84e3-bed5ecadca84";
       this.connection
-        .invoke("SendMessage", userId, "mess 1")
+        .invoke("SendMessage", [userId], "mess 134567890")
         .catch(function (err) {
           console.error("Error while sending notification:", err);
         });
@@ -129,7 +139,6 @@ export default {
   mounted() {
     const thisVue = this;
     thisVue.connection.on("ReceiveMessage", function (u, message) {
-      console.log("go here");
       thisVue.fetchNoti();
     });
   },
@@ -137,7 +146,7 @@ export default {
     this.changeTheme();
 
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:7221/notificationHub")
+      .withUrl("https://kidproeduservicesv2.azurewebsites.net/notificationHub")
       .configureLogging(signalR.LogLevel.Information)
       .build();
     this.connection.start().catch(function (err) {

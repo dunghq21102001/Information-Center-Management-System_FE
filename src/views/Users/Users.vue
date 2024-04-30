@@ -1,6 +1,8 @@
 <template>
   <div class="w-full">
-    <span class="text-[28px] font-bold block text-gray-700">Quản lý tài khoản</span>
+    <span class="text-[28px] font-bold block text-gray-700"
+      >Quản lý tài khoản</span
+    >
     <div class="w-[90%] mx-auto">
       <NormalTable
         :data="users"
@@ -25,17 +27,21 @@
     </div>
 
     <div class="w-full mt-14" v-if="authStore.getAuth?.roleName == 'Staff'">
-      <span class="text-[28px] font-bold block text-gray-700">Danh sách trẻ</span>
+      <span class="text-[28px] font-bold block text-gray-700"
+        >Danh sách trẻ</span
+      >
       <div class="w-[90%] mx-auto">
         <NormalTable
           :data="childrenListData"
           :header="childrenHeader"
           :is-show-search="true"
+          :is-suggest="true"
           is-add=""
           excel="children-data"
           csv="children-data"
           :reload="true"
           @reload-action="reloadList"
+          @handle-suggest="handleSuggest"
         />
       </div>
     </div>
@@ -81,6 +87,25 @@
         </div>
       </div>
     </div>
+
+    <!-- suggest course -->
+    <div class="fog-s" v-if="isShowSuggest" @click.self="isShowSuggest = false">
+      <div class="w-[90%] bg-white rounded-md p-4">
+        <span class="font-bold text-[22px]"
+          >Gợi ý khoá học dành cho {{ selectedChildName }}</span
+        >
+        <div class="w-[90%] mx-auto">
+          <NormalTable
+            :data="dataSuggestCourses"
+            :header="coursesSuggestHeader"
+            :is-show-search="true"
+            :is-suggest="true"
+            is-add=""
+            @click-to-row="clickToRow"
+          />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -106,10 +131,14 @@ export default {
     return {
       header: tableConfig.userTable(),
       childrenHeader: tableConfig.childrenTable(),
+      coursesSuggestHeader: tableConfig.courseSuggestTable(),
       users: [],
       childrenListByParent: [],
       childrenListData: [],
       isShowChildrenList: false,
+      isShowSuggest: false,
+      dataSuggestCourses: [],
+      selectedChildName: "",
     };
   },
   methods: {
@@ -135,14 +164,25 @@ export default {
         });
       // }
     },
+    handleSuggest(item) {
+      this.isShowSuggest = true;
+      this.selectedChildName = item?.fullName;
+      this.systemStore.setChangeLoading(true);
+      API_USER.getSuggestCourseByChildrenId(item?.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.dataSuggestCourses = res.data;
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     fetchChildrenByStaff() {
-      this.systemStore.setChangeLoading(true)
+      this.systemStore.setChangeLoading(true);
       API_USER.getChildrenByStaff(this.authStore.getAuth?.id)
-      .then(res => {
-        this.childrenListData = res.data
-        this.systemStore.setChangeLoading(false)
-      })
-      .catch(err => this.systemStore.setChangeLoading(false))
+        .then((res) => {
+          this.childrenListData = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
     },
     async updateUser(data) {
       if (func.isBlobURL(data?.avatar)) {
@@ -194,6 +234,9 @@ export default {
             this.systemStore.setChangeLoading(false);
           });
       }
+    },
+    clickToRow(item) {
+      this.$router.push({ name: "course-detail", params: { id: item?.id } });
     },
     async addChildren(data) {
       this.systemStore.setChangeLoading(true);
@@ -281,7 +324,7 @@ export default {
     },
     reloadList(param) {
       this.fetchUsers();
-      this.fetchChildrenByStaff()
+      this.fetchChildrenByStaff();
     },
     getAge(date) {
       const curYear = new Date().getFullYear();
@@ -291,7 +334,7 @@ export default {
   },
   created() {
     this.fetchUsers();
-    this.fetchChildrenByStaff()
+    this.fetchChildrenByStaff();
   },
 };
 </script>
@@ -311,5 +354,18 @@ export default {
 
 .bb {
   border-bottom: 1px solid rgb(225, 225, 225);
+}
+
+.fog-s {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

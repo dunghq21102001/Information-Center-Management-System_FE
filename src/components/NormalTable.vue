@@ -61,19 +61,30 @@
             :data="dataProp"
             :fields="fieldsExport"
             worksheet="Worksheet 1"
-            :name="`${excelProp}.xls`"
+            :name="`${excelProp}.xlsx`"
           >
             <v-icon name="vi-file-type-excel" scale="2" />
           </download-excel>
         </div>
         <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
+          <download-excel
+            v-tooltip="'Tải xuống file Excel'"
+            :data="dataExcelCustom"
+            :fields="fieldExcelCustom"
+            worksheet="Worksheet 1"
+            :name="`${excelProp}.xlsx`"
+          >
+            <v-icon name="vi-file-type-excel" scale="2" />
+          </download-excel>
+        </div>
+        <!-- <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
           <v-icon
             name="vi-file-type-excel"
             class="cursor-pointer"
             @click="handleClickExcelCustom"
             scale="2"
           />
-        </div>
+        </div> -->
         <div v-if="csvProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
             v-tooltip="'Tải xuống CSV'"
@@ -219,9 +230,7 @@
           </div>
         </template>
         <template #item-testDuration="item">
-          <span class="block">
-            {{ item?.testDuration }} phút
-          </span>
+          <span class="block"> {{ item?.testDuration }} phút </span>
         </template>
         <template #item-price="item">
           <span class="block">
@@ -245,6 +254,16 @@
               class="hover:underline text-blue-500 cursor-pointer"
             >
               Syllabus
+            </span>
+          </div>
+        </template>
+        <template #item-url="item">
+          <div class="">
+            <span
+              @click="goToSyllabus(item.url)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Tài nguyên
             </span>
           </div>
         </template>
@@ -370,6 +389,14 @@
                 :scale="1.5"
                 fill="#0871ba"
                 @click="createAccount(item)"
+              />
+            </button>
+            <button v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'" v-if="isSuggest">
+              <v-icon
+                name="bi-info-circle"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="handleSuggest(item)"
               />
             </button>
             <button class="mr-4" v-tooltip="dataListTitle" v-if="isAddByList">
@@ -549,9 +576,7 @@
           </div>
         </template>
         <template #item-testDuration="item">
-          <span class="block">
-            {{ item?.testDuration }} phút
-          </span>
+          <span class="block"> {{ item?.testDuration }} phút </span>
         </template>
         <template #item-price="item">
           <span class="block">
@@ -592,6 +617,16 @@
               class="hover:underline text-blue-500 cursor-pointer"
             >
               Syllabus
+            </span>
+          </div>
+        </template>
+        <template #item-url="item">
+          <div class="">
+            <span
+              @click="goToSyllabus(item.url)"
+              class="hover:underline text-blue-500 cursor-pointer"
+            >
+              Tài nguyên
             </span>
           </div>
         </template>
@@ -725,6 +760,14 @@
                 :scale="1.5"
                 fill="#0871ba"
                 @click="createAccount(item)"
+              />
+            </button>
+            <button v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'" v-if="isSuggest">
+              <v-icon
+                name="-bi-info-circle"
+                :scale="1.5"
+                fill="#0871ba"
+                @click="handleSuggest(item)"
               />
             </button>
             <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
@@ -966,6 +1009,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isSuggest: {
+      type: Boolean,
+      default: false,
+    },
     isApprove: {
       type: Boolean,
       default: false,
@@ -998,6 +1045,14 @@ export default {
       type: String,
       default: "",
     },
+    dataExcelCustom: {
+      type: Array,
+      default: [],
+    },
+    fieldExcelCustom: {
+      type: Object,
+      default: {},
+    },
     excelCustom: {
       type: Boolean,
       default: false,
@@ -1026,10 +1081,8 @@ export default {
     tpCategoryList: Array,
   },
   setup(props) {
-    // Tạo biến reactive cho dataProp
     const dataProp = ref(props.data);
 
-    // Watch sự thay đổi của prop 'data' và cập nhật dataProp
     watch(
       () => props.data,
       (newValue) => {
@@ -1078,32 +1131,6 @@ export default {
       itemsSelected: [],
       parentId: "",
       courses: [],
-      test: [
-        {
-          code: "AI40",
-          name: "Khoá học FullStack cấp tốc cơ bản",
-          price: "5.000.000VND",
-          Level: "Easy",
-        },
-        {
-          code: "AI40",
-          name: "Khoá học Robotic",
-          price: "6.000.000VND",
-          Level: "Medium",
-        },
-        {
-          code: "ZQ21",
-          name: "Khoá học Database cấp tốc nâng cao 1",
-          price: "7.000.000VND",
-          Level: "Hard",
-        },
-        {
-          code: "KW41",
-          name: "Khoá học Database cấp tốc nâng cao 2",
-          price: "9.000.000VND",
-          Level: "Hard",
-        },
-      ],
     };
   },
   created() {
@@ -1138,6 +1165,9 @@ export default {
     },
     handleGetDetail(item) {
       this.$emit("clickToRow", item);
+    },
+    handleSuggest(item) {
+      this.$emit("handleSuggest", item);
     },
     addChildren(item) {
       this.parentId = item?.id;
@@ -1188,7 +1218,6 @@ export default {
       this.$emit("createAccount", item);
     },
     handleImportData() {
-      console.log("vao day");
       this.$emit("importData", true);
     },
     updateStatusAccount() {
@@ -1251,7 +1280,7 @@ export default {
             key != "userId" &&
             key != "level" &&
             key != "prerequisite" &&
-            key != 'courseCode'
+            key != "courseCode"
         )
         .map((key) => ({ field: key, value: obj[key] }));
     },
@@ -1407,7 +1436,6 @@ export default {
       this.$emit("reloadAction", true);
     },
     handleImportFile(event) {
-      console.log("vao day");
       const file = event.target.files[0];
       if (!file) return;
 

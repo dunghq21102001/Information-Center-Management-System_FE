@@ -83,13 +83,28 @@
         </table>
       </div>
     </div>
+
+    <div class="w-full mt-10">
+      <span class="block text-gray-600 font-bold text-[24px]">
+        Tài nguyên môn {{ data[0]?.courseName }}
+      </span>
+      <div class="w-full mt-5">
+        <NormalTable :data="resources" :header="headerResource" is-add="" />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import { useSystemStore } from "../stores/System.js";
 import { useAuthStore } from "../stores/Auth.js";
 import func from "../common/func.js";
+import tableConfig from "../common/config/tableConfig.js";
+import API_RESOURCE from "../API/API_RESOURCE.js";
+import NormalTable from "./NormalTable.vue";
 export default {
+  components: {
+    NormalTable,
+  },
   setup() {
     const systemStore = useSystemStore();
     const authStore = useAuthStore();
@@ -105,7 +120,25 @@ export default {
       required: true,
     },
   },
+  data() {
+    return {
+      headerResource: tableConfig.resourceForChildrenTable(),
+      resources: [],
+    };
+  },
+  created() {
+    this.fetchResource();
+  },
   methods: {
+    fetchResource() {
+      this.systemStore.setChangeLoading(true);
+      API_RESOURCE.getResourceByCourseId(this.data[0]?.courseId)
+        .then((res) => {
+          this.resources = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => this.systemStore.setChangeLoading(false));
+    },
     convertDate(date) {
       return func.convertDate(date);
     },

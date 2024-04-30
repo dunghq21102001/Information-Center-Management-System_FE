@@ -1,5 +1,5 @@
 export default class schemaConfig {
-    static userSchema(genderData = [], roleData = [], jobType = []) {
+    static userSchema(genderData = [], roleData = [], jobType = [], locations = []) {
         return [
             { title: 'Họ và tên', field: 'fullName', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Tên đăng nhập', field: 'userName', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
@@ -9,6 +9,7 @@ export default class schemaConfig {
             { title: 'Sinh nhật', field: 'dateOfBirth', value: '', type: 'date', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Vị trí', field: 'roleId', value: roleData[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: roleData },
             { title: 'Địa chỉ', field: 'address', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Khu vực', field: 'locationId', value: locations[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: locations },
             { title: 'Ảnh đại diện', field: 'avatar', value: '', type: 'image', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
             { title: 'Mã hợp đồng', field: 'contractCodeTmp', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Loại hợp đồng', field: 'configJobTypeIdTmp', value: jobType[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: jobType },
@@ -136,6 +137,13 @@ export default class schemaConfig {
         ]
     }
 
+    static resourceSchema() {
+        return [
+            { title: 'Tệp', field: 'file', value: 0, type: 'file', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Mô tả', field: 'description', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+        ]
+    }
+
     static questionSchema(lessons = []) {
         return [
             { title: 'Bài học', field: 'lessionId', value: lessons[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: lessons },
@@ -156,6 +164,7 @@ export default class schemaConfig {
     }
 
     static classSchema(courses = [], slots = [], dayInWeek = []) {
+
         return [
             { title: 'Mã lớp', field: 'classCode', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Khoá học', field: 'courseId', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: courses },
@@ -200,6 +209,8 @@ export default class schemaConfig {
             { title: 'Tổng số slot', field: 'durationTotal', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Điểm đầu vào', field: 'entryPoint', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Cấp độ', field: 'level', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Từ độ tuổi', field: 'fromAge', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Đến độ tuổi', field: 'toAge', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
             // { title: 'Môn tiên quyết', field: 'prerequisite', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: courses },
             // { title: 'Loại khoá học', field: 'courseType', value: type[0]?.value, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: type },
@@ -232,6 +243,8 @@ export default class schemaConfig {
             // { title: 'Tổng số slot', field: 'durationTotal', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Điểm đầu vào', field: 'entryPoint', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Cấp độ', field: 'level', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Từ độ tuổi', field: 'fromAge', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Đến độ tuổi', field: 'toAge', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
             { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
             // { title: 'Môn tiên quyết', field: 'prerequisite', value: courses[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: courses },
             // { title: 'Loại khoá học', field: 'courseType', value: type[0]?.value, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, listData: type },

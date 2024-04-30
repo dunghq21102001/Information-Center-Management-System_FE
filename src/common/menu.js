@@ -5,7 +5,7 @@ export default class menu {
                 id: 74216, name: 'Yêu cầu tư vấn', icon: 'fa-tasks', subTab: [
                     { name: 'Thêm yêu cầu', url: 'advice-create' },
                     { name: 'Danh sách yêu cầu', url: 'advice-request' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Manager', 'Staff']
             },
             {
                 id: 6, name: 'Lịch', icon: 'md-taskalt', subTab: [
@@ -41,7 +41,7 @@ export default class menu {
                 id: 7, name: 'Khoá học', icon: 'si-coursera', subTab: [
                     { name: 'Thêm khoá học', url: 'course-create' },
                     { name: 'Danh sách khoá học', url: 'courses' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Manager']
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Staff', 'Manager', 'Teacher']
             },
             {
                 id: 2, name: 'Hợp đồng', icon: 'fa-file-contract', subTab: [
@@ -100,9 +100,9 @@ export default class menu {
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Staff']
             },
             {
-                id: 1, name: 'Người dùng', icon: 'hi-user-group', subTab: [
-                    { name: 'Thêm người dùng', url: 'user-create' },
-                    { name: 'Danh sách người dùng', url: 'users' },
+                id: 1, name: 'Tài khoản', icon: 'hi-user-group', subTab: [
+                    { name: 'Thêm tài khoản', url: 'user-create' },
+                    { name: 'Danh sách Tài khoản', url: 'users' },
                 ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             {

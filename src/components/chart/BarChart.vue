@@ -5,6 +5,7 @@
 </template>
 <script>
 import { Bar } from "vue-chartjs";
+import { ref, watch } from "vue";
 import {
   Chart as ChartJS,
   Title,
@@ -38,22 +39,41 @@ export default {
       default: "#007d88",
     },
   },
-  data() {
+  setup(props) {
+    const dataProp = ref(props.data);
+
+    watch(
+      () => props.data,
+      (newValue) => {
+        dataProp.value = newValue;
+      }
+    );
     return {
-      chartData: {
+      dataProp,
+    };
+  },
+  computed: {
+    chartData() {
+      return {
         labels: this.labels,
         datasets: [
           {
             label: this.label,
             backgroundColor: this.backgroundColor,
-            data: this.data,
+            data: this.dataProp,
           },
         ],
-      },
+      };
+    },
+  },
+  data() {
+    return {
       chartOptions: {
         responsive: true,
       },
     };
+  },
+  methods: {
   },
 };
 </script>

@@ -235,7 +235,7 @@ const router = createRouter({
       component: Courses,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Staff', 'Manager']
+        requiredRole: ['Admin', 'Staff', 'Manager', 'Teacher']
       },
       beforeEnter: checkValidRole
     },
@@ -255,7 +255,7 @@ const router = createRouter({
       component: CourseDetail,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Staff', 'Manager']
+        requiredRole: ['Admin', 'Staff', 'Manager', 'Teacher']
       },
       beforeEnter: checkValidRole
     },
@@ -364,7 +364,7 @@ const router = createRouter({
       component: Blogs,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
+        requiredRole: ['Admin', 'Manager']
       },
       beforeEnter: checkValidRole
     },
@@ -374,7 +374,7 @@ const router = createRouter({
       component: CreateBlog,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin']
+        requiredRole: ['Admin', 'Manager']
       },
       beforeEnter: checkValidRole
     },

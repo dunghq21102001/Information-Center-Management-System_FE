@@ -75,9 +75,25 @@ export default {
   },
   methods: {
     async handleAddCourse(data) {
+      if (
+        data?.fromAge < 8 ||
+        data?.toAge < 8 ||
+        data?.fromAge > 15 ||
+        data?.toAge > 15
+      )
+        return swal.error(
+          "Độ tuổi được chọn chỉ trong khoảng từ 8 đến 15 tuổi",
+          3000
+        );
+      if (data.fromAge > data?.toAge)
+        return swal.error(
+          "Độ tuổi bắt đầu không thể lớn hơn độ tuổi kết thúc!"
+        );
       if (data.price) data["courseType"] = 1;
       else data["courseType"] = 2;
       this.systemStore.setChangeLoading(true);
+      let tmpDescription = `Độ tuổi phụ hợp ${data?.fromAge} tuổi - ${data?.toAge} tuổi, ${data?.description}`;
+      data["description"] = tmpDescription;
       data["parentCode"] = [];
       if (data?.prerequisite == "null") data["prerequisite"] = null;
       try {

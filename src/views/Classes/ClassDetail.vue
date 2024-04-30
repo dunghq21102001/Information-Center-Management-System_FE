@@ -136,14 +136,12 @@
         <NormalTable
           :data="examByClass"
           :header="examHeader"
-          :excel-custom="true"
           :is-show-search="true"
           :is-import-data="true"
           excel="children-in-class-data"
           csv="children-in-class-data"
           :reload="true"
           @reload-action="reloadList"
-          @handle-click-excel-custom="handleClickExcelCustom"
           @import-data="importScore"
         />
       </div>
@@ -153,14 +151,20 @@
         <NormalTable
           :data="childrenInClass"
           :header="header"
-          :excel-custom="true"
           :is-show-search="true"
           :is-import-data="true"
+          :excel-custom="true"
+          :data-excel-custom="dataEC"
+          :field-excel-custom="{
+            childrenCode: 'childrenCode',
+            fullName: 'fullName',
+            examCode: 'examCode',
+            scorePerQuestion: 'scorePerQuestion',
+          }"
           excel="children-in-class-data"
           csv="children-in-class-data"
           :reload="true"
           @reload-action="reloadList"
-          @handle-click-excel-custom="handleClickExcelCustom"
           @import-data="importData"
         />
       </div>
@@ -170,7 +174,9 @@
         v-if="showCreateExam"
         @click.self="showCreateExam = false"
       >
-        <div class="bg-white p-3 rounded-lg flex flex-col items-end justify-between">
+        <div
+          class="bg-white p-3 rounded-lg flex flex-col items-end justify-between"
+        >
           <span class="block my-2 font-bold text-[24px]">
             Tạo bài kiểm tra thực hành
           </span>
@@ -186,11 +192,7 @@
             </div>
             <div class="flex flex-col mr-2">
               <label for="">Thời gian</label>
-              <input
-                type="date"
-                v-model="testDate"
-                class="px-4 py-1 i-cus"
-              />
+              <input type="date" v-model="testDate" class="px-4 py-1 i-cus" />
             </div>
             <div class="flex flex-col mr-2">
               <label for="">Ngày thực hành</label>
@@ -265,6 +267,7 @@ export default {
       header: tableConfig.childrenInClassTable(),
       isShowEnrollment: false,
       examByClass: [],
+      dataEC: [],
       examHeader: tableConfig.examByClassTable(),
     };
   },
@@ -304,6 +307,16 @@ export default {
       API_CLASS.getChildrenByClassId(id)
         .then((res) => {
           this.childrenInClass = res.data;
+          let tmpD = [];
+          res.data.map((item) => {
+            tmpD.push({
+              childrenCode: item?.childrenCode,
+              fullName: item?.fullName,
+              examCode: "",
+              scorePerQuestion: "",
+            });
+          });
+          this.dataEC = tmpD;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => this.systemStore.setChangeLoading(false));
@@ -380,7 +393,6 @@ export default {
         });
     },
     importScore(data) {
-      console.log("vao day");
       this.systemStore.setChangeLoading(true);
       const formData = new FormData();
       formData.append("formFile", data.file);
@@ -465,7 +477,7 @@ export default {
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `children-in-class-data.xlsx`);
+          link.setAttribute("download", `children-in-class-data.xls`);
           document.body.appendChild(link);
           link.click();
         })

@@ -30,7 +30,7 @@
             class="my-2 text-[18px]"
             ><span class="font-bold">Giá:</span>
             {{ convertVND(courseDetail?.price) }}</span
-          ><br v-if="courseDetail?.price != 0 && courseDetail?.price != null"/>
+          ><br v-if="courseDetail?.price != 0 && courseDetail?.price != null" />
           <span class="my-2 text-[18px]"
             ><span class="font-bold">Mô tả:</span>
             {{ courseDetail?.description }}</span
@@ -58,17 +58,6 @@
               @update-action="updateCourse"
               @delete-action="deleteCourse"
             />
-            <!-- <div
-              class="col-span-12 md:col-span-6 flex items-center flex-col"
-              v-for="i in courseDetail?.courses"
-            >
-              <div class="w-[80%] overflow-hidden h-[150px]">
-                <img :src="i?.image" alt="course image" />
-              </div>
-              <span class="block mt-2">{{ i?.courseCode }}</span>
-              <span class="block text-center">{{ i?.name }}</span>
-              <span class="block">{{ convertVND(i?.price) }}</span>
-            </div> -->
           </div>
           <span class="my-2 text-[18px] font-bold mt-10 mb-4 block">
             Bài học:
@@ -115,18 +104,11 @@
               </div>
             </div>
           </div>
-          <span class="my-2 text-[18px] font-bold mt-10 mb-4 block"
-            >Lớp học:
-            <span class="text-red-500" v-if="courseDetail?.classes.length == 0"
-              >Chưa có lớp
+          <span class="my-2 text-[18px] font-bold mt-10 mb-4 block">
+            Lớp học:
+            <span class="text-red-500" v-if="courseDetail?.classes.length == 0">
+              Chưa có lớp
             </span>
-            <!-- <v-icon
-              v-tooltip="'Tạo lớp mới'"
-              name="bi-plus-circle"
-              :scale="1.5"
-              fill="#0871ba"
-              class="cursor-pointer"
-            /> -->
           </span>
           <div
             v-if="courseDetail?.classes.length > 0"
@@ -157,6 +139,34 @@
                 <span class="font-bold">Kết thúc: </span>
                 {{ convertDate(child?.endDate) }}
               </span>
+            </div>
+          </div>
+
+          <!-- tài nguyên -->
+          <div class="w-full">
+            <span class="my-2 text-[18px] font-bold mt-10 mb-4 block">
+              Tài nguyên:
+              <span class="text-red-500" v-if="resources.length == 0">
+                Chưa tài nguyên
+              </span>
+              <v-icon
+                v-tooltip="'Tạo tài nguyên mới'"
+                name="bi-plus-circle"
+                :scale="1.5"
+                fill="#0871ba"
+                class="cursor-pointer ml-2"
+                @click="handleCreateNewResource"
+              />
+            </span>
+
+            <div class="w-full">
+              <NormalTable
+                :data="resources"
+                :header="headerResource"
+                :is-delete="true"
+                is-add=""
+                @delete-action="deleteResource"
+              />
             </div>
           </div>
         </div>
@@ -299,6 +309,19 @@
           :schema="lessonSchema"
           btn-name="Lưu"
           @form-submitted="createLesson"
+        />
+      </div>
+    </div>
+
+    <!-- create resource -->
+    <div class="fog-l" v-if="isShowCreateResource" @click.self="cancelAll">
+      <div
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
+      >
+        <FormSchema
+          :schema="resourceSchema"
+          btn-name="Lưu"
+          @form-submitted="createResource"
         />
       </div>
     </div>
@@ -647,6 +670,11 @@ import FormSchema from "../../components/FormSchema.vue";
 import MultiSelect from "primevue/multiselect";
 import NormalTable from "../../components/NormalTable.vue";
 import tableConfig from "../../common/config/tableConfig";
+import { useAuthStore } from "../../stores/Auth";
+import API_RESOURCE from "../../API/API_RESOURCE";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "../../common/firebase";
+
 export default {
   components: {
     QuestionReviewBK,
@@ -656,11 +684,13 @@ export default {
   },
   setup() {
     const systemStore = useSystemStore();
-    return { systemStore };
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
   },
   data() {
     return {
       header: tableConfig.courseChildTable(),
+      headerResource: tableConfig.resourceTable(),
       courseDetail: null,
       questions: [],
       resources: [],
@@ -669,6 +699,7 @@ export default {
       questionsByLesson: [],
       currentLessonSelected: "",
       lessonSchema: schemaConfig.lessonSchema(),
+      resourceSchema: schemaConfig.resourceSchema(),
       questionsCreate: [
         {
           title: "",
@@ -681,6 +712,7 @@ export default {
         },
       ],
       isShowCreateLesson: false,
+      isShowCreateResource: false,
       isShowCreateQuestion: false,
       isShowCreateClass: false,
       isShowTest: false,
@@ -700,8 +732,50 @@ export default {
   created() {
     this.getCourseDetail(this.$route.params.id);
     this.fetchEnum();
+    this.fetchResource();
   },
   methods: {
+    async createResource(data) {
+      this.systemStore.setChangeLoading(true);
+      const currentTime2 = new Date();
+      const uniqueFileName2 = "file_" + currentTime2.getTime();
+      const storageRef2 = ref(storage, "resource/" + uniqueFileName2 + ".pdf");
+      const responseSyllabus = await fetch(data.file);
+      const arrayBuffer = await responseSyllabus.arrayBuffer();
+      const fileBlob = new Blob([arrayBuffer], {
+        type: "application/pdf",
+      });
+
+      uploadBytes(storageRef2, fileBlob)
+        .then((snapshot) => getDownloadURL(snapshot.ref))
+        .then((downloadURL) => {
+          const finalUrlFile = downloadURL;
+          data["url"] = finalUrlFile;
+          data["courseId"] = this.$route.params.id;
+          API_RESOURCE.postResource(data)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              this.cancelAll();
+              this.fetchResource();
+              swal.success(res.data);
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error(err.response?.data);
+            });
+        });
+    },
+    fetchResource() {
+      this.systemStore.setChangeLoading(true);
+      API_RESOURCE.getResourceByCourseId(this.$route.params.id)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.resources = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     convertVND(price) {
       return func.convertVND(price);
     },
@@ -741,6 +815,11 @@ export default {
         .catch((err) => this.systemStore.setChangeLoading(false));
     },
     async updateCourse(data) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
       if (data?.prerequisite == "null") data["prerequisite"] = null;
       if (func.isBlobURL(data?.image) && func.isBlobURL(data?.syllabus)) {
         this.systemStore.setChangeLoading(true);
@@ -861,7 +940,34 @@ export default {
           });
       }
     },
+    deleteResource(item) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
+      swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
+        if (result.value) {
+          this.systemStore.setChangeLoading(true);
+          API_RESOURCE.deleteResource(item?.id)
+            .then((res) => {
+              this.systemStore.setChangeLoading(false);
+              swal.success("Xoá thành công!");
+              this.fetchResource();
+            })
+            .catch((err) => {
+              this.systemStore.setChangeLoading(false);
+              swal.error("Xoá thất bại! Vui lòng thử lại", 2500);
+            });
+        }
+      });
+    },
     deleteCourse(item) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
       swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
         if (result.value) {
           this.systemStore.setChangeLoading(true);
@@ -877,6 +983,15 @@ export default {
             });
         }
       });
+    },
+    handleCreateNewResource() {
+      if (
+        this.authStore.getAuth?.roleName == "Staff" ||
+        this.authStore.getAuth?.roleName == "Teacher"
+      )
+        return swal.info("Bạn không có quyền thực hiện hành động này");
+
+      this.isShowCreateResource = true;
     },
     fetchEnum() {
       this.systemStore.setChangeLoading(true);
@@ -996,6 +1111,7 @@ export default {
       this.questionsByLesson = [];
       this.selectedListLesson = [];
       this.isShowCreateLesson = false;
+      this.isShowCreateResource = false;
       this.isShowCreateQuestion = false;
       this.isShowTest = false;
       this.examData = [];

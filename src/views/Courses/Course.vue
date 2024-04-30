@@ -55,6 +55,7 @@ import FormList from "../../components/FormList.vue";
 import func from "../../common/func";
 import { storage } from "../../common/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useAuthStore } from "../../stores/Auth.js";
 
 export default {
   components: {
@@ -63,7 +64,8 @@ export default {
   },
   setup() {
     const systemStore = useSystemStore();
-    return { systemStore };
+    const authStore = useAuthStore();
+    return { systemStore, authStore };
   },
   data() {
     return {
@@ -98,6 +100,11 @@ export default {
         });
     },
     async updateCourse(data) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
       if (data?.prerequisite == "null") data["prerequisite"] = null;
       if (func.isBlobURL(data?.image) && func.isBlobURL(data?.syllabus)) {
         this.systemStore.setChangeLoading(true);
@@ -219,6 +226,11 @@ export default {
       }
     },
     async handleAddChildCourse(data) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
       this.systemStore.setChangeLoading(true);
       // data["parentCode"] = [];
       try {
@@ -330,6 +342,11 @@ export default {
         });
     },
     deleteCourse(item) {
+      if (
+        this.authStore.getAuth?.roleName == "Teacher" ||
+        this.authStore.getAuth?.roleName == "Staff"
+      )
+        return swal.info("Bạn không có quyền thực hiện chức năng này");
       swal.confirm("Bạn có chắc chắn muốn xoá không?").then((result) => {
         if (result.value) {
           this.systemStore.setChangeLoading(true);

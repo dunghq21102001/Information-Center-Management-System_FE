@@ -1,6 +1,6 @@
 <template>
   <div class="w-full">
-    <div class="w-[90%] mx-auto">
+    <!-- <div class="w-[90%] mx-auto">
       <span
         :class="`block text-center text-[24px] my-3 ${
           resultStatus ? 'text-green-500' : 'text-red-500'
@@ -87,24 +87,92 @@
       </span>
       <div class="line"></div>
       <span class="text-[18px] text-center block text-gray-400"> © VNPAY 2024</span>
+    </div> -->
+
+    <div class="w-full flex items-center justify-center mt-20">
+      <v-icon
+        v-if="message != 'Thanh toán thành công.'"
+        name="ri-close-circle-line"
+        fill="#f4493c"
+        scale="3.5"
+      />
+      <v-icon
+        v-else
+        name="fa-regular-check-circle"
+        fill="#28c37d"
+        scale="3.5"
+      />
+    </div>
+    <div class="w-full flex items-center justify-center">
+      <span class="block mt-3 font-bold text-[20px] text-[#28c37d]">
+        {{ message }}
+      </span>
+      <!-- <span class="block mt-3 font-bold text-[20px] text-[#f4493c]">Thanh toán thất bại</span> -->
+    </div>
+    <div class="w-full flex items-center justify-center mt-10">
+      <p>
+        <span class="text-[18px]">Mã đơn: </span>
+        <span class="font-bold text-[18px]"> {{ orderNumber }} </span>
+      </p>
+      &nbsp; &nbsp; &nbsp;
+      <p>
+        <span class="text-[18px]">Tổng tiền: </span>
+        <span class="font-bold text-[18px]"> {{ convertVND(amount) }} </span>
+      </p>
+    </div>
+    <div class="w-full flex items-center justify-center mt-10">
+      <p>
+        <span class="text-[18px]">Kiểu thanh toán: </span>&nbsp;
+        <span class="font-bold text-[18px]"> Online </span>
+      </p>
+    </div>
+    <div class="w-full flex items-center justify-center mt-10">
+      <button @click="backToWelcome" class="btn-primary px-3 py-1">
+        Trở về trang chủ
+      </button>
     </div>
   </div>
 </template>
 <script>
+import func from "../../common/func";
+import { useAuthStore } from "../../stores/Auth";
 export default {
   components: {},
   setup() {
+    const authStore = useAuthStore();
     return {
-      resultStatus: true,
+      authStore,
     };
   },
   data() {
-    return {};
+    return {
+      message: "",
+      orderNumber: "",
+      amount: "",
+    };
   },
   created() {
-  
+    const message = this.$route.query.message;
+    const orderNumber = this.$route.query.orderNumber;
+    const amount = this.$route.query.amount;
+    // if (message != null && message != "")
+    //   swal.success("Giao dịch thành công! Tiến hành thêm trẻ vào lớp", 3000);
+
+    if (message) this.message = message;
+    if (orderNumber) this.orderNumber = orderNumber;
+    if (amount) this.amount = amount;
   },
-  methods: {},
+  methods: {
+    convertVND(price) {
+      const num = Number.parseInt(price);
+      return func.convertVND(num);
+    },
+    backToWelcome() {
+      if (this.authStore == null)
+        this.$router.push({ name: "welcome", params: {} });
+      else this.$router.push({ name: "profile", params: {} });
+    },
+  },
 };
 </script>
 <style scoped>
