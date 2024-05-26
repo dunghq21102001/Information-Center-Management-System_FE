@@ -66,7 +66,7 @@
             <v-icon name="vi-file-type-excel" scale="2" />
           </download-excel>
         </div>
-        <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
+        <!-- <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
             v-tooltip="'Tải xuống file Excel'"
             :data="dataExcelCustom"
@@ -76,15 +76,15 @@
           >
             <v-icon name="vi-file-type-excel" scale="2" />
           </download-excel>
-        </div>
-        <!-- <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
+        </div> -->
+        <div v-if="excelCustom" class="h-[40px] mt-3 cursor-pointer mr-1">
           <v-icon
             name="vi-file-type-excel"
             class="cursor-pointer"
             @click="handleClickExcelCustom"
             scale="2"
           />
-        </div> -->
+        </div>
         <div v-if="csvProp != ''" class="h-[40px] mt-3 cursor-pointer mr-1">
           <download-excel
             v-tooltip="'Tải xuống CSV'"
@@ -391,7 +391,10 @@
                 @click="createAccount(item)"
               />
             </button>
-            <button v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'" v-if="isSuggest">
+            <button
+              v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'"
+              v-if="isSuggest"
+            >
               <v-icon
                 name="bi-info-circle"
                 :scale="1.5"
@@ -762,7 +765,10 @@
                 @click="createAccount(item)"
               />
             </button>
-            <button v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'" v-if="isSuggest">
+            <button
+              v-tooltip="'Danh sách khoá học được đề xuất cho trẻ'"
+              v-if="isSuggest"
+            >
               <v-icon
                 name="-bi-info-circle"
                 :scale="1.5"
@@ -770,7 +776,7 @@
                 @click="handleSuggest(item)"
               />
             </button>
-            <button v-tooltip="'Chấp nhận yêu cầu'" v-if="isApprove">
+            <button v-tooltip="'Xác nhận mượn'" v-if="isApprove">
               <v-icon name="fc-ok" :scale="1.5" @click="handleApprove(item)" />
             </button>
             <button class="mr-4" :title="dataListTitle" v-if="isAddByList">
@@ -1414,6 +1420,14 @@ export default {
           item["type"] = "select";
           item["title"] = "Slot";
           item["listData"] = this.enumList;
+        } else if (item.field == "typeCategoryEquipment") {
+          item["type"] = "select";
+          item["title"] = "Type";
+          item["value"] = item.value == "set" ? 2 : 1;
+          item["listData"] = [
+            { id: 1, name: "Đơn" },
+            { id: 2, name: "Bộ" },
+          ];
         } else if (item.field == "locationId") {
           item["type"] = "select";
           item["title"] = "Location";

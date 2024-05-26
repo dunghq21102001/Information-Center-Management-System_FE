@@ -5,7 +5,7 @@
       :schema="userSchema"
       btn-name="Tạo"
       @form-submitted="handleAddUser"
-      page-title="Tạo người dùng"
+      page-title="Tạo tài khoản"
       :is-hide-add-btn="isHiddenBtn"
     />
     <FormSchema

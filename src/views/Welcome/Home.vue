@@ -221,7 +221,7 @@
       v-if="isShowCourseDetail"
       @click.self="isShowCourseDetail = false"
     >
-      <div class="bg-white rounded-md w-[95%] h-[90vh] p-4">
+      <div class="bg-white rounded-md w-[95%] h-[90vh] p-4 overflow-y-scroll">
         <div class="w-full flex flex-col items-center">
           <div class="w-[300px]">
             <img :src="courseDetail?.image" alt="" />

@@ -3,6 +3,13 @@
     <div class="w-[90%] mx-auto h-[90vh] overflow-hidden">
       <div class="certificate-container">
         <div class="certificate">
+          <div class="absolute right-0 top-12">
+            <img
+              src="../assets/images/huychuong.png"
+              class="w-[150px]"
+              alt=""
+            />
+          </div>
           <div class="water-mark-overlay"></div>
           <div class="certificate-header">
             <img src="../assets/images/logo.png" class="logo" alt="" />
@@ -42,7 +49,7 @@
                 <div class="col-md-6">
                   <p>Giám đốc:</p>
                   <img
-                    class="relative top-[-90px] left-[50px] w-[200px]"
+                    class="relative top-[-150px] left-[50px] w-[200px]"
                     src="../assets/images/stamp.png"
                     alt=""
                   />
@@ -137,8 +144,8 @@ export default {
 }
 
 .certificate-header > .logo {
-  width: 130px;
-  height: 130px;
+  width: 200px;
+  height: 200px;
 }
 
 .certificate-title {
@@ -147,6 +154,8 @@ export default {
 
 .certificate-body {
   text-align: center;
+  position: relative;
+  top: -100px;
 }
 
 h1 {

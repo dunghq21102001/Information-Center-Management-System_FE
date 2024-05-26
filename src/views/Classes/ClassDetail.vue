@@ -40,9 +40,13 @@
         v-if="classDetail?.scheduleClassViews.length > 0"
         class="w-full mt-5"
       >
-        <span class="block text-[20px] font-bold mb-5"
-          >Lịch học của lớp {{ classDetail?.classCode }}</span
-        >
+        <span class="block text-[20px] font-bold mb-1">
+          Lịch học của lớp {{ classDetail?.classCode }}
+        </span>
+        <span class="block text-[14px] font-bold mb-5">
+          Thời gian bắt đầu: {{ convertDate(classDetail?.startDate) }} - Thời
+          gian kết thúc: {{ convertDate(classDetail?.endDate) }}
+        </span>
 
         <div
           class="w-full flex items-center justify-between border-gray-600 border-solid border-[1px]"
@@ -166,6 +170,7 @@
           :reload="true"
           @reload-action="reloadList"
           @import-data="importData"
+          @handle-click-excel-custom="handleClickExcelCustom"
         />
       </div>
 
@@ -191,11 +196,11 @@
               />
             </div>
             <div class="flex flex-col mr-2">
-              <label for="">Thời gian</label>
+              <label for="">Ngày thực hành</label>
               <input type="date" v-model="testDate" class="px-4 py-1 i-cus" />
             </div>
             <div class="flex flex-col mr-2">
-              <label for="">Ngày thực hành</label>
+              <label for="">Thời gian làm bài (đơn vị phút)</label>
               <input
                 type="number"
                 v-model="testDuration"
@@ -400,6 +405,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchExamByCLass();
+          swal.success('Nhập điểm thành công!')
           // this.fetchDetail(this.$route.params.id);
         })
         .catch((er) => {
@@ -455,6 +461,9 @@ export default {
     reloadList() {
       this.getChildrenByClass(this.$route.params.id);
     },
+    convertDate(date) {
+      return func.convertDate(date);
+    },
     getTime(date) {
       return dayjs(date).format("HH:mm");
     },
@@ -477,7 +486,7 @@ export default {
           const url = window.URL.createObjectURL(blob);
           const link = document.createElement("a");
           link.href = url;
-          link.setAttribute("download", `children-in-class-data.xls`);
+          link.setAttribute("download", `children-in-class-data.xlsx`);
           document.body.appendChild(link);
           link.click();
         })

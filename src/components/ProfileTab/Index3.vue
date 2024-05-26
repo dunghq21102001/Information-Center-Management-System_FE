@@ -68,13 +68,13 @@
           <div class="flex w-full items-center justify-between flex-wrap">
             <div class="w-full flex items-center justify-between">
               <span class="text-[20px]">Danh sách lớp</span>
-              <button
+              <!-- <button
                 v-if="classesData.length > 0"
                 class="btn-primary px-3 py-1"
                 @click="handleShowWeeklyTimetable"
               >
                 Thời khoá biểu
-              </button>
+              </button> -->
             </div>
             <!-- <button @click="handleCreateTest" class="btn-primary px-2 py-1">
               Thực hiện bài kiểm tra đầu vào

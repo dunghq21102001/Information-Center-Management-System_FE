@@ -30,6 +30,16 @@ export default class tableConfig {
         ]
     }
 
+    static prepareTable() {
+        return [
+            { text: "Mã lớp", value: "classCode", sortable: true },
+            { text: "Giáo viên", value: "nameTeacher", sortable: true },
+            { text: "Buổi học", value: "slot", sortable: true },
+            { text: "Chi tiết", value: "detail" },
+            // { text: "Hành động", value: "operation" }
+        ]
+    }
+
 
     static childrenTable() {
         return [
@@ -233,6 +243,8 @@ export default class tableConfig {
     static categoryEquipmentTable() {
         return [
             { text: "Tên danh mục", value: "name", sortable: true },
+            { text: "Số lượng", value: "quantity", sortable: true },
+            { text: "Loại", value: "typeCategoryEquipment", sortable: true },
             { text: "Mô tả", value: "description", sortable: true },
             { text: "Hành động", value: "operation" }
         ]
@@ -334,10 +346,12 @@ export default class tableConfig {
 
     static requestTable() {
         return [
-            { text: "Loại yêu cầu", value: "requestType", sortable: true },
-            { text: "Mô tả", value: "requestDescription", sortable: true },
-            { text: "Ngày nghỉ", value: "leaveDate", sortable: true },
-            { text: "Ngày dạy thay", value: "teachingDate", sortable: true },
+            { text: "Loại yêu cầu", value: "requestType", sortable: true, width: 150 },
+            { text: "Người gửi", value: "creatorName", sortable: true, width: 180 },
+            { text: "Mô tả", value: "requestDescription", sortable: true, width: 180 },
+            { text: "Ngày nghỉ", value: "leaveDate", sortable: true, width: 150 },
+            { text: "Ngày dạy thay", value: "teachingDate", sortable: true, width: 180 },
+            { text: "Ngày tạo", value: "creationDate", sortable: true, width: 120 },
             { text: "Trạng thái", value: "status", sortable: true },
             { text: "Hành động", value: "operation" }
         ]

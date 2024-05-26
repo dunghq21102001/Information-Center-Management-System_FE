@@ -68,6 +68,8 @@ export default {
   },
   methods: {
     handleAddCateEquipment(data) {
+      // if (data.quantity == 0 || data.quantity < 0)
+      //   return swal.error("Số lượng phải lớn hơn 0");
       this.systemStore.setChangeLoading(true);
       API_EQUIPMENT.postCategoryEquipment(data)
         .then((res) => {
@@ -77,7 +79,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error(err?.response?.data)
+          swal.error(err?.response?.data);
         });
     },
     handleAddEquipment(data) {
@@ -90,7 +92,7 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
-          swal.error(err?.response?.data)
+          swal.error(err?.response?.data);
         });
     },
     fetchEnum() {

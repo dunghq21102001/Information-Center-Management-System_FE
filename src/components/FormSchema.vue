@@ -38,7 +38,7 @@
           }"
           v-model="item.value"
           class="input-cus"
-          :disabled="item.title == 'Status' || item.title == 'status'"
+          :disabled="item.title == 'Status' || item.title == 'status' || item.isBlock == true"
         />
         <input
           v-else-if="item.type === 'date'"
@@ -113,6 +113,50 @@
           >
           </QuillEditor>
         </div>
+        <div class="w-full pt-3" v-else-if="item.type === 'checkboxc'">
+          <div class="flex items-center">
+            <input
+              type="checkbox"
+              id="practice"
+              class="mr-2"
+              v-model="item.value"
+            />
+            <label for="practice" class="select-none">Thực hành (Mặc định bài cá nhân)</label>
+          </div>
+          <div class="w-full" v-show="item.value">
+            <div class="mt-2 flex items-center justify-between">
+              <div class="flex items-center">
+                <input
+                  type="checkbox"
+                  id="group"
+                  v-model="item.isGroup"
+                  class="mr-2"
+                />
+                <label for="group" class="select-none"
+                  >Bài thực hành nhóm</label
+                >
+              </div>
+              <input
+                v-show="item.isGroup"
+                type="number"
+                placeholder="Số lượng nhóm"
+                class="i-cus wf"
+                v-model="item.valueOfGroupSize"
+              />
+            </div>
+
+            <div class="flex flex-col w-full mt-2">
+              <label for="">Trang thiết bị</label>
+              <MultiSelect
+                v-model="item.valueOfEquipments"
+                :options="item.listData"
+                :optionLabel="`name`"
+                placeholder="Chọn 1 hoặc nhiều thiết bị"
+                class="w-full px-3 py-1"
+              />
+            </div>
+          </div>
+        </div>
         <div class="w-full pt-3" v-else-if="item.type === 'multiSelect'">
           <div class="card flex justify-content-center">
             <MultiSelect
@@ -124,6 +168,20 @@
             />
           </div>
         </div>
+        <!-- <div
+          class="w-full pt-3"
+          v-else-if="item.type === 'multiSelectEquipment'"
+        >
+          <div class="card flex justify-content-center">
+            <MultiSelect
+              v-model="item.value"
+              :options="item.listData"
+              :optionLabel="`name`"
+              placeholder="Chọn 1 hoặc nhiều"
+              class="w-full px-3 py-1"
+            />
+          </div>
+        </div> -->
         <div class="w-full pt-3" v-else-if="item.type === 'multiSelectV2'">
           <div class="card flex justify-content-center">
             <MultiSelect
@@ -330,7 +388,8 @@ export default {
     },
     convertArrayToObject(formData) {
       return formData.reduce((acc, item) => {
-        acc[item.field] = item.value;
+        if (item.field == "isPractice") acc[item.field] = item;
+        else acc[item.field] = item.value;
         return acc;
       }, {});
     },
@@ -470,5 +529,9 @@ input[type="radio"] {
 
 .p-overlay-open {
   box-shadow: 1px 1px 1px 1px #000;
+}
+
+.wf {
+  width: 250px !important;
 }
 </style>

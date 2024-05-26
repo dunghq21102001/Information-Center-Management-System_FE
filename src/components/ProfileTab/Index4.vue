@@ -140,6 +140,7 @@
                 v-model="selectedClassByTeacher"
                 id=""
               >
+                <option value="" disabled>Chọn lớp</option>
                 <option :value="item.id" v-for="item in classTeachByTeacher">
                   {{ item.classCode }}
                 </option>
@@ -314,6 +315,23 @@
             />
           </div>
         </div>
+        <div class="w-full mt-5" v-show="selectedRequest === 'Equipment'">
+          <p class="font-bold text-[20px] mb-2">Yêu cầu mượn thiết bị</p>
+          <div class="w-full flex items-center justify-between">
+            <div class="w-[35%] ml-3 flex items-center">
+              <input type="checkbox" v-model="isBringToClass" id="bring" />
+              <label for="bring" class="text-[20px] ml-3"
+                >Mang lên tận lớp</label
+              >
+            </div>
+            <!-- <input
+              type="text"
+              placeholder="Mô tả"
+              v-model="descriptionText"
+              class="i-c w-[60%]"
+            /> -->
+          </div>
+        </div>
 
         <div class="w-full flex items-center justify-end mt-3">
           <button class="btn-primary px-3 py-1" @click="handleCreateRequest">
@@ -354,6 +372,7 @@ export default {
       requestByUserReceiver: [],
       locations: [],
       managersId: [],
+      staffsId: [],
       classTeachByTeacher: [],
       classPending: [],
       requestTypes: [],
@@ -377,18 +396,20 @@ export default {
       classOfScheduleSelected: "",
       teachingDate: "",
       teacherSelected: "",
+      isBringToClass: false,
     };
   },
   created() {
     this.fetchRole();
+    this.fetchStaffs();
     this.fetchRequestOfUsers();
     this.fetchRequestReceiver();
 
     if (this.authStore.getAuth?.roleName == "Staff") {
       this.fetchLocation();
-      this.selectedRequest = "Location";
+      this.selectedRequest = "Leave";
       this.requestTypes = [
-        { value: "Location", display: "Đổi cơ sở" },
+        // { value: "Location", display: "Đổi cơ sở" },
         { value: "Leave", display: "Xin nghỉ" },
       ];
     } else if (
@@ -402,7 +423,7 @@ export default {
       this.selectedRequest = "Refund";
       this.requestTypes = [
         { value: "Refund", display: "Hoàn tiền" },
-        { value: "ChildrenClass", display: "Chuyển lớp" },
+        // { value: "ChildrenClass", display: "Chuyển lớp" },
         { value: "ChildrenReserve", display: "Bảo lưu" },
       ];
     } else if (this.authStore.getAuth?.roleName == "Teacher") {
@@ -414,7 +435,7 @@ export default {
       this.selectedRequest = "Class";
       this.requestTypes = [
         { value: "Class", display: "Đổi lớp" },
-        { value: "Location", display: "Đổi cơ sở" },
+        { value: "Equipment", display: "Mượn thiết bị" },
         { value: "Schedule", display: "Dạy thay" },
         { value: "Leave", display: "Xin nghỉ" },
       ];
@@ -531,6 +552,21 @@ export default {
           this.systemStore.setChangeLoading(false);
         });
     },
+    fetchStaffs() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a52")
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          let tmpData = [];
+          res.data.map((item) => {
+            tmpData.push(item.id);
+          });
+          this.staffsId = tmpData;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     fetchRole() {
       this.systemStore.setChangeLoading(true);
       API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a51")
@@ -551,7 +587,7 @@ export default {
       API_CLASS.getListClassTeachingByTeacher(this.authStore.getAuth?.id)
         .then((res) => {
           this.systemStore.setChangeLoading(false);
-          this.selectedClassByTeacher = res.data[0]?.id;
+          // this.selectedClassByTeacher = res.data[0]?.id;
           this.classTeachByTeacher = res.data;
         })
         .catch((er) => {
@@ -602,6 +638,11 @@ export default {
           data.locationId = this.selectedLocation;
           break;
         case "Class":
+          if (!this.selectedClassByTeacher || !this.selectedClassPending)
+            return swal.error(
+              "Bạn phải chọn lớp cần đổi và lớp muốn đổi để thực hiện yêu cầu này",
+              3000
+            );
           param.message = "Bạn nhận được 1 yêu cầu chuyển lớp";
           data.fromClassId = this.selectedClassByTeacher;
           data.toClassId = this.selectedClassPending?.id;
@@ -614,6 +655,8 @@ export default {
           ];
           break;
         case "Schedule":
+          if (this.teachingDate == "")
+            return swal.error("Bạn phải chọn ngày dạy thay");
           param.message = "Bạn nhận được 1 yêu cầu đổi lịch";
           data.teachingDate = this.teachingDate;
           param.userIds = [this.teacherSelected];
@@ -630,6 +673,8 @@ export default {
           data.requestDescription = "Yêu cầu hoàn tiền";
           break;
         case "Leave":
+          if (this.selectedLeaveDate == "")
+            return swal.error("Bạn phải chọn ngày nghỉ");
           param.message = "Bạn nhận được 1 yêu cầu xin nghỉ làm";
           data.leaveDate = this.selectedLeaveDate;
           param.userIds = this.managersId;
@@ -643,7 +688,17 @@ export default {
           data.toClassId = this.selectedClassPending?.id;
           data.requestDescription = "Chuyển lớp cho trẻ";
           break;
+        case "Equipment":
+          let fListIds = this.managersId.concat(this.staffsId);
+          fListIds.push(this.authStore.getAuth?.id);
+          data.userIds = fListIds;
+          if (this.isBringToClass == true)
+            data.requestDescription = `Mượn trang thiết bị (mang lên tận lớp)`;
+          else data.requestDescription = `Mượn trang thiết bị`;
+          break;
       }
+
+      // this.triggerNoti(param);
 
       this.systemStore.setChangeLoading(true);
       API_REQUEST.postRequest(data)
@@ -653,8 +708,6 @@ export default {
           this.fetchRequestOfUsers();
           this.fetchRequestReceiver();
           this.cancelAll();
-
-          this.triggerNoti(param);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
@@ -662,7 +715,7 @@ export default {
         });
     },
     triggerNoti(param) {
-      eventBus.$emit("triggerNoti", param);
+      eventBus.emit("triggerNoti", param);
     },
     handleApprove(item) {
       this.systemStore.setChangeLoading(true);
@@ -705,6 +758,7 @@ export default {
           this.systemStore.setChangeLoading("Đã chấp thuận yêu cầu thành công");
           this.systemStore.setChangeLoading(false);
           this.fetchRequestReceiver();
+          swal.success(res.data)
         })
         .catch((er) => {
           swal.error(err.response?.data);
@@ -770,5 +824,9 @@ export default {
 
 .mt-f {
   margin-top: 80px !important;
+}
+
+input[type="checkbox"] {
+  transform: scale(2);
 }
 </style>

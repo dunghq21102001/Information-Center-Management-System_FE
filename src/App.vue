@@ -144,6 +144,8 @@ export default {
         });
     },
     triggerNoti(param) {
+      console.log('go here');
+      console.log(param);
       this.sendNoti(param);
     },
   },

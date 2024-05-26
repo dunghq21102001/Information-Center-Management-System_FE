@@ -1,7 +1,7 @@
 <template>
   <div class="w-full">
     <div class="w-[90%] mx-auto">
-      <span class="text-[28px] font-bold block text-gray-700">Equipments</span>
+      <span class="text-[28px] font-bold block text-gray-700">Trang thiết bị</span>
 
       <div
         class="w-full flex items-center mt-5 mx-auto justify-start text-[20px]"
@@ -126,7 +126,7 @@ export default {
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           this.fetchEquipment();
-          swal.success("Cập nhật thành công");
+          swal.success(res.data);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);

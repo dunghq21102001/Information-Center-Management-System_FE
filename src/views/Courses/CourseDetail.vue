@@ -31,12 +31,27 @@
             ><span class="font-bold">Giá:</span>
             {{ convertVND(courseDetail?.price) }}</span
           ><br v-if="courseDetail?.price != 0 && courseDetail?.price != null" />
-          <span class="my-2 text-[18px]"
-            ><span class="font-bold">Mô tả:</span>
-            {{ courseDetail?.description }}</span
+          <span class="my-2 text-[18px]">
+            <span class="font-bold">Tổng số buổi học:</span>
+            {{ courseDetail?.durationTotal }} buổi</span
           ><br />
-          <button class="btn-primary mt-2 px-1 py-1" @click="handleCreateTest">
+          <span class="my-2 text-[18px]">
+            <span class="font-bold">Mô tả:</span>
+            {{ courseDetail?.description }} </span
+          ><br />
+          <button
+            v-if="authStore.getAuth?.roleName == 'Teacher'"
+            class="btn-primary mt-2 px-1 py-1"
+            @click="handleCreateTest"
+          >
             Tạo bài kiểm tra
+          </button>
+          <button
+            v-if="authStore.getAuth?.roleName == 'Staff'"
+            class="btn-primary mt-2 px-1 py-1"
+            @click="handleCreateOrder"
+          >
+            Mua khoá học này
           </button>
 
           <span
@@ -78,29 +93,93 @@
             class="w-full md:w-[90%] grid grid-cols-12 gap-3 p-2 bg-[#f1f1f1]"
           >
             <div
-              class="bg-white rounded-md p-2 relative flex col-span-12 md:col-span-12 lg:col-span-12 items-center justify-between"
-              v-for="child in courseDetail.lessons"
+              class="bg-white rounded-md p-2 relative col-span-12 md:col-span-12 lg:col-span-12"
+              v-for="child in listLessons"
             >
-              <span @click="getQuestions(child)" class="cursor-pointer block">
-                {{ child?.name }}</span
-              >
-              <div class="flex items-center justify-between">
-                <v-icon
-                  @click="handleCreateNewQuestions(child)"
-                  v-tooltip="'Tạo câu hỏi cho bài học này'"
-                  name="bi-plus-circle"
-                  :scale="1.5"
-                  fill="#0871ba"
-                  class="cursor-pointer"
-                />
-                <v-icon
-                  v-tooltip="'Xoá bài học này'"
-                  name="io-close-circle-sharp"
-                  class="cursor-pointer"
-                  fill="#ef4444"
-                  scale="1.5"
-                  @click="deleteLesson(child)"
-                />
+              <div class="w-full flex flex-col items-center">
+                <div class="flex items-start justify-between w-full">
+                  <!-- <span
+                    @click="getQuestions(child)"
+                    class="cursor-pointer block"
+                  > -->
+                  <span class="block">
+                    Bài học số {{ child?.lessonNumber }}: {{ child?.name }}
+                    {{
+                      child?.typeOfPractice == "Group"
+                        ? `(Bài thực hành nhóm)`
+                        : child?.typeOfPractice == null
+                        ? ""
+                        : "(Bài cá nhân)"
+                    }}
+                  </span>
+                  <div class="flex items-center justify-between">
+                    <v-icon
+                      @click="handleCreateNewQuestions(child)"
+                      v-tooltip="'Tạo câu hỏi cho bài học này'"
+                      name="bi-plus-circle"
+                      :scale="1.5"
+                      fill="#0871ba"
+                      class="cursor-pointer"
+                    />
+                    <v-icon
+                      @click="isShowEditAction(child)"
+                      name="fa-regular-edit"
+                      v-tooltip="'Chỉnh sửa bài học này'"
+                      :scale="1.5"
+                      fill="#2ae549"
+                      class="cursor-pointer mx-2"
+                    />
+                    <v-icon
+                      v-tooltip="'Xoá bài học này'"
+                      name="io-close-circle-sharp"
+                      class="cursor-pointer"
+                      fill="#ef4444"
+                      scale="1.5"
+                      @click="deleteLesson(child)"
+                    />
+                  </div>
+                </div>
+                <div class="w-full" v-show="child.isShow == true">
+                  Bài học này sẽ được học trong {{ child.duration }} buổi.
+                  <br />
+                  {{
+                    child?.typeOfPractice != null
+                      ? "Bài này sẽ là bài thực hành"
+                      : null
+                  }}
+                  {{
+                    child?.typeOfPractice == "Group"
+                      ? `nhóm, số thành viên tối đa mỗi nhóm là ${child.groupSize} trẻ`
+                      : child?.typeOfPractice == null
+                      ? null
+                      : "cá nhân"
+                  }}
+                  <br />
+                  Nội dung: {{ child.description }}
+                  <br />
+                  <br />
+                  {{
+                    child?.categoryEquipmentsName &&
+                    child?.categoryEquipmentsName.length > 0
+                      ? "Danh sách trang thiết bị cho bài học này"
+                      : null
+                  }}
+
+                  <div class="w-full flex flex-col items-start">
+                    <span
+                      v-for="(equi, index) in child?.categoryEquipmentsName"
+                      :key="index"
+                    >
+                      {{ `${index + 1}. ${equi}` }}
+                    </span>
+                  </div>
+                </div>
+                <span
+                  @click="child.isShow = !child.isShow"
+                  class="mt-2 cursor-pointer hover:underline text-blue-500 text-[16px]"
+                >
+                  {{ child.isShow == false ? "Xem thêm" : "Thu gọn" }}
+                </span>
               </div>
             </div>
           </div>
@@ -172,7 +251,7 @@
         </div>
         <div class="w-full md:w-[30%] flex md:block flex-col">
           <div
-            class="overflow-hidden flex items-start justify-center w-full h-[400px] md:w-[200px] lg:w-[250px] md:h-[200px] lg:h-[250px]"
+            class="overflow-hidden ml-3 flex items-start justify-center w-full h-[400px] md:w-[200px] lg:w-[250px] md:h-[200px] lg:h-[250px]"
           >
             <img
               :src="
@@ -309,6 +388,23 @@
           :schema="lessonSchema"
           btn-name="Lưu"
           @form-submitted="createLesson"
+        />
+      </div>
+    </div>
+
+    <!-- update lesson -->
+    <div
+      class="fog-l"
+      v-if="isShowUpdateLesson"
+      @click.self="isShowUpdateLesson = false"
+    >
+      <div
+        class="bg-white w-[90%] md:w-[60%] lg:w-[40%] h-screen overflow-y-scroll p-4"
+      >
+        <FormSchema
+          :schema="schemaForUpdate"
+          btn-name="Lưu"
+          @form-submitted="updateLesson"
         />
       </div>
     </div>
@@ -654,12 +750,27 @@
         </div>
       </div>
     </div>
+
+    <div
+      v-if="isShowParentList"
+      class="bg-l"
+      @click.self="isShowParentList = false"
+    >
+      <div class="w-[90%] md:w-[60%] lg:w-[40%] bg-white min-h-screen px-3">
+        <FormList
+          :data-list="listParent"
+          title="Danh sách phụ huynh"
+          @handle-submit-list="submitOrder"
+        />
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import API_COURSE from "../../API/API_COURSE";
 import API_QUESTION from "../../API/API_QUESTION";
 import API_LESSONS from "../../API/API_LESSONS";
+import API_EQUIPMENT from "../../API/API_EQUIPMENT";
 import API_EXAM from "../../API/API_EXAM";
 import { useSystemStore } from "../../stores/System";
 import func from "../../common/func";
@@ -674,6 +785,9 @@ import { useAuthStore } from "../../stores/Auth";
 import API_RESOURCE from "../../API/API_RESOURCE";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../common/firebase";
+import API_USER from "../../API/API_USER";
+import API_ORDER from "../../API/API_ORDER";
+import FormList from "../../components/FormList.vue";
 
 export default {
   components: {
@@ -681,6 +795,7 @@ export default {
     FormSchema,
     MultiSelect,
     NormalTable,
+    FormList,
   },
   setup() {
     const systemStore = useSystemStore();
@@ -698,7 +813,7 @@ export default {
       selectedTestType: "",
       questionsByLesson: [],
       currentLessonSelected: "",
-      lessonSchema: schemaConfig.lessonSchema(),
+      lessonSchema: null,
       resourceSchema: schemaConfig.resourceSchema(),
       questionsCreate: [
         {
@@ -727,14 +842,61 @@ export default {
       second: 60,
       intervalId: null,
       isSubmit: false,
+      isShowParentList: false,
+      listParent: [],
+      equipments: [],
+      listLessons: [],
+      isShowUpdateLesson: false,
+      schemaForUpdate: null,
+      idLessonForUpdate: "",
+      durationLessonForUpdate: "",
     };
   },
   created() {
     this.getCourseDetail(this.$route.params.id);
     this.fetchEnum();
     this.fetchResource();
+    this.getParentList();
+    this.fetchEquipments();
   },
   methods: {
+    fetchEquipments() {
+      this.systemStore.setChangeLoading(true);
+      API_EQUIPMENT.categoryEquipments()
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.equipments = res.data;
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
+    submitOrder(item) {
+      let selectedList = [];
+      item.map((i) => {
+        if (i?.select == true) selectedList.push(i?.id);
+        return i;
+      });
+
+      if (selectedList.length == 0)
+        return swal.error("Phải chọn phụ huynh để tiến hành tạo đơn hàng");
+      if (selectedList.length > 1)
+        return swal.error("Chỉ có thể chọn tối đa 1 phụ huynh");
+
+      this.systemStore.setChangeLoading(true);
+      API_ORDER.postOrder({
+        parentId: selectedList[0],
+        listCourseId: [this.$route.params.id],
+      })
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          swal.success("Tạo đơn hàng thành công!");
+          this.$router.push({ name: "order-list", params: {} });
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
     async createResource(data) {
       this.systemStore.setChangeLoading(true);
       const currentTime2 = new Date();
@@ -765,6 +927,9 @@ export default {
             });
         });
     },
+    handleCreateOrder() {
+      this.isShowParentList = true;
+    },
     fetchResource() {
       this.systemStore.setChangeLoading(true);
       API_RESOURCE.getResourceByCourseId(this.$route.params.id)
@@ -774,6 +939,66 @@ export default {
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
+        });
+    },
+    isShowEditAction(obj) {
+      this.idLessonForUpdate = obj.id;
+      this.durationLessonForUpdate = obj.duration;
+      let tmpSch = schemaConfig.lessonSchema(this.equipments);
+      tmpSch.forEach((item) => {
+        switch (item.field) {
+          case "name":
+            item.value = obj.name;
+            break;
+          case "duration":
+            item.value = obj.duration;
+            item.isBlock = true;
+            break;
+          case "isPractice":
+            if (obj.typeOfPractice == null) {
+              item.value = false;
+            } else {
+              item.value = true;
+              if (obj.groupSize != null) {
+                item.valueOfGroupSize = obj.groupSize;
+                item.isGroup = true;
+              }
+            }
+            break;
+          case "description":
+            item.value = obj.description;
+            break;
+          default:
+            break;
+        }
+        return item;
+      });
+      this.schemaForUpdate = tmpSch;
+      this.isShowUpdateLesson = true;
+    },
+    updateLesson(data) {
+      this.systemStore.setChangeLoading(true);
+      data["id"] = this.idLessonForUpdate;
+      data["duration"] = this.durationLessonForUpdate;
+      data["courseId"] = this.$route.params.id;
+      if (data.isPractice.value == true)
+        data["typeOfPractice"] = data.isPractice.isGroup == true ? 1 : 2;
+      data["groupSize"] = data.isPractice.valueOfGroupSize;
+      let tmpIdEquips = [];
+      data.isPractice.valueOfEquipments.map((item) => {
+        tmpIdEquips.push(item.id);
+      });
+      data["equipmentId"] = tmpIdEquips;
+      API_LESSONS.putLesson(data)
+        .then((res) => {
+          this.systemStore.setChangeLoading(false);
+          this.isShowUpdateLesson = false;
+          swal.success("Cập nhật bài học thành công!");
+          this.getCourseDetail(this.$route.params.id);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+          swal.error(err.response?.data);
         });
     },
     convertVND(price) {
@@ -787,6 +1012,12 @@ export default {
       API_COURSE.getCourseById(id)
         .then((res) => {
           this.courseDetail = res.data;
+          let tmpLessons = [];
+          res.data.lessons.map((item) => {
+            item["isShow"] = false;
+            tmpLessons.push(item);
+          });
+          this.listLessons = tmpLessons;
           this.systemStore.setChangeLoading(false);
         })
         .catch((err) => {
@@ -1047,6 +1278,7 @@ export default {
       this.isShowTest = true;
     },
     handleCreateNewLesson() {
+      this.lessonSchema = schemaConfig.lessonSchema(this.equipments);
       this.isShowCreateLesson = true;
     },
     handleCreateNewQuestions(item) {
@@ -1055,20 +1287,36 @@ export default {
     },
     createLesson(item) {
       item["courseId"] = this.$route.params.id;
-      item["prerequisites"] = "none";
+      if (item.isPractice.value == true)
+        item["typeOfPractice"] = item.isPractice.isGroup == true ? 1 : 2;
+      item["groupSize"] = item.isPractice.valueOfGroupSize;
+      let tmpIdEquips = [];
+      item.isPractice.valueOfEquipments.map((item) => {
+        tmpIdEquips.push(item.id);
+      });
+      item["equipmentId"] = tmpIdEquips;
       this.systemStore.setChangeLoading(true);
-      API_LESSONS.postLesson(item)
+      API_LESSONS.postLesson({
+        courseId: item.courseId,
+        // lessonNumber: item.lessonNumber,
+        name: item.name,
+        duration: item.duration,
+        description: item.description,
+        typeOfPractice: item.typeOfPractice,
+        groupSize: item.typeOfPractice == 2 ? 0 : item.groupSize,
+        equipmentId: item.typeOfPractice == 2 ? [] : item.equipmentId,
+      })
         .then((res) => {
           this.systemStore.setChangeLoading(false);
           swal.success(res.data);
           this.cancelAll();
-          this.lessonSchema = schemaConfig.lessonSchema();
+          this.lessonSchema = schemaConfig.lessonSchema(this.equipments);
           this.getCourseDetail(this.$route.params.id);
         })
         .catch((err) => {
           this.systemStore.setChangeLoading(false);
           // this.cancelAll()
-          swal.error("Tạo thất bại! Vui lòng thử lại");
+          swal.error(err.response?.data);
         });
     },
     gotoClass(item) {
@@ -1217,6 +1465,17 @@ export default {
       swal.success("Nộp bài thành công!");
       this.isSubmit = true;
     },
+    getParentList() {
+      this.systemStore.setChangeLoading(true);
+      API_USER.userByRole("d5fa55c7-315d-4634-9c73-08dbbc3f3a54")
+        .then((res) => {
+          this.listParent = res.data;
+          this.systemStore.setChangeLoading(false);
+        })
+        .catch((err) => {
+          this.systemStore.setChangeLoading(false);
+        });
+    },
   },
 };
 </script>
@@ -1271,5 +1530,18 @@ export default {
 
 .border-select {
   border: 2px solid rgb(40, 101, 194);
+}
+
+.bg-l {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 60;
 }
 </style>

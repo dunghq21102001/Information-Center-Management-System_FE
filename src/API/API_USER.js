@@ -101,7 +101,7 @@ export default class API_USER {
 
 
     static adviceRequestByUserId(id) {
-        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/GetAdviseRequestByUserId?id=${id}`)
+        return axios.get(`${API_BASE.BASE_URL}/AdviseRequest/GetAdviseRequestByUserId/${id}`)
     }
 
 }

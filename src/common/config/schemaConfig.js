@@ -115,9 +115,16 @@ export default class schemaConfig {
 
 
     static categoryEquipmentSchema() {
+        const type = [
+            { id: 1, name: 'Đơn' },
+            { id: 2, name: 'Bộ' },
+
+        ]
         return [
-            { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
-            { title: 'Mô tả', field: 'description', value: '', type: 'textarea', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            // { title: 'Số lượng', field: 'quantity', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
+            { title: 'Loại thiết bị', field: 'typeCategoryEquipment', value: type[0]?.id, type: 'select', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1, listData: type },
+            { title: 'Mô tả', field: 'description', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 1 },
         ]
     }
 
@@ -128,11 +135,11 @@ export default class schemaConfig {
         ]
     }
 
-    static lessonSchema() {
+    static lessonSchema(equipments) {
         return [
             { title: 'Tên', field: 'name', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
-            { title: 'Thứ tự bài học', field: 'lessonNumber', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
-            { title: 'Thời gian (slot)', field: 'duration', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
+            { title: 'Thời gian (slot)', field: 'duration', value: 0, type: 'number', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, isBlock: false },
+            { title: 'Bài thực hành', field: 'isPractice', value: false, type: 'checkboxc', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2, isGroup: false, valueOfGroupSize: 0, listData: equipments, valueOfEquipments: [] },
             { title: 'Mô tả', field: 'description', value: '', type: 'text', focus: false, error: false, errMes: 'Không được bỏ trống!', w: 2 },
         ]
     }

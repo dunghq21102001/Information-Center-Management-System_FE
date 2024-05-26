@@ -65,6 +65,7 @@ import Enrollment from '../views/Enrollment/Enrollment.vue'
 // equipments
 import Equipments from '../views/Equipments/Equipments.vue'
 import CreateEquipment from '../views/Equipments/Add.vue'
+import Prepare from '../views/Equipments/Prepare.vue'
 
 // advice request
 import AdviceRequest from '../views/AdviceRequest/AdviceRequest.vue'
@@ -503,7 +504,17 @@ const router = createRouter({
       component: CreateEquipment,
       meta: {
         middleware: checkAuth,
-        requiredRole: ['Admin', 'Manager', 'Staff']
+        requiredRole: ['Admin', 'Manager']
+      },
+      beforeEnter: checkValidRole
+    },
+    {
+      path: '/equipments-prepare',
+      name: 'equipments-prepare',
+      component: Prepare,
+      meta: {
+        middleware: checkAuth,
+        requiredRole: ['Admin' , 'Manager', 'Staff']
       },
       beforeEnter: checkValidRole
     },

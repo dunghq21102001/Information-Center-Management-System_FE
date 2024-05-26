@@ -80,7 +80,8 @@ export default class menu {
                 id: 9, name: 'Trang thiết bị', icon: 'px-devices', subTab: [
                     { name: 'Thêm thiết bị', url: 'equipment-create' },
                     { name: 'Danh sách thiết bị', url: 'equipments' },
-                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager']
+                    { name: 'Chuẩn bị thiết bị', url: 'equipments-prepare' },
+                ], isShow: false, isActive: false, isHidden: false, roles: ['Admin', 'Manager', 'Staff']
             },
             // {
             //     id: 72, name: 'Lessons', icon: 'md-playlesson-round', subTab: [

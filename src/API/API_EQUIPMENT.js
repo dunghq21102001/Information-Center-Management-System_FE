@@ -27,6 +27,14 @@ export default class API_EQUIPMENT {
         return axios.delete(`${API_BASE.BASE_URL}/${this.BASE_EQUIPMENT}?id=${id}`)
     }
 
+    static getEquipmentByDate(date) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_EQUIPMENT}/GettEquipmentByDate/${date}`)
+    }
+
+    static getPrepareList(classId, progress) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_EQUIPMENT}/GetEquipmentByProgress/${classId}/${progress}`)
+    }
+
     static categoryEquipments() {
         return axios.get(`${API_BASE.BASE_URL}/${this.BASE_CATE}/CategoryEquipments`)
     }
@@ -51,5 +59,8 @@ export default class API_EQUIPMENT {
         return axios.get(`${API_BASE.BASE_URL}/Enum/StatusOfEquipment`)
     }
 
+    static exportExcel(date) {
+        return axios.get(`${API_BASE.BASE_URL}/${this.BASE_EQUIPMENT}/ExportExcelFile/${date}`, { responseType: 'blob' })
+    }
 
 }
